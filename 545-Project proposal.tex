@@ -1,0 +1,109 @@
+%You can leave alone everything before Line 79.
+\documentclass{article}
+\usepackage{url,amsfonts, amsmath, amssymb, amsthm,color, enumerate}
+% Page layout
+\setlength{\textheight}{8.75in}
+\setlength{\columnsep}{2.0pc}
+\setlength{\textwidth}{6.5in}
+\setlength{\topmargin}{0in}
+\setlength{\headheight}{0.0in}
+\setlength{\headsep}{0.0in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+\setlength{\parindent}{1pc}
+\newcommand{\shortbar}{\begin{center}\rule{5ex}{0.1pt}\end{center}}
+%\renewcommand{\baselinestretch}{1.1}
+% Macros for course info
+\newcommand{\courseNumber}{EECS 545}
+\newcommand{\courseTitle}{Machine Learning}
+\newcommand{\semester}{Winter 2012}
+% Theorem-like structures are numbered within SECTION units
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{statement}[theorem]{Statement}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{fact}{Fact}
+%definition style
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}{Example}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{exercise}{Exercise}
+\newtheorem{algorithm}{Algorithm}
+%remark style
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{reduction}[theorem]{Reduction}
+%\newtheorem{question}[theorem]{Question}
+\newtheorem{question}{Question}
+%\newtheorem{claim}[theorem]{Claim}
+%
+% Proof-making commands and environments
+\newcommand{\beginproof}{\medskip\noindent{\bf Proof.~}}
+\newcommand{\beginproofof}[1]{\medskip\noindent{\bf Proof of #1.~}}
+\newcommand{\finishproof}{\hspace{0.2ex}\rule{1ex}{1ex}}
+\newenvironment{solution}[1]{\medskip\noindent{\bf Problem #1.~}}{\shortbar}
+
+%====header======
+\newcommand{\solutions}[4]{
+%\renewcommand{\thetheorem}{{#2}.\arabic{theorem}}
+\vspace{-2ex}
+\begin{center}
+{\small  \courseNumber, \courseTitle
+\hfill {\Large \bf {#1} }\\
+\semester, University of Michigan, Ann Arbor \hfill
+{\em Date: #3}}\\
+\vspace{-1ex}
+\hrulefill\\
+\vspace{4ex}
+{\LARGE Project Proposal #2}\\
+\vspace{2ex}
+\end{center}
+\begin{trivlist}
+\item \textsc{Team members:} {#4}
+\end{trivlist}
+\noindent
+\shortbar
+\vspace{3ex}
+}
+% math macros
+\newcommand{\defeq}{\stackrel{\textrm{def}}{=}}
+\newcommand{\Prob}{\textrm{Prob}}
+%==
+\usepackage{graphicx}
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\solutions{Your name}{Problem Set Number}{Date of preparation}{Collaborators}{Prover}{Verifiers}
+\solutions{}{}{\today}{\\ Keegan R. Kinkade, @kinkadek\\ Pedro d'Aquino, @pdaquino \\Shiva Ghose, @gshiva }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\renewcommand{\theproblem}{\arabic{problem}} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Begin the solution for each problem by
+% \begin{solution}{Problem Number} and ends it with \end{solution}
+%
+% the solution for Problem 
+
+\section*{Introduction}
+
+\section*{Statement of the Problem}
+
+\section*{Proposed Approach}
+
+\section*{Evaluation Methodology}
+
+\section*{Review of Related Work}
+
+
+
+\end{document}
+
+\def\therefore{\boldsymbol{\text{ }
+\leavevmode
+\lower0.4ex\hbox{$\cdot$}
+\kern-.5em\raise0.7ex\hbox{$\cdot$}
+\kern-0.55em\lower0.4ex\hbox{$\cdot$}
+\thinspace\text{ }}}
