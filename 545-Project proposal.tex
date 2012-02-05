@@ -89,7 +89,11 @@
 
 \section*{Introduction}
 
+Initially released in 2001 with the aim of assisting in learning object oriented programming, Robocode is an open source tank battling simulator implemented in Java. Each Robocode agent is designed with the ability to control a robotic tank, including differentially-driven movement, a $360\,^{\circ}\mathrm{}$ rotating turret, and an enemy scanning radar, in order to attempt to destroy other tanks with similar features but opposing strategies. Designers are capable of downloading other agent byte code in order to test their implementation, and their also exists leagues in which Robocode tournaments are held. While the environment has made creating a simple working agent capable of moving, targeting, and shooting, perfecting agents to do well against multiple opponent strategies has proven to be difficult. Many of the top ranked agents incorporate sophisticated statistical analysis techniques in order to optimize their agents. In addition to such techniques, research has been done to optimize agents using both neural networks as well as genetic programming. 
+
 \section*{Statement of the Problem}
+
+The purpose of this project is to incorporate machine learning algorithms in a Robocode agent in order to optimize the agent's ability to stay alive during battles. Specifically, we wish to incorporate machine learning in two areas: targeting and evasion. With respect to evasion, we intend on using reinforced learning in combination with genetic algorithms to optimize multiple missile evasion strategies and employ them in such a manner as to reduce the likelihood of being struck by an opponent's missile. Furthermore, we wish to use modeling machine learning algorithms in order to predict how an opponent will react upon learning that our agent has fired, thus allowing our agent to take advantage of the ability to predict opponent's behavior. 
 
 \section*{Proposed Approach}
 
