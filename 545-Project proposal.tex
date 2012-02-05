@@ -100,8 +100,25 @@ The purpose of this project is to incorporate machine learning algorithms in a R
 \section*{Evaluation Methodology}
 
 \section*{Review of Related Work}
+We have found some articles describing genetic programming
+approaches to Robocode, but none that combines it with reinforcement
+learning. Eisenstein, in 2003, was the first to use genetic programming
+in this context \cite{gp2}. He found that,
+while he was able to beat some hand-coded adversaries, his robots
+had a hard time learning how to target, and were therefore more
+likely to try to ram their opponents.
 
+In \cite{gp1}, the authors build upon Eisenstein's work and use genetic programming to evolve tank
+strategies for a robot in the HaikuBot category (which allows
+robots whose code is no longer than 4 lines). They evolved a population
+of 256 robots over approximately 400 generations. Their robot was ranked
+3rd in the HaikuBot category.
 
+In one of the very few academic mentions of Robocode outside of the artificial
+intelligence field, Kobayashi et al. describe a targeting strategy that was
+only mildly successful \cite{strategies}
+\bibliographystyle{IEEEtranS}
+\bibliography{sources}
 
 \end{document}
 
