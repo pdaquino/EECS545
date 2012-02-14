@@ -1,0 +1,21 @@
+Strategies
+1.) Run Away
+	-Move in a straight direction (determine angle and velocity)
+
+2.) Stand Stil 
+	-Continue in current direction and stop motors (determine when to halt)
+
+3.) Turning Move
+	-Move in turning direction (determine angular velocity and forward velocity)
+
+4.) Wave Surfing
+	-More research needed on this technique
+
+5.) Feigning 
+	-Move in a direction, then reverse movement (determine direction, velocity, when to reverse)
+
+6.) Serpentine 
+	-Move in a serpentine manner (determine end location, angle of serpentine, speed, rate of change)
+
+7.) Random 
+	-Random movement (determine how often to change go-to location)
