@@ -31,7 +31,7 @@ import robocode.util.Utils;
  */
 public class Robbie extends Robot
 {
-	/**
+	/*
 	 * run: Robbie's default behavior
 	 */
 	 
