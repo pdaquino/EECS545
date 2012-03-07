@@ -1,9 +1,28 @@
 package EECS545;
 import robocode.*;
-//import java.awt.Color;
+import java.awt.Color;
+import robocode.util.Utils;
 
-//Version 0.0
+
+
+//Version 0.1
 //Danger Will Robinson!
+
+/*
+*	Working ON:
+
+*	ADDED:
+	Gun and Radar independence to Robbie's movement
+	Robbies Colors
+	Radar Lock
+	
+
+
+
+*	REMOVED:
+
+
+*/
 
 // API help : http://robocode.sourceforge.net/docs/robocode/robocode/Robot.html
 
@@ -15,21 +34,22 @@ public class Robbie extends Robot
 	/**
 	 * run: Robbie's default behavior
 	 */
+	
 	public void run() {
 		// Initialization of the robot should be put here
-
-		// After trying out your robot, try uncommenting the import at the top,
-		// and the next line:
-
-		// setColors(Color.red,Color.blue,Color.green); // body,gun,radar
-
+		setAdjustRadarForRobotTurn(true);// Make Gun and Radar Movement independent
+		setAdjustGunForRobotTurn(true);// of the Robot's movement
+		setAdjustRadarForGunTurn(true);//
+		setColors(Color.red,Color.blue,Color.green); // body,gun,radar
+		turnRadarRight(Double.POSITIVE_INFINITY);	
 		// Robot main loop
 		while(true) {
-			// Replace the next 4 lines with any behavior you would like
-			ahead(100);
-			turnGunRight(360);
-			back(100);
-			turnGunRight(360);
+		
+			
+			
+			scan();/* Interrupts onScannedRobot event immediately and starts it 
+					* from the top. KEEP AS LAST LINE IN THE WHILE LOOP
+					*/			
 		}
 	}
 
@@ -37,8 +57,16 @@ public class Robbie extends Robot
 	 * onScannedRobot: What to do when you see another robot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
-		// Replace the next line with any behavior you would like
-		fire(1);
+		double radarTurn =
+        // Absolute bearing to target
+        getHeading() + e.getBearing()
+        // Subtract current radar heading to get turn required
+        - getRadarHeading();
+ 		
+    	turnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
+		
+				
+		
 	}
 
 	/**
@@ -46,7 +74,7 @@ public class Robbie extends Robot
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
 		// Replace the next line with any behavior you would like
-		back(10);
+		
 	}
 	
 	/**
@@ -54,6 +82,6 @@ public class Robbie extends Robot
 	 */
 	public void onHitWall(HitWallEvent e) {
 		// Replace the next line with any behavior you would like
-		back(20);
+		
 	}	
 }
