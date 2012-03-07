@@ -1,21 +1,36 @@
 Strategies
-1.) Run Away
-	-Move in a straight direction (determine angle and velocity)
+1.) Run Away Left
+	-Head tangental-left of the direct line of sight between agent and opponent.
 
-2.) Stand Stil 
-	-Continue in current direction and stop motors (determine when to halt)
+2.) Run Away Right
+	-Head tangental-right of the direct line of sight between agent and opponent. 
 
-3.) Turning Move
-	-Move in turning direction (determine angular velocity and forward velocity)
+3.) Stand Still 
+	-Stop all motors.
 
-4.) Wave Surfing
-	-More research needed on this technique
+4.) Feigning 
+	-Reverse engines.
 
-5.) Feigning 
-	-Move in a direction, then reverse movement (determine direction, velocity, when to reverse)
+6.) Random 
+	-Pick a random location in the environment and head towards that location. 
 
-6.) Serpentine 
-	-Move in a serpentine manner (determine end location, angle of serpentine, speed, rate of change)
+Features
+1.) Relative bearing to opponent
+2.) Relative velocity to opponent
+3.) Distance and relative bearing to middle of room
+4.) Distance between agent and opponent
+5.) 
 
-7.) Random 
-	-Random movement (determine how often to change go-to location)
+
+Data Gathering Pseudo Code
+	while(1)
+	    until opponent fires
+	        mirror opponent
+	    else
+		randomly choose strategy
+		employ strategy until bullet has passed (wave VS 5 second rule)
+	    end
+	end
+
+
+
