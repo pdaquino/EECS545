@@ -34,6 +34,9 @@ public class Robbie extends Robot
 	/**
 	 * run: Robbie's default behavior
 	 */
+	 
+	boolean mirror_Behavior_Enable;
+	Constants CONSTANTS;
 	
 	public void run() {
 		// Initialization of the robot should be put here
@@ -41,7 +44,13 @@ public class Robbie extends Robot
 		setAdjustGunForRobotTurn(true);// of the Robot's movement
 		setAdjustRadarForGunTurn(true);//
 		setColors(Color.red,Color.blue,Color.green); // body,gun,radar
+		
+		CONSTANTS = new Constants();
+		
+		mirror_Behavior_Enable = true;
 		turnRadarRight(Double.POSITIVE_INFINITY);	
+		
+		
 		// Robot main loop
 		while(true) {
 		
@@ -64,10 +73,22 @@ public class Robbie extends Robot
         - getRadarHeading();
  		
     	turnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
-		
+		if(mirror_Behavior_Enable){
+			mirrorBehavior(e);
+		}
 				
 		
 	}
+	
+	/*
+	*	Mirrors the Opponent's moves either just laterally or diagonolly while 
+	*	maintaining a minimum distance threshold 'd'
+	*/
+	private void mirrorBehavior(ScannedRobotEvent e) {
+		
+		
+	}
+	
 
 	/**
 	 * onHitByBullet: What to do when you're hit by a bullet
