@@ -7,41 +7,11 @@ import robocode.util.Utils;
 //Version 0.1
 //Danger Will Robinson!
 
-/*
-<<<<<<< HEAD
-*	Working ON:
 
-*	ADDED:
-	Left / Right Evasion Methods
-
-
-*	REMOVED:
-
-
-*/
-
-=======
- * Working ON:
- *
- * ADDED: Gun and Radar independence to Robbie's movement Robbies Colors Radar
- * Lock
- *
- *
- *
- *
- * REMOVED:
- *
- *
- */
->>>>>>> 13eb2c4c488481cb6fb49c998820483fa7a09832
 // API help : http://robocode.sourceforge.net/docs/robocode/robocode/Robot.html
 /**
  * Robbie - a robot by (your name here)
  */
-<<<<<<< HEAD
-=======
-
->>>>>>> 13eb2c4c488481cb6fb49c998820483fa7a09832
 public class Robbie extends AdvancedRobot
 {
 	/*
@@ -49,6 +19,9 @@ public class Robbie extends AdvancedRobot
 	 */
 	 
 	Constants CONSTANTS;
+	
+	// holds globally last ScannedRobotEvent
+	ScannedRobotEvent lastEvent;
 	
 	public void run() {
 		
@@ -83,25 +56,14 @@ public class Robbie extends AdvancedRobot
 	 * onScannedRobot: What to do when you see another robot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
-<<<<<<< HEAD
 		
 		// determine angle from enemy to current radar direction
 		double radarTurn = getHeading() + e.getBearing() - getRadarHeading();
  		
 		// turn radar according to angle above
-    	turnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
-
-		if(mirror_Behavior_Enable){
-=======
-            double radarTurn =
-            // Absolute bearing to target
-                                getHeading() + e.getBearing()
-            // Subtract current radar heading to get turn required
-                                - getRadarHeading();
-
     	setTurnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
+
 		if(CONSTANTS.getMirrorBehaviorFlag()){
->>>>>>> 13eb2c4c488481cb6fb49c998820483fa7a09832
 			mirrorBehavior(e);
 		}
 		
@@ -115,14 +77,8 @@ public class Robbie extends AdvancedRobot
          *          d = d_const - (Robbie's Health - Opponent's Health)
 	 */
 	private void mirrorBehavior(ScannedRobotEvent e) {
-<<<<<<< HEAD
-		
-
-=======
             
             e.getDistance();
-		
->>>>>>> 13eb2c4c488481cb6fb49c998820483fa7a09832
 	}
 	
 
