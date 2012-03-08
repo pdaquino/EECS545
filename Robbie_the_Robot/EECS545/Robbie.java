@@ -1,34 +1,30 @@
 package EECS545;
+
 import robocode.*;
 import java.awt.Color;
 import robocode.util.Utils;
-
-
 
 //Version 0.1
 //Danger Will Robinson!
 
 /*
-*	Working ON:
-
-*	ADDED:
-	Gun and Radar independence to Robbie's movement
-	Robbies Colors
-	Radar Lock
-	
-
-
-
-*	REMOVED:
-
-
-*/
-
+ * Working ON:
+ *
+ * ADDED: Gun and Radar independence to Robbie's movement Robbies Colors Radar
+ * Lock
+ *
+ *
+ *
+ *
+ * REMOVED:
+ *
+ *
+ */
 // API help : http://robocode.sourceforge.net/docs/robocode/robocode/Robot.html
-
 /**
  * Robbie - a robot by (your name here)
  */
+
 public class Robbie extends AdvancedRobot
 {
 	/*
