@@ -20,8 +20,14 @@ public class Robbie extends AdvancedRobot
 	 
 	Constants CONSTANTS;
 	
-	// holds globally last ScannedRobotEvent
-	ScannedRobotEvent lastEvent;
+	// holds the last scan of the enemy for access to other methods
+	ScannedRobotEvent lastE;
+	
+	// holds the previous energy of the opponent
+	double prevEnergy = 100.0;
+	
+	// tracking of a bullet 
+	BulletTracking incoming = new BulletTracking();
 	
 	public void run() {
 		
@@ -43,12 +49,16 @@ public class Robbie extends AdvancedRobot
 		setTurnRadarRight(Double.POSITIVE_INFINITY);	
 		
 		
-		// Robot main loop
+		// main robot loop
 		while(true) {
-		
-			scan();/* Interrupts onScannedRobot event immediately and starts it 
-				* from the top. KEEP AS LAST LINE IN THE WHILE LOOP
-				*/			
+			
+			// interrupts onScannedRobot event 
+			scan();
+			
+			// update tracking of enemy bullet
+			if(lastE != null)
+				updateBulletTracking();
+
 		}
 	}
 
@@ -56,6 +66,9 @@ public class Robbie extends AdvancedRobot
 	 * onScannedRobot: What to do when you see another robot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
+		
+		// update last scan object
+		lastE = e;
 		
 		// determine angle from enemy to current radar direction
 		double radarTurn = getHeading() + e.getBearing() - getRadarHeading();
@@ -86,8 +99,14 @@ public class Robbie extends AdvancedRobot
 	 * onHitByBullet: What to do when you're hit by a bullet
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
-		// Replace the next line with any behavior you would like
 		
+		// check if the bullet that hit us is the bullet we were tracking
+		boolean hit = incoming.checkHit(e.getHeading(), getX(), getY(), getTime());
+		
+		if(hit)
+			out.println("	Bullet Being Tracked Hit Us");
+		else
+			out.println("	A Different Bullet Hit US");
 	}
 	
 	/**
@@ -98,6 +117,45 @@ public class Robbie extends AdvancedRobot
 		
 	}
 
+	/**
+	 * updateBulletTracking: Check to see if the enemy fired / update a bullet being tracked
+	 *
+	 */
+	public void updateBulletTracking() {
+		
+		// we are already tracking a bullet
+		if(incoming.getStatus()){
+			
+			// reset previous energy value
+			prevEnergy = lastE.getEnergy();
+			
+			// check if the last bullet has missed us
+			boolean passed = incoming.bulletPassed(getX(), getY(), getTime());
+			if(passed)
+				out.println("	The Bullet Being Tracked Missed");
+			else
+				out.println("	Bullet is still active");
+			
+			return;
+		
+		// we are not currently tracking a bullet	
+		} else {
+		
+			// energy drop of enemy
+			double eDrop = prevEnergy - lastE.getEnergy();
+		
+			// reset previous energy value
+			prevEnergy = lastE.getEnergy();
+		
+			// check boundaries of firing
+			if(eDrop > 0 && eDrop <= 3) {
+				
+				// enemy fired a bullet, begin tracking
+				incoming = new BulletTracking(eDrop, lastE, new double[] {getX(), getY(), getHeading()}, getTime());	
+				out.println("Enemy Fired a Bullet");
+			}
+		}
+	} 
 	
 		
 	/**
