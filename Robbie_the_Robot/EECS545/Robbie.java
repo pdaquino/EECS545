@@ -36,7 +36,7 @@ public class Robbie extends AdvancedRobot {
 
         CONSTANTS = new Constants();
 
-        CONSTANTS.mirrorBehaviorEnable();
+        CONSTANTS.mirrorBehaviorDisable();
         setTurnRadarRight(Double.POSITIVE_INFINITY);
 
 
@@ -62,7 +62,7 @@ public class Robbie extends AdvancedRobot {
         setTurnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
 
         if (CONSTANTS.getMirrorBehaviorFlag()) {
-            mirrorBehavior(e);
+            mirrorBehavior(e);            
         }
 
     }
@@ -70,12 +70,22 @@ public class Robbie extends AdvancedRobot {
     /*
      * Mirrors the Opponent's moves either just laterally or diagonolly while
      * maintaining a minimum distance threshold 'd'. This is done as series of
-     * Forces modelled as: F = k1 * (Distance to Opponent - d) d = d_const -
-     * (Robbie's Health - Opponent's Health)
+     * Forces modelled as: 
+     *  F = k1 * (Distance to Opponent - d) 
+     *  d = d_const - (Robbie's Health - Opponent's Health)
      */
     private void mirrorBehavior(ScannedRobotEvent e) {
-
-        e.getDistance();
+        double F; 
+        double d;        
+        d = CONSTANTS.mirror_distance - (getEnergy() - e.getEnergy());
+        F = CONSTANTS.mirror_Force_k1*(e.getDistance() - d);
+        out.println("d = "+d);
+        out.println("dist to enemy = "+e.getDistance());
+        out.println("F = "+F);
+        setTurnRight(e.getBearing());
+        setAhead(F);
+        execute();
+        
     }
 
     /**
