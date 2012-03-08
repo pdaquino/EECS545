@@ -3,8 +3,6 @@ import robocode.*;
 import java.awt.Color;
 import robocode.util.Utils;
 
-
-
 //Version 0.1
 //Danger Will Robinson!
 
@@ -12,11 +10,7 @@ import robocode.util.Utils;
 *	Working ON:
 
 *	ADDED:
-	Gun and Radar independence to Robbie's movement
-	Robbies Colors
-	Radar Lock
-	
-
+	Left / Right Evasion Methods
 
 
 *	REMOVED:
@@ -29,7 +23,7 @@ import robocode.util.Utils;
 /**
  * Robbie - a robot by (your name here)
  */
-public class Robbie extends Robot
+public class Robbie extends AdvancedRobot
 {
 	/*
 	 * run: Robbie's default behavior
@@ -39,11 +33,18 @@ public class Robbie extends Robot
 	Constants CONSTANTS;
 	
 	public void run() {
-		// Initialization of the robot should be put here
-		setAdjustRadarForRobotTurn(true);// Make Gun and Radar Movement independent
-		setAdjustGunForRobotTurn(true);// of the Robot's movement
-		setAdjustRadarForGunTurn(true);//
-		setColors(Color.red,Color.blue,Color.green); // body,gun,radar
+		
+		// radar and robot independent turning
+		setAdjustRadarForRobotTurn(true);
+		
+		// gun and robot independent turning
+		setAdjustGunForRobotTurn(true);
+		
+		// radar and gun independent turning
+		setAdjustRadarForGunTurn(true);
+		
+		// body, gun, radar color
+		setColors(Color.red,Color.blue,Color.green);
 		
 		CONSTANTS = new Constants();
 		
@@ -54,8 +55,6 @@ public class Robbie extends Robot
 		// Robot main loop
 		while(true) {
 		
-			
-			
 			scan();/* Interrupts onScannedRobot event immediately and starts it 
 					* from the top. KEEP AS LAST LINE IN THE WHILE LOOP
 					*/			
@@ -66,17 +65,16 @@ public class Robbie extends Robot
 	 * onScannedRobot: What to do when you see another robot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
-		double radarTurn =
-        // Absolute bearing to target
-        getHeading() + e.getBearing()
-        // Subtract current radar heading to get turn required
-        - getRadarHeading();
+		
+		// determine angle from enemy to current radar direction
+		double radarTurn = getHeading() + e.getBearing() - getRadarHeading();
  		
+		// turn radar according to angle above
     	turnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
+
 		if(mirror_Behavior_Enable){
 			mirrorBehavior(e);
 		}
-				
 		
 	}
 	
@@ -86,7 +84,7 @@ public class Robbie extends Robot
 	*/
 	private void mirrorBehavior(ScannedRobotEvent e) {
 		
-		
+
 	}
 	
 
@@ -104,5 +102,83 @@ public class Robbie extends Robot
 	public void onHitWall(HitWallEvent e) {
 		// Replace the next line with any behavior you would like
 		
-	}	
+	}
+
+	
+		
+	/**
+	 * evadeLeft: Head tangental-left of the direct line of sight between agent and opponent
+	 */
+	public void evadeLeft(ScannedRobotEvent e) {
+		
+		// angle to enemey relative to agent's heading
+		double ang = e.getBearing();
+		
+		// checking conditions for which direction to turn / direction of engines 
+		if(Math.abs(ang) < 90) {
+			
+			if(ang > 0) {
+				
+				setTurnLeft(90 - ang);
+				setAhead(Double.POSITIVE_INFINITY);
+				
+			} else {
+			
+				setTurnRight(90 - Math.abs(ang));
+				setBack(Double.POSITIVE_INFINITY);
+			
+			}	
+		} else {
+		
+			if(ang > 0) {
+				
+				setTurnRight(ang - 90);
+				setAhead(Double.POSITIVE_INFINITY);
+				
+			} else {
+			
+				setTurnLeft(Math.abs(ang) - 90);
+				setBack(Double.POSITIVE_INFINITY);
+			
+			}	
+		}
+	}
+
+	/**
+	 * evadeRight: Head tangental-right of the direct line of sight between agent and opponent
+	 */
+	public void evadeRight(ScannedRobotEvent e) {
+
+		// angle to enemey relative to agent's heading
+		double ang = e.getBearing();
+		
+		// checking conditions for which direction to turn / direction of engines 
+		if(Math.abs(ang) < 90) {
+			
+			if(ang > 0) {
+				
+				setTurnLeft(90 - ang);
+				setBack(Double.POSITIVE_INFINITY);
+				
+			} else {
+			
+				setTurnRight(90 - Math.abs(ang));
+				setAhead(Double.POSITIVE_INFINITY);
+			
+			}	
+		} else {
+		
+			if(ang > 0) {
+				
+				setTurnRight(ang - 90);
+				setBack(Double.POSITIVE_INFINITY);
+				
+			} else {
+			
+				setTurnLeft(Math.abs(ang) - 90);
+				setAhead(Double.POSITIVE_INFINITY);
+			
+			}	
+		}
+	}								
 }
