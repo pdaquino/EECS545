@@ -6,17 +6,12 @@ import robocode.util.Utils;
 
 //Version 0.1
 //Danger Will Robinson!
-
-
 // API help : http://robocode.sourceforge.net/docs/robocode/robocode/Robot.html
 /**
  * Robbie - a robot by (your name here)
  */
 public class Robbie extends AdvancedRobot
 {
-	/*
-	 * run: Robbie's default behavior
-	 */
 	 
 	Constants CONSTANTS;
 	
@@ -233,4 +228,18 @@ public class Robbie extends AdvancedRobot
 			}	
 		}
 	}								
+
+    public void halt() {
+        setAhead(0);
+    }
+    
+    public void feign() {
+        System.out.println("Feigning: distanceRemaining is " + getDistanceRemaining());
+        setAhead(-1*getDistanceRemaining()*Double.POSITIVE_INFINITY);
+    }
+    
+    @Override
+    public void onKeyPressed(java.awt.event.KeyEvent e) {
+        halt();
+    }
 }
