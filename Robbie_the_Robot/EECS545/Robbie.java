@@ -2,7 +2,6 @@ package EECS545;
 
 import robocode.*;
 import java.awt.Color;
-import javax.swing.JOptionPane;
 import robocode.util.Utils;
 
 //Version 0.1
@@ -38,7 +37,7 @@ public class Robbie extends AdvancedRobot {
 
         CONSTANTS.mirrorBehaviorEnable();
         setTurnRadarRight(Double.POSITIVE_INFINITY);
-
+        setAhead(Double.POSITIVE_INFINITY);
 
         // Robot main loop
         while (true) {
@@ -89,7 +88,6 @@ public class Robbie extends AdvancedRobot {
      * onHitWall: What to do when you hit a wall
      */
     public void onHitWall(HitWallEvent e) {
-        // Replace the next line with any behavior you would like
     }
 
     /**
@@ -147,5 +145,19 @@ public class Robbie extends AdvancedRobot {
 
             }
         }
+    }
+    
+    public void halt() {
+        setAhead(0);
+    }
+    
+    public void feign() {
+        System.out.println("Feigning: distanceRemaining is " + getDistanceRemaining());
+        setAhead(-1*getDistanceRemaining()*Double.POSITIVE_INFINITY);
+    }
+    
+    @Override
+    public void onKeyPressed(java.awt.event.KeyEvent e) {
+        halt();
     }
 }
