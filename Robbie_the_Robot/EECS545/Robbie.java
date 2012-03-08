@@ -1,4 +1,5 @@
 package EECS545;
+
 import robocode.*;
 import java.awt.Color;
 import robocode.util.Utils;
@@ -7,6 +8,7 @@ import robocode.util.Utils;
 //Danger Will Robinson!
 
 /*
+<<<<<<< HEAD
 *	Working ON:
 
 *	ADDED:
@@ -18,18 +20,34 @@ import robocode.util.Utils;
 
 */
 
+=======
+ * Working ON:
+ *
+ * ADDED: Gun and Radar independence to Robbie's movement Robbies Colors Radar
+ * Lock
+ *
+ *
+ *
+ *
+ * REMOVED:
+ *
+ *
+ */
+>>>>>>> 13eb2c4c488481cb6fb49c998820483fa7a09832
 // API help : http://robocode.sourceforge.net/docs/robocode/robocode/Robot.html
-
 /**
  * Robbie - a robot by (your name here)
  */
+<<<<<<< HEAD
+=======
+
+>>>>>>> 13eb2c4c488481cb6fb49c998820483fa7a09832
 public class Robbie extends AdvancedRobot
 {
 	/*
 	 * run: Robbie's default behavior
 	 */
 	 
-	boolean mirror_Behavior_Enable;
 	Constants CONSTANTS;
 	
 	public void run() {
@@ -48,16 +66,16 @@ public class Robbie extends AdvancedRobot
 		
 		CONSTANTS = new Constants();
 		
-		mirror_Behavior_Enable = true;
-		turnRadarRight(Double.POSITIVE_INFINITY);	
+		CONSTANTS.mirrorBehaviorEnable();
+		setTurnRadarRight(Double.POSITIVE_INFINITY);	
 		
 		
 		// Robot main loop
 		while(true) {
 		
 			scan();/* Interrupts onScannedRobot event immediately and starts it 
-					* from the top. KEEP AS LAST LINE IN THE WHILE LOOP
-					*/			
+				* from the top. KEEP AS LAST LINE IN THE WHILE LOOP
+				*/			
 		}
 	}
 
@@ -65,6 +83,7 @@ public class Robbie extends AdvancedRobot
 	 * onScannedRobot: What to do when you see another robot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
+<<<<<<< HEAD
 		
 		// determine angle from enemy to current radar direction
 		double radarTurn = getHeading() + e.getBearing() - getRadarHeading();
@@ -73,18 +92,37 @@ public class Robbie extends AdvancedRobot
     	turnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
 
 		if(mirror_Behavior_Enable){
+=======
+            double radarTurn =
+            // Absolute bearing to target
+                                getHeading() + e.getBearing()
+            // Subtract current radar heading to get turn required
+                                - getRadarHeading();
+
+    	setTurnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
+		if(CONSTANTS.getMirrorBehaviorFlag()){
+>>>>>>> 13eb2c4c488481cb6fb49c998820483fa7a09832
 			mirrorBehavior(e);
 		}
 		
 	}
 	
 	/*
-	*	Mirrors the Opponent's moves either just laterally or diagonolly while 
-	*	maintaining a minimum distance threshold 'd'
-	*/
+	 * Mirrors the Opponent's moves either just laterally or diagonolly 
+	 * while maintaining a minimum distance threshold 'd'. This is done as
+         * series of Forces modelled as:
+         *          F = k1 * (Distance to Opponent - d)
+         *          d = d_const - (Robbie's Health - Opponent's Health)
+	 */
 	private void mirrorBehavior(ScannedRobotEvent e) {
+<<<<<<< HEAD
 		
 
+=======
+            
+            e.getDistance();
+		
+>>>>>>> 13eb2c4c488481cb6fb49c998820483fa7a09832
 	}
 	
 
