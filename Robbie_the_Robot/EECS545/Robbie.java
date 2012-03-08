@@ -29,13 +29,12 @@ import robocode.util.Utils;
 /**
  * Robbie - a robot by (your name here)
  */
-public class Robbie extends Robot
+public class Robbie extends AdvancedRobot
 {
 	/*
 	 * run: Robbie's default behavior
 	 */
 	 
-	boolean mirror_Behavior_Enable;
 	Constants CONSTANTS;
 	
 	public void run() {
@@ -47,8 +46,8 @@ public class Robbie extends Robot
 		
 		CONSTANTS = new Constants();
 		
-		mirror_Behavior_Enable = true;
-		turnRadarRight(Double.POSITIVE_INFINITY);	
+		CONSTANTS.mirrorBehaviorEnable();
+		setTurnRadarRight(Double.POSITIVE_INFINITY);	
 		
 		
 		// Robot main loop
@@ -57,8 +56,8 @@ public class Robbie extends Robot
 			
 			
 			scan();/* Interrupts onScannedRobot event immediately and starts it 
-					* from the top. KEEP AS LAST LINE IN THE WHILE LOOP
-					*/			
+				* from the top. KEEP AS LAST LINE IN THE WHILE LOOP
+				*/			
 		}
 	}
 
@@ -66,14 +65,14 @@ public class Robbie extends Robot
 	 * onScannedRobot: What to do when you see another robot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
-		double radarTurn =
-        // Absolute bearing to target
-        getHeading() + e.getBearing()
-        // Subtract current radar heading to get turn required
-        - getRadarHeading();
- 		
-    	turnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
-		if(mirror_Behavior_Enable){
+            double radarTurn =
+            // Absolute bearing to target
+                                getHeading() + e.getBearing()
+            // Subtract current radar heading to get turn required
+                                - getRadarHeading();
+
+    	setTurnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
+		if(CONSTANTS.getMirrorBehaviorFlag()){
 			mirrorBehavior(e);
 		}
 				
@@ -81,11 +80,15 @@ public class Robbie extends Robot
 	}
 	
 	/*
-	*	Mirrors the Opponent's moves either just laterally or diagonolly while 
-	*	maintaining a minimum distance threshold 'd'
-	*/
+	 * Mirrors the Opponent's moves either just laterally or diagonolly 
+	 * while maintaining a minimum distance threshold 'd'. This is done as
+         * series of Forces modelled as:
+         *          F = k1 * (Distance to Opponent - d)
+         *          d = d_const - (Robbie's Health - Opponent's Health)
+	 */
 	private void mirrorBehavior(ScannedRobotEvent e) {
-		
+            
+            e.getDistance();
 		
 	}
 	
