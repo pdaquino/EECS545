@@ -15,6 +15,9 @@ public class Robbie extends AdvancedRobot
 	 
 	Constants CONSTANTS;
 	
+	// evasion techniques
+	EvasionMovements em = new EvasionMovements(this);
+	
 	// holds the last scan of the enemy for access to other methods
 	ScannedRobotEvent lastE;
 	
@@ -53,7 +56,6 @@ public class Robbie extends AdvancedRobot
 			// update tracking of enemy bullet
 			if(lastE != null)
 				updateBulletTracking();
-
 		}
 	}
 
@@ -98,8 +100,11 @@ public class Robbie extends AdvancedRobot
 		// check if the bullet that hit us is the bullet we were tracking
 		boolean hit = incoming.checkHit(e.getHeading(), getX(), getY(), getTime());
 		
-		if(hit)
+		if(hit){
 			out.println("	Bullet Being Tracked Hit Us");
+			setAhead(0);
+			setTurnLeft(0);
+		}
 		else
 			out.println("	A Different Bullet Hit US");
 	}
@@ -126,8 +131,11 @@ public class Robbie extends AdvancedRobot
 			
 			// check if the last bullet has missed us
 			boolean passed = incoming.bulletPassed(getX(), getY(), getTime());
-			if(passed)
+			if(passed){
 				out.println("	The Bullet Being Tracked Missed");
+				setAhead(0);
+				setTurnLeft(0);
+			}
 			else
 				out.println("	Bullet is still active");
 			
@@ -146,100 +154,15 @@ public class Robbie extends AdvancedRobot
 			if(eDrop > 0 && eDrop <= 3) {
 				
 				// enemy fired a bullet, begin tracking
-				incoming = new BulletTracking(eDrop, lastE, new double[] {getX(), getY(), getHeading()}, getTime());	
+				incoming = new BulletTracking(eDrop, lastE, new double[] {getX(), getY(), getHeading()}, getTime());
+				em.executeRandomEvasion(lastE);
 				out.println("Enemy Fired a Bullet");
 			}
 		}
 	} 
-	
-		
-	/**
-	 * evadeLeft: Head tangental-left of the direct line of sight between agent and opponent
-	 */
-	public void evadeLeft(ScannedRobotEvent e) {
-		
-		// angle to enemey relative to agent's heading
-		double ang = e.getBearing();
-		
-		// checking conditions for which direction to turn / direction of engines 
-		if(Math.abs(ang) < 90) {
-			
-			if(ang > 0) {
-				
-				setTurnLeft(90 - ang);
-				setAhead(Double.POSITIVE_INFINITY);
-				
-			} else {
-			
-				setTurnRight(90 - Math.abs(ang));
-				setBack(Double.POSITIVE_INFINITY);
-			
-			}	
-		} else {
-		
-			if(ang > 0) {
-				
-				setTurnRight(ang - 90);
-				setAhead(Double.POSITIVE_INFINITY);
-				
-			} else {
-			
-				setTurnLeft(Math.abs(ang) - 90);
-				setBack(Double.POSITIVE_INFINITY);
-			
-			}	
-		}
-	}
-
-	/**
-	 * evadeRight: Head tangental-right of the direct line of sight between agent and opponent
-	 */
-	public void evadeRight(ScannedRobotEvent e) {
-
-		// angle to enemey relative to agent's heading
-		double ang = e.getBearing();
-		
-		// checking conditions for which direction to turn / direction of engines 
-		if(Math.abs(ang) < 90) {
-			
-			if(ang > 0) {
-				
-				setTurnLeft(90 - ang);
-				setBack(Double.POSITIVE_INFINITY);
-				
-			} else {
-			
-				setTurnRight(90 - Math.abs(ang));
-				setAhead(Double.POSITIVE_INFINITY);
-			
-			}	
-		} else {
-		
-			if(ang > 0) {
-				
-				setTurnRight(ang - 90);
-				setBack(Double.POSITIVE_INFINITY);
-				
-			} else {
-			
-				setTurnLeft(Math.abs(ang) - 90);
-				setAhead(Double.POSITIVE_INFINITY);
-			
-			}	
-		}
-	}								
-
-    public void halt() {
-        setAhead(0);
-    }
     
-    public void feign() {
-        System.out.println("Feigning: distanceRemaining is " + getDistanceRemaining());
-        setAhead(-1*getDistanceRemaining()*Double.POSITIVE_INFINITY);
-    }
-    
-    @Override
-    public void onKeyPressed(java.awt.event.KeyEvent e) {
-        halt();
-    }
+    //@Override
+    //public void onKeyPressed(java.awt.event.KeyEvent e) {
+        //halt();
+    //}
 }
