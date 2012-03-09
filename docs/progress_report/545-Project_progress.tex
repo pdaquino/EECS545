@@ -133,7 +133,9 @@ We have found some articles describing genetic programming approaches to Robocod
 
 In \cite{gp1}, the authors build upon Eisenstein's work and use genetic programming to evolve tank strategies for a robot in the HaikuBot category (which allows robots whose code is no longer than 4 lines). They evolved a population of 256 robots over approximately 400 generations. Their robot was ranked 3rd in the HaikuBot category.\\
 
-In one of the very few academic mentions of Robocode outside of the artificial intelligence field, Kobayashi et al. describe a targeting strategy that was only mildly successful \cite{strategies}
+In one of the very few academic mentions of Robocode outside of the artificial intelligence field, Kobayashi et al. describe a targeting strategy that was only mildly successful \cite{strategies}. \\
+
+While there is little within the literature of applying machine learning techniques to Robocode agents, a majority of the successful agents documented within Robocode employ sophisticated statistical methods when evading bullets and targeting their opponent. When determining what to do in a given situation (wether it be target or evade), many of the advanced agents employ varying forms of the k-means algorithm to cluster similar environmental situations and learn from these situations. However, most of the actual firing of bullets and evading incoming rounds is not done using sophisticated algorithms. Thus, our work will not only build upon the current ability to learn when to take certain actions in the environment, but also learn how to best carry out actions. 
 
 \section{Experimental Results}
 
