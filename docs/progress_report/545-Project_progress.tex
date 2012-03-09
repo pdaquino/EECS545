@@ -107,53 +107,33 @@ The purpose of this project is to incorporate machine learning algorithms in a R
 
 Building a Robocode agent equipped with machine learning algorithms to better inform its decision making will be broken into two unique tasks: evasion and targeting. Each task will have a subset of strategies which the agent can choose to employ in order to best achieve a goal attached to the current task of evasion or targeting. In order to decide which strategy to employ for a given task, the agent will make use of machine learning techniques to analyze the current situation within the environment and choose the strategy which maximizes the likelihood of achieving the task goal. 
 
-Each sub--agent will have a variety of strategies, each of which will be optimized against the opponent. The effectiveness of the strategies will also be evaluated in real time to determine which strategy or set of strategies play out the best. We propose to do this using a combination of machine learning algorithms and genetic programming methodologies. Each individual strategy will be optimized against an opponent using genetic programming methods. During the optimization period, the agent would only be allowed to use a given strategy and the various individual parameters of the strategy would then be fine--tuned over the course of the training rounds. After this the agent is allowed to use all the trained strategies against the opponent. Reinforcement learning would then be employed to determine the agents preference of each strategy as it plays against the opponent.
+\subsection*{Evasion Strategy}
 
-\subsection*{Movement Strategy}
-
-There are two main movement strategies that need to be considered:
+Within the task of evasion, there are two movement approaches that need to be considered:
 \begin{itemize}
 
-\item General movement strategy
+\item General movement 
 
-\item Evasive movement strategy
+\item Evasive movement 
 \end{itemize}
 
-Each strategy needs to be used differently and the the movement agent will need to learn when and how to employ them.
+Each approach to movement needs to be employed based on the situation,  and the agent will need to learn when which evasive movement strategy to employ when engaged in the general movement strategy.
 
-\subsubsection*{General Movement Strategy}
-In general the probability of getting hit by incoming fire is inversely proportional to how close the observer is to the firing point. We want our agent to move closer to the enemy when it has higher health to maximize the probability of hitting the enemy and stay further back when it is lower on health to better dodge incoming fire. This can be modeled as series of attracting and repelling force interactions. Instead of hard--coding the values of the parameters, we will use genetic programming in a gradient-descent--like form to find the optimal values that our agent should use against the opponent.
+\subsubsection*{General Movement }
+In general the probability of getting hit by incoming fire is inversely proportional to how close the observer is to the firing point. We want our agent to move closer to the enemy when it has higher health to maximize the probability of hitting the enemy and stay further back when it is lower on health to better evade incoming fire. This can be modeled as series of attracting and repelling force interactions. Furthermore, the agent loses health each time it runs into walls in the environment. Thus, the walls will also be modeled as a set of repelling forces. For training purposes, the general movement of the agent will be to mirror the opponent at a fixed distance in order to avoid collisions with the enemy while better assessing the effectiveness of the evasion strategies. 
 
-\subsubsection*{Evasive Movement Strategy}
-Robocode allows you to figure out if the enemy agent has fired a shot, but it does not tell you anything about where the bullet is heading. Hence we need to use a combination of maneuvering strategies and statistical methods to figure out probabilistic bullet trajectories. Again, each of the parameters of each strategy will be tuned similar to the general movement strategy parameters.
+\subsubsection*{Evasive Movement }
+Every time an agent fires a bullet, their energy drops proportionally to the speed of the bullet they fired. Built into Robocode is the ability to detect the energy drop of an opponent, and thus agents are capable of detecting when an enemy has fired a bullet. From such an energy drop, agents can determine the location a bullet was fired, and the velocity of the bullet, but not the direction with which the enemy fired in. Thus our agent will have to constantly monitor the actions taken by the opponent, and upon detecting the enemy has fired a bullet, choose an evasion strategy to employ. In order to do so, we will begin by creating a subset of relatively trivial evasion strategies and run the differing evasion strategies when fired upon in multiple training battles against multiple opponents. Each time an evasion strategy is employed, we will capture features in the environment as well as whether or not the strategy was effective in evading the bullet or not. We then will train support vector machines for each of the different evasion strategies using the features collected from the environment and a binary target variable corresponding to being hit by or evading the bullet. After training the SVMs, the agent will then choose which evasion strategy to employ when being fired upon by running the current environment features on each SVM, and choosing the strategy corresponding to the SVM which produces the largest margin for evading the bullet. 
 
 \subsection*{Offensive Strategy}
-The offensive strategy deals with modeling where the opponent will be if the agent were to fire at this point of time. A simple movement vector extrapolation will often fail even against all but the most rudimentary opponents as they will also have bullet avoidance techniques. Hence a more sophisticated prediction scheme is required.\\
-
-We aim to build up a probabilistic distribution of the the opponents actions and reactions over time to model the opponent and use that to get higher scoring firing solutions.\\
-
-Additionally, no matter how random an opponent's movement might be, as the opponent approaches an edge or a corner of the battle field, the number of movement options become limited. We will need to create a method that can exploit this in parallel with our regular targeting scheme to get even higher scoring firing solutions.
-
+The offensive strategy deals with modeling where the opponent will be if the agent were to fire at a given point of time under a given set of environmental conditions. A simple movement vector extrapolation will often fail against all but the most rudimentary opponents as they to employ advanced evasive strategies upon being fired at. Hence a more sophisticated prediction scheme is required to allow the agent to successfully target and attack the opponent. To this end, we plan on building up a probabilistic distribution of the opponents evasive reactions over time in order to better predict where to fire bullets. Furthermore, using training data in a similar fashion to that proposed in the evasion section, we will use an additional support vector machine to determine what situations lead to maximum likelihood of hitting the enemy when firing a bullet. This will ensure we only attempt to shoot at an enemy when we have a good chance of hitting them, thus reducing the amount of energy lost from making bad firing decisions. 
+ 
 \section{Review of Related Work}
-We have found some articles describing genetic programming
-approaches to Robocode, but none that combines it with reinforcement
-learning. Eisenstein, in 2003, was the first to use genetic programming
-in this context \cite{gp2}. He found that,
-while he was able to beat some hand-coded adversaries, his robots
-had a hard time learning how to target, and were therefore more
-likely to try to ram their opponents.\\
+We have found some articles describing genetic programming approaches to Robocode, but none that combines it with reinforcement learning. Eisenstein, in 2003, was the first to use genetic programming in this context \cite{gp2}. He found that, while he was able to beat some hand coded adversaries, his robots had a hard time learning how to target, and were therefore more likely to try to ram their opponents.\\
 
+In \cite{gp1}, the authors build upon Eisenstein's work and use genetic programming to evolve tank strategies for a robot in the HaikuBot category (which allows robots whose code is no longer than 4 lines). They evolved a population of 256 robots over approximately 400 generations. Their robot was ranked 3rd in the HaikuBot category.\\
 
-In \cite{gp1}, the authors build upon Eisenstein's work and use genetic programming to evolve tank
-strategies for a robot in the HaikuBot category (which allows
-robots whose code is no longer than 4 lines). They evolved a population
-of 256 robots over approximately 400 generations. Their robot was ranked
-3rd in the HaikuBot category.\\
-
-In one of the very few academic mentions of Robocode outside of the artificial
-intelligence field, Kobayashi et al. describe a targeting strategy that was
-only mildly successful \cite{strategies}
-
+In one of the very few academic mentions of Robocode outside of the artificial intelligence field, Kobayashi et al. describe a targeting strategy that was only mildly successful \cite{strategies}
 
 \section{Experimental Results}
 
@@ -169,7 +149,7 @@ Hence we need to devise a reward scheme that rewards the agent for effectively a
 \section{Conclusion}
 
 \bibliographystyle{IEEEtranS}
-\bibliography{sources}
+\bibliography{sources.bib}
 
 \end{document}
 
