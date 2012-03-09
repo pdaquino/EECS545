@@ -152,7 +152,7 @@ and run tests for the evasion strategies. The next stage will be working on firi
 project report.
 
 \subsection{Training data}
-We have now written code that allows us to randomly select an evasion strategy when the robot is fired upon. The next step is 
+We have now written a robot that randomly selects an evasion strategy when fired upon. The next step is 
 to gather training data. Every data point consists of a description of the battlefield at the time the bullet was fired, which
 evasion strategy was selected, and if the bullet hit or missed the robot.
 
@@ -162,7 +162,7 @@ Date: 03/16
 With the training data, we will then proceed to train the SVMs for each strategy, using the description of the battlefield as
 the features, and hit/not hit as the classification labels. We plan on using libsvm, which has a Java plugin, as our SVM backend.
 
-Date: 03/30
+Date: 03/23
 
 \subsection{Testing}
 We will then assess the performance of the system. We will modify our robot to look at the SVMs corresponding to each strategy every time
@@ -171,18 +171,25 @@ performance of this implementation versus randomly choosing a strategy.
 
 Date: 03/30
 \subsection{Feature Space Reduction}
-todo
+In order to minimize the complexity of the model, and to possibly increase the performance by not overfitting, we will try to reduce
+the number of features used to describe the battlefield. In order to do so, we will train and test the robot with different combinations
+of features, keeping track of how the performance is affected by it.
 
-\subsection{Firing Strategies}
-todo
+Date: 04/06
+
+\subsection{Offensive Strategies}
+Having learned good evasion tactics, we will then focus on the offensive strategies. We have decided to leave the details of how we
+will handle this intentionally vague. The idea is to learn from our experience with the evasive strategies, and build upon them.
+
+Date: 04/20
 
 \subsection{Final Report}
-todo
+The final report is due on 04/24.
 
 \section{Conclusion}
 
 \bibliographystyle{IEEEtranS}
-\bibliography{sources.bib}
+\bibliography{sources}
 
 \end{document}
 
