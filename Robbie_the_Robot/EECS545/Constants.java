@@ -22,7 +22,7 @@ public class Constants{
         }
         
         public void mirrorBehaviorDisable(){
-            mirror_Behavior_Enable = true;
+            mirror_Behavior_Enable = false;
         }
         
         public boolean getMirrorBehaviorFlag(){
