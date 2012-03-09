@@ -138,31 +138,29 @@ In one of the very few academic mentions of Robocode outside of the artificial i
 While there is little within the literature of applying machine learning techniques to Robocode agents, a majority of the successful agents documented within Robocode employ sophisticated statistical methods when evading bullets and targeting their opponent. When determining what to do in a given situation (wether it be target or evade), many of the advanced agents employ varying forms of the k-means algorithm to cluster similar environmental situations and learn from these situations. However, most of the actual firing of bullets and evading incoming rounds is not done using sophisticated algorithms. Thus, our work will not only build upon the current ability to learn when to take certain actions in the environment, but also learn how to best carry out actions. 
 
 \section{Experimental Methodology and Results}
-The first phase of our implementation involves actually devising the physics and writing the code for our evasion strategy. Additionally we have devised a default behavior called \emph{mirroring} where the agent tries to mimic the actions of the opponent to a certain degree. The evasion strategies build up on this and when called, they override the mirroring behavior. 
+The first phase of our implementation involves devising the physics and writing the code for our evasion strategies. Additionally we have devised a default behavior called \emph{mirroring} where the agent tries to mimic the actions of the opponent to a certain degree. The evasion strategies build off of this behavior and when called, override the mirroring. 
 
 \subsubsection*{Mirroring Behavior}
-This is the default behavior of the agent. It consists of the agent closely resembling the behavior of the opponent while maintaining a distance. The force of attraction/repulsion between the agent and its opponent given by:
+Mirroring is the default behavior of the agent. It consists of the agent closely mimicking the behavior of the opponent while maintaining a set distance from him. The force of attraction/repulsion between the agent and its opponent is given by:
 $$\emph{Force} = k_1 * (\emph{Distance to Opponent} - d)$$
-$k_1$ is a proportional factor while $d$ is the distance we want to maintain from the opponent. From the equations one can see that if the agent is further away from the opponent than desired, it will experience an attractive force or $+_{ve}F$ which will move it towards the opponent while if it is too close it will experience a repulsive force, $-_{ve}F$, which will guide it away. It is also evident that \emph{Force} becomes zero as \emph{Distance to Opponent}  $\rightarrow d$.\\ 
+where $k_1$ is a proportional factor while $d$ is the distance to maintain from the opponent. Thus if the agent is further away from the opponent than desired, it will experience an attractive force $+_{ve}F$ which will move it towards the opponent. Conversely, if the agent is to close to the opponent, it will experience a repulsive force $-_{ve}F$, which will guide it away. It is also evident that \emph{Force} becomes zero as \emph{Distance to Opponent}  $\rightarrow d$.\\ 
 
 \begin{figure}[h]
 	\centering
 		\includegraphics[width= 15cm]{mirror}
-		\caption{The agent will attempt to move to the zero-potential force contour around the opponent. This is not a strict mirroring of the opponent, but it will allow the agent to move to optimal positions as opposed to just being guided by the opponent.}		
+		\caption{The agent will attempt to move to the zero-potential force contour around the opponent. This is not a strict mirroring of the opponent, but rather allows the agent to move to optimal positions as opposed to just being guided by the opponent.}		
 	\label{mirror}
 \end{figure}
 
-In general, the closer a tank is to its target, higher the probability that it will hit the target. Hence in order to improve the odds of our agent's firing solution (when we eventually implement it), we would like the agent to be closer to the opponent. On the other hand, when trying to avoid being hit by incoming fire we would like to be as far as possible from the opponent. In order to find a compromise we modeled $d$ as a function of the agent's health and the opponent's health. When the agent's health is higher, we would like to move closer to the opponent to maximize our offensive capabilities, on the other hand, when we are doing worse than the opponent, we would like to stay back to improve our chances of dodging incoming fire. Hence, the value of $d$ is determined as follows:
+In general, the closer a tank is to the opponent, the higher the probability that it will hit the target. Thus, in order to improve the odds of our agent's firing solution, we would like the agent to be near the opponent. However, when trying to avoid being hit by incoming fire, we would like to be far from the opponent. In order to find a compromise we modeled $d$ as a function of the agent's health and the opponent's health. When the agent's health is higher, it moves closer to the opponent in order to maximize offensive capabilities. Else, the agent will move further away from the enemy to reduce the chance of being shot. Hence, the value of $d$ is determined as:
 $$d = d_{const} - k_2*(\emph{Health}_{Agent} - \emph{Health}_{Opponent})$$
-$d_{const}$ is the minimum distance we want to maintain from the opponent and $k_2$ provides regularization on how much we depend on the health difference.\\
+where $d_{const}$ is the minimum distance to maintain from the opponent, and $k_2$ provides regularization on how much to depend on the health difference.
 
-We can now look at the evasion strategies implemented:
-
-\subsection*{Evasion Strategies Implemented}
-When the opponent fires at the agent, the mirroring behavior is suppressed and a evasion strategy is chosen. At the moment, for training, we have designed the system to choose a random strategy. If we run enough training scenarios, we feel that the SVM will be able to find a good decision boundary between successful dodging strategies and bad ones.
+\subsection*{Evasion Strategies}
+When the opponent fires at the agent, the mirroring behavior is suppressed and an evasion strategy is chosen. At the moment, for training, we have designed the system to choose a random strategy. If we run enough training scenarios, we feel that the SVM will be able to find a good decision boundary with which to determine successful dodging strategies based on environmental properties. 
 
 \subsubsection*{Dodge Left/Right}
-In this strategy the agent will move to Left or Right of the opponent when it is fired upon. This movement strategy is represented in Figure \ref{LR}, where $\Psi$ is the relative bearing to the opponent($-180^{\circ} \leq \Psi \leq 180^{\circ}$). We have two cases, first, when the agent is facing direction $d_1$ in which case we will receive bearing $\Psi_1$ and secondly when the agent is facing direction $d_2$ in which case we will receive a bearing of $\Psi_2$. Because we have a differential drive, we want to turn a minimum distance to position our drive track perpendicular to the opponent and then move forward to backward in order to dodge left or right.\\
+In this strategy, the agent will move to the left or right of the opponent when it is fired upon. This movement strategy is represented in Figure \ref{LR}, where $\Psi$ is the relative bearing to the opponent ($-180^{\circ} \leq \Psi \leq 180^{\circ}$). There are two difference turning cases for $\Psi$: one when the agent is facing direction $d_1$ corresponding to bearing $\Psi_1$, and second when the agent is facing direction $d_2$ corresponding to bearing $\Psi_2$. Because we have a differential driven robot, we desire to turn a minimum distance to position our drive track perpendicular to the line of sight between us and the opponent. Achieving this angle is done in tandem with moving either forward or backward depending on whether we are dodging left or right. Dodging left / right are implemented separately, giving the agent the ability to choose each strategy.\\
 
 \begin{figure}[h]
 	\centering
@@ -171,21 +169,19 @@ In this strategy the agent will move to Left or Right of the opponent when it is
 	\label{LR}
 \end{figure}
 
-Dodging left and dodging right are implemented separately giving the agent the ability to choose each strategy and eventually assign different utilities to each strategy individually.
-
 \subsubsection*{Feign}
-In this strategy, upon detecting incoming fire, the agent immediately reverses its direction of motion. Robocode physics will require the agent to slow down to a stand still and then accelerate in the new direction. It is evident to us that this strategy will fail at closer distances and if the agent is moving directly towards or away from the opponent and we hope that the SVM will be able to discern this over time and eventually apply it only when optimal.
+In this strategy, upon detecting incoming fire, the agent immediately reverses its direction of motion. Robocode physics will require the agent to slow down to a stand still and then accelerate in the new direction. It is evident to us that this strategy will fail at closer distances and if the agent is moving directly towards or away from the opponent. Thus we expect the SVMs to discern this over time and only apply feign when it is optimal to do so.
 
 \subsubsection*{Random Movement}
-Random movement is useful against opponents that try to specifically model the agent. Here we set the turn control and forward movement control to a random value chosen from a uniform distribution. Agents that move in such a random manner are said to have flat movement profiles. They are hard to target, but certain advanced opponents are programmed to monitor such movement strategies when the agent approaches a wall or a corner, in which case the very nature of the environment will cause a spike in their movement profile. This kind of targeting is very specific to the opponent and we hope that our agent will learn that such behavior is not effective in certain regions and then try to avoid them.\\
+Random movement is useful against opponents that try to model their opponents. For this strategy, we set the turn control and forward movement control to a random value chosen from a uniform distribution. Agents that move in such a random manner are said to have flat movement profiles. They are hard to target, but certain advanced opponents are programmed to monitor such movement strategies when the agent approaches a wall or a corner, in which case the very nature of the environment will cause a spike in their movement profile. This kind of targeting is very specific to the opponent and we expect that our agent will learn that such behavior is not effective in certain regions of the environment.
 
 \subsection*{Evaluation Methodology}
-We need to devise a way to check the effectiveness of a evasion scheme, at its essence we are testing the ability of the agent to stay alive, but we cannot use just the survival time as a measure of the effectiveness of a strategy. The effectiveness of the scheme is tested by the ability of the agent to dodge a particular shot fired at it. This is done through an estimate of the shot which is implemented using \emph{Bullet Tracking}\\
+With these strategies created, we next needed a way to check the effectiveness of a evasion scheme. At its essence, we are testing the ability of the agent to stay alive, but we cannot rely on survival time as a measure of the effectiveness of a strategy. Thus, the effectiveness of the strategies are tested by the ability of the agent to dodge a particular shot fired at it. This is done through an estimate of the shot which is implemented using \emph{Bullet Tracking}
 
 \subsubsection*{Bullet Tracking}
-In order to determine if the used method was most effective in dodging the bullet that was fired at the agent, we need to devise a way to track a bullet. In Robocode this is not a straight forward task as the agent cannot sense a bullet using its radar. However, in order to fire a bullet a tank needs to use up some of its own energy. The radar-sensor can detect a drop in energy of the opponent, using this we can determine if the enemy has fired a bullet and if so, how fast it will travel outwards. This is given by the formula:
+In order to determine if the evasion strategy employed was effective in dodging the bullet that was fired at the agent, we devised a way to track the bullet. In Robocode this is not a straight forward task, as the agent cannot sense a bullet using its radar. However, in order to fire a bullet, a tank must sacrifice some of its own energy. The radar-sensor can detect a drop in energy of the opponent, and using this we can determine if the enemy has fired a bullet as well as the bullet's velocity. This is given by the formula:
 $$\emph{Bullet Velocity} = 20 - 3 * \emph{Energy Drop}$$
-Using this coupled with some basic Newtonian Physics\footnote{$\emph{Distance} = \emph{Velocity} * \emph{Time}$}, we can predict an equi-potential contour plot of how far away the bullet will be from the opponent at a given time step. The plots will be circular and will resemble the motion of a ripple on the surface of a pond. Hence we call these estimates \emph{waves}. Figure \ref{b_wave} illustrates this. Our objective is to see if we get hit by a bullet when the projected wave hits us in which case we register a failure of the dodge strategy, otherwise we can conclude that we have successfully dodged the bullet. \\
+Using the velocity coupled with some basic Newtonian Physics\footnote{$\emph{Distance} = \emph{Velocity} * \emph{Time}$}, we can predict an equi-potential contour plot of how far away the bullet will be from the opponent's firing location at a given time step. The contours will be circular while resembling the motion of a wave. Hence, these estimates are known as \emph{waves}. Figure \ref{b_wave} illustrates this wave pattern taken on by bullets. Our objective is to see if we get hit by a bullet when the projected wave hits us, in which case we register a failure of the dodge strategy. Otherwise, we can conclude that we have successfully dodged the bullet.
 
 \begin{figure}[h]
 	\centering
@@ -194,8 +190,7 @@ Using this coupled with some basic Newtonian Physics\footnote{$\emph{Distance} =
 	\label{b_wave}
 \end{figure}
 
-We are currently at a point where we can begin to collect data for evasive maneuvering. During the course of the training we will look at the effectiveness of each strategy as the ability to dodge a particular shot, we will also ignore the other bullets we get hit by in our attempts to dodge a tracked bullet.
-
+We are currently at a point where we can begin to collect data for evasive maneuvering. During the course of the training, we will look at the effectiveness of each strategy as the ability to dodge a particular shot while ignoring any other bullets which hit us during our evasive maneuver. We will collect data by running each evasion strategy multiple times against multiple different agents. 
 
 \section{Future Milestones}
 There will be five milestones to be completed before the project is finished: firstly, we will gather training data, train the SVMs,
