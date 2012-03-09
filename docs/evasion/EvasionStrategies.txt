@@ -19,7 +19,9 @@ Features
 2.) Relative velocity to opponent
 3.) Distance and relative bearing to middle of room
 4.) Distance between agent and opponent
-5.) 
+5.) Location in the environment (x, y, theta)
+6.) Velocity in the environment (vx, vy, yaw)
+7.) Proximity to environment walls
 
 
 Data Gathering Pseudo Code
