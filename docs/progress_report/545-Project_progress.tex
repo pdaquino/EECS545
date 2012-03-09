@@ -157,6 +157,22 @@ only mildly successful \cite{strategies}
 
 \section{Experimental Results}
 
+The first phase of our implementation involves actually writing the code for our evasion strategy. To this end we have devised a default behavior called \emph{mirroring} where the agent tries to mimic the actions of the opponent to a certain degree. The evasion strategies build up on this and when called, they override the mirroring behavior. 
+
+\subsubsection*{Mirroring Behavior}
+
+\subsection*{Evasion Strategies Implemented}
+
+\subsubsection*{Dodge Left/Right}
+
+\subsubsection*{Feign}
+
+\subsubsection*{Random Movement}
+
+\subsubsection*{Bullet Tracking}
+In order to determine if the used method was most effective in dodging the bullet that was fired at the agent, we need to devise a way to track a bullet. In Robocode this is not a straight forward task as the agent cannot sense a bullet using its radar. However, in order to fire a bullet a tank needs to use up some of its own energy. The radar-sensor can detect a drop in energy 
+
+
 \subsection*{Evaluation Methodology}
 In order to measure the agent's performance, we require a performance measure. The agent's health is a good place to start, though that alone will have some drawbacks.\\
 
