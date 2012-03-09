@@ -7,17 +7,20 @@ import robocode.util.Utils;
 //Version 0.1
 //Danger Will Robinson!
 // API help : http://robocode.sourceforge.net/docs/robocode/robocode/Robot.html
-/**
- * Robbie - a robot by (your name here)
- */
 public class Robbie extends AdvancedRobot
-{
+{	
+	// output flag
+	boolean output = true;
+	
+	// battle field information
+	double envWidth;
+	double envHeight;
 	
 	// constant object 
 	Constants CONSTANTS;
 	
 	// evasion techniques
-	EvasionMovements em = new EvasionMovements(this);
+	EvasionMovements em = new EvasionMovements(this, output);
 	
 	// holds the last scan of the enemy for access to other methods
 	ScannedRobotEvent lastE;
@@ -29,6 +32,10 @@ public class Robbie extends AdvancedRobot
 	BulletTracking incoming = new BulletTracking();
 	
 	public void run() {
+		
+		// grab battle field information
+		envWidth = getBattleFieldWidth();
+		envHeight = getBattleFieldHeight(); 
 		
 		// radar and robot independent turning
 		setAdjustRadarForRobotTurn(true);
@@ -77,6 +84,7 @@ public class Robbie extends AdvancedRobot
 		// turn radar according to angle above
     	setTurnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
 
+		// if mirror behavior is enabled, continue to mirror opponent
 		if(CONSTANTS.getMirrorBehaviorFlag()){
 			mirrorBehavior(e);
 		}
@@ -109,14 +117,15 @@ public class Robbie extends AdvancedRobot
 	public void onHitByBullet(HitByBulletEvent e) {
 		
 		// check if the bullet that hit us is the bullet we were tracking
-		boolean hit = incoming.checkHit(e.getHeading(), getX(), getY(), getTime());
-		
-		if(hit){
-			out.println("	Bullet Being Tracked Hit Us");
+		if(incoming.checkHit(e.getHeading(), getX(), getY(), getTime())){
+			
+			// output message
+			if(output)
+				out.println("		Bullet Being Tracked Hit Us");
+			
+			// return to mirroring enemy
 			CONSTANTS.mirrorBehaviorEnable();
 		}
-		else
-			out.println("	A Different Bullet Hit US");
 	}
 	
 	/**
@@ -139,19 +148,34 @@ public class Robbie extends AdvancedRobot
 			// reset previous energy value
 			prevEnergy = lastE.getEnergy();
 			
-			// check if the last bullet has missed us
-			boolean passed = incoming.bulletPassed(getX(), getY(), getTime());
-			if(passed){
-				out.println("	The Bullet Being Tracked Missed");
+			// check if the tracked bullet has missed us
+			if(incoming.bulletPassed(getX(), getY(), getTime())){
+				
+				// output message
+				if(output)
+					out.println("		The Bullet Being Tracked Missed");
+					
+				// turn mirror opponent back on	
 				CONSTANTS.mirrorBehaviorEnable();
 			}
-			else
-				out.println("	Bullet is still active");
 			
 			return;
 		
 		// we are not currently tracking a bullet	
 		} else {
+		
+			// calculate enemy's location
+			double beta = Utils.normalRelativeAngleDegrees(getHeading() + lastE.getBearing());
+			double enemyX = getX() + lastE.getDistance()*Math.sin(Math.toRadians(beta));
+			double enemyY = getY() + lastE.getDistance()*Math.cos(Math.toRadians(beta));
+			
+			// ensure enemy is not close to a wall IOT avoid mistaking wall collision for a bullet fire
+			if(enemyX < 25 || enemyX > (envWidth - 25) || enemyY < 30 || enemyY > (envHeight - 25)) {
+			
+				// reset previous energy value
+				prevEnergy = lastE.getEnergy();
+				return;	
+			}
 		
 			// energy drop of enemy
 			double eDrop = prevEnergy - lastE.getEnergy();
@@ -163,15 +187,23 @@ public class Robbie extends AdvancedRobot
 			if(eDrop > 0 && eDrop <= 3) {
 				
 				// enemy fired a bullet, begin tracking
-				CONSTANTS.mirrorBehaviorDisable();
 				incoming = new BulletTracking(eDrop, lastE, new double[] {getX(), getY(), getHeading()}, getTime());
+				
+				// disable the mirror behavior
+				CONSTANTS.mirrorBehaviorDisable();
+				
+				// output message
+				if(output)
+					out.println("Enemy Fired a Bullet");
+				
+				// select a random evasion movement and employ it
 				em.executeRandomEvasion(lastE);
-				out.println("Enemy Fired a Bullet");
 			}
 		}
 	} 
+
     
-    //@Override
+    //@Override THIS IS STILL HERE FOR PPPPEEEEEDDDDRRRRRROOOOOOO
     //public void onKeyPressed(java.awt.event.KeyEvent e) {
         //halt();
     //}
