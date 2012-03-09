@@ -1,16 +1,17 @@
 %You can leave alone everything before Line 79.
 \documentclass{article}
 \usepackage{url,amsfonts, amsmath, amssymb, amsthm,color, enumerate}
+ \usepackage{fullpage}
 % Page layout
-\setlength{\textheight}{8.75in}
-\setlength{\columnsep}{2.0pc}
-\setlength{\textwidth}{6.5in}
-\setlength{\topmargin}{0in}
-\setlength{\headheight}{0.0in}
-\setlength{\headsep}{0.0in}
-\setlength{\oddsidemargin}{0in}
-\setlength{\evensidemargin}{0in}
-\setlength{\parindent}{1pc}
+%\setlength{\textheight}{8.75in}
+%\setlength{\columnsep}{2.0pc}
+%\setlength{\textwidth}{6.5in}
+%\setlength{\topmargin}{0in}
+%\setlength{\headheight}{0.0in}
+%\setlength{\headsep}{0.0in}
+%\setlength{\oddsidemargin}{0in}
+%\setlength{\evensidemargin}{0in}
+%\setlength{\parindent}{1pc}
 \newcommand{\shortbar}{\begin{center}\rule{5ex}{0.1pt}\end{center}}
 %\renewcommand{\baselinestretch}{1.1}
 % Macros for course info
@@ -59,7 +60,8 @@
 \vspace{-1ex}
 \hrulefill\\
 \vspace{4ex}
-{\LARGE Project Progress Report #2}\\
+{\normalsize Project Proposal}\\
+{\LARGE  TITLE #2}\\
 \vspace{2ex}
 \end{center}
 \begin{trivlist}
@@ -87,15 +89,19 @@
 %
 % the solution for Problem 
 
-\section*{Introduction}
+\begin{abstract}
+
+\end{abstract}
+
+\section{Introduction}
 
 Initially released in 2001 with the aim of assisting in learning object oriented programming, Robocode is an open source tank battling simulator implemented in Java. Each Robocode agent is designed with the ability to control a robotic tank, including differentially-driven movement, a $360\,^{\circ}\mathrm{}$ rotating turret, and an enemy scanning radar, in order to attempt to destroy other tanks with similar features but opposing strategies. Designers are capable of downloading other agent byte code in order to test their implementation, and there also exists leagues in which Robocode tournaments are held. While the environment has made creating a simple working agent capable of moving, targeting, and shooting, perfecting agents to do well against multiple opponent strategies has proven to be difficult. Many of the top ranked agents incorporate sophisticated statistical analysis techniques in order to optimize their agents. In addition to such techniques, research has been done to optimize agents using both neural networks as well as genetic programming.
 
-\section*{Statement of the Problem}
+\subsection*{Statement of the Problem}
 
 The purpose of this project is to incorporate machine learning algorithms in a Robocode agent in order to optimize the agent's ability to stay alive during battles. Specifically, we wish to incorporate machine learning in two areas: targeting and evasion. With respect to evasion, we intend on using reinforcment learning in combination with genetic algorithms to optimize multiple missile evasion strategies and employ them in such a manner as to reduce the likelihood of being struck by an opponent's missile. Furthermore, we wish to use modeling machine learning algorithms in order to predict how an opponent will react upon learning that our agent has fired, thus allowing our agent to take advantage of the ability to predict opponent's behavior. 
 
-\section*{Proposed Approach}
+\section{Proposed Approach}
 
 We aim to handle this problem by building a tank A.I. that consists of two separate sub--agents, working in tandem to maximize the overall performance measure. The first sub--agent will handle the movement aspects of the tank while the second sub--agent will be tasked with modeling the opponent.\\
 
@@ -126,14 +132,7 @@ We aim to build up a probabilistic distribution of the the opponents actions and
 
 Additionally, no matter how random an opponent's movement might be, as the opponent approaches an edge or a corner of the battle field, the number of movement options become limited. We will need to create a method that can exploit this in parallel with our regular targeting scheme to get even higher scoring firing solutions.
 
-\section*{Evaluation Methodology}
-In order to measure the agent's performance, we require a performance measure. The agent's health is a good place to start, though that alone will have some drawbacks.\\
-
-In Robocode, in order to fire, an agent must use some of its own health. If the agent's health were it only performance measure, it is foreseeable that an agent will quickly get stuck in a local minimum by choosing not to fire at the enemy at all and instead try to survive by simply dodging the enemy's incoming fire. While this might work initially, as the agent will be drawn closer and closer to the enemy as its opponent loses health, it is easy to imagine that the agent will still get considerable damage.\\
-
-Hence we need to devise a reward scheme that rewards the agent for effectively attacking the enemy, effectively dodging incoming fire and staying alive. These rewards will probably be set manually, although if time permits, these rewards can also be optimized using machine learning techniques.
-
-\section*{Review of Related Work}
+\section{Review of Related Work}
 We have found some articles describing genetic programming
 approaches to Robocode, but none that combines it with reinforcement
 learning. Eisenstein, in 2003, was the first to use genetic programming
@@ -141,6 +140,7 @@ in this context \cite{gp2}. He found that,
 while he was able to beat some hand-coded adversaries, his robots
 had a hard time learning how to target, and were therefore more
 likely to try to ram their opponents.\\
+
 
 In \cite{gp1}, the authors build upon Eisenstein's work and use genetic programming to evolve tank
 strategies for a robot in the HaikuBot category (which allows
@@ -151,6 +151,21 @@ of 256 robots over approximately 400 generations. Their robot was ranked
 In one of the very few academic mentions of Robocode outside of the artificial
 intelligence field, Kobayashi et al. describe a targeting strategy that was
 only mildly successful \cite{strategies}
+
+
+\section{Experimental Results}
+
+\subsection*{Evaluation Methodology}
+In order to measure the agent's performance, we require a performance measure. The agent's health is a good place to start, though that alone will have some drawbacks.\\
+
+In Robocode, in order to fire, an agent must use some of its own health. If the agent's health were it only performance measure, it is foreseeable that an agent will quickly get stuck in a local minimum by choosing not to fire at the enemy at all and instead try to survive by simply dodging the enemy's incoming fire. While this might work initially, as the agent will be drawn closer and closer to the enemy as its opponent loses health, it is easy to imagine that the agent will still get considerable damage.\\
+
+Hence we need to devise a reward scheme that rewards the agent for effectively attacking the enemy, effectively dodging incoming fire and staying alive. These rewards will probably be set manually, although if time permits, these rewards can also be optimized using machine learning techniques.
+
+\section{Future Milestones}
+
+\section{Conclusion}
+
 \bibliographystyle{IEEEtranS}
 \bibliography{sources}
 
