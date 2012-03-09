@@ -71,7 +71,7 @@ public class Robbie extends AdvancedRobot
 		double radarTurn = getHeading() + e.getBearing() - getRadarHeading();
  		
 		// turn radar according to angle above
-    	setTurnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
+    		setTurnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
 
 		if(CONSTANTS.getMirrorBehaviorFlag()){
 			mirrorBehavior(e);
@@ -87,9 +87,17 @@ public class Robbie extends AdvancedRobot
          *          d = d_const - (Robbie's Health - Opponent's Health)
 	 */
 	private void mirrorBehavior(ScannedRobotEvent e) {
-            
-            e.getDistance();
-	}
+            double F; 
+            double d;        
+            d = CONSTANTS.mirror_distance - (getEnergy() - e.getEnergy());
+            F = CONSTANTS.mirror_Force_k1*(e.getDistance() - d);
+            out.println("d = "+d);
+            out.println("dist to enemy = "+e.getDistance());
+            out.println("F = "+F);
+            setTurnRight(e.getBearing());
+            setAhead(F);
+            execute();
+        }
 	
 
 	/**
