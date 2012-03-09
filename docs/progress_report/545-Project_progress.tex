@@ -117,7 +117,7 @@ Within the task of evasion, there are two movement approaches that need to be co
 \item Evasive movement 
 \end{itemize}
 
-Each approach to movement needs to be employed based on the situation,  and the agent will need to learn when which evasive movement strategy to employ when engaged in the general movement strategy.
+Each approach to movement needs to be employed based on the situation,  and the agent will need to learn which evasive movement strategy to employ when engaged in the general movement strategy.
 
 \subsubsection*{General Movement }
 In general the probability of getting hit by incoming fire is inversely proportional to how close the observer is to the firing point. We want our agent to move closer to the enemy when it has higher health to maximize the probability of hitting the enemy and stay further back when it is lower on health to better evade incoming fire. This can be modeled as series of attracting and repelling force interactions. Furthermore, the agent loses health each time it runs into walls in the environment. Thus, the walls will also be modeled as a set of repelling forces. For training purposes, the general movement of the agent will be to mirror the opponent at a fixed distance in order to avoid collisions with the enemy while better assessing the effectiveness of the evasion strategies. 
@@ -137,56 +137,102 @@ In one of the very few academic mentions of Robocode outside of the artificial i
 
 While there is little within the literature of applying machine learning techniques to Robocode agents, a majority of the successful agents documented within Robocode employ sophisticated statistical methods when evading bullets and targeting their opponent. When determining what to do in a given situation (wether it be target or evade), many of the advanced agents employ varying forms of the k-means algorithm to cluster similar environmental situations and learn from these situations. However, most of the actual firing of bullets and evading incoming rounds is not done using sophisticated algorithms. Thus, our work will not only build upon the current ability to learn when to take certain actions in the environment, but also learn how to best carry out actions. 
 
-\section{Experimental Results}
+\section{Experimental Methodology and Results}
+The first phase of our implementation involves actually devising the physics and writing the code for our evasion strategy. Additionally we have devised a default behavior called \emph{mirroring} where the agent tries to mimic the actions of the opponent to a certain degree. The evasion strategies build up on this and when called, they override the mirroring behavior. 
+
+\subsubsection*{Mirroring Behavior}
+This is the default behavior of the agent. It consists of the agent closely resembling the behavior of the opponent while maintaining a distance. The force of attraction/repulsion between the agent and its opponent given by:
+$$\emph{Force} = k_1 * (\emph{Distance to Opponent} - d)$$
+$k_1$ is a proportional factor while $d$ is the distance we want to maintain from the opponent. From the equations one can see that if the agent is further away from the opponent than desired, it will experience an attractive force or $+_{ve}F$ which will move it towards the opponent while if it is too close it will experience a repulsive force, $-_{ve}F$, which will guide it away. It is also evident that \emph{Force} becomes zero as \emph{Distance to Opponent}  $\rightarrow d$.\\ 
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width= 15cm]{mirror}
+		\caption{The agent will attempt to move to the zero-potential force contour around the opponent. This is not a strict mirroring of the opponent, but it will allow the agent to move to optimal positions as opposed to just being guided by the opponent.}		
+	\label{mirror}
+\end{figure}
+
+In general, the closer a tank is to its target, higher the probability that it will hit the target. Hence in order to improve the odds of our agent's firing solution (when we eventually implement it), we would like the agent to be closer to the opponent. On the other hand, when trying to avoid being hit by incoming fire we would like to be as far as possible from the opponent. In order to find a compromise we modeled $d$ as a function of the agent's health and the opponent's health. When the agent's health is higher, we would like to move closer to the opponent to maximize our offensive capabilities, on the other hand, when we are doing worse than the opponent, we would like to stay back to improve our chances of dodging incoming fire. Hence, the value of $d$ is determined as follows:
+$$d = d_{const} - k_2*(\emph{Health}_{Agent} - \emph{Health}_{Opponent})$$
+$d_{const}$ is the minimum distance we want to maintain from the opponent and $k_2$ provides regularization on how much we depend on the health difference.\\
+
+We can now look at the evasion strategies implemented:
+
+\subsection*{Evasion Strategies Implemented}
+When the opponent fires at the agent, the mirroring behavior is suppressed and a evasion strategy is chosen. At the moment, for training, we have designed the system to choose a random strategy. If we run enough training scenarios, we feel that the SVM will be able to find a good decision boundary between successful dodging strategies and bad ones.
+
+\subsubsection*{Dodge Left/Right}
+In this strategy the agent will move to Left or Right of the opponent when it is fired upon. This movement strategy is represented in Figure \ref{LR}, where $\Psi$ is the relative bearing to the opponent($-180^{\circ} \leq \Psi \leq 180^{\circ}$). We have two cases, first, when the agent is facing direction $d_1$ in which case we will receive bearing $\Psi_1$ and secondly when the agent is facing direction $d_2$ in which case we will receive a bearing of $\Psi_2$. Because we have a differential drive, we want to turn a minimum distance to position our drive track perpendicular to the opponent and then move forward to backward in order to dodge left or right.\\
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=7 cm]{LR}
+	\caption{Left--Right dodging strategy. \emph{Note -- in Robocode, the angles are positive in a clockwise direction}}
+	\label{LR}
+\end{figure}
+
+Dodging left and dodging right are implemented separately giving the agent the ability to choose each strategy and eventually assign different utilities to each strategy individually.
+
+\subsubsection*{Feign}
+In this strategy, upon detecting incoming fire, the agent immediately reverses its direction of motion. Robocode physics will require the agent to slow down to a stand still and then accelerate in the new direction. It is evident to us that this strategy will fail at closer distances and if the agent is moving directly towards or away from the opponent and we hope that the SVM will be able to discern this over time and eventually apply it only when optimal.
+
+\subsubsection*{Random Movement}
+Random movement is useful against opponents that try to specifically model the agent. Here we set the turn control and forward movement control to a random value chosen from a uniform distribution. Agents that move in such a random manner are said to have flat movement profiles. They are hard to target, but certain advanced opponents are programmed to monitor such movement strategies when the agent approaches a wall or a corner, in which case the very nature of the environment will cause a spike in their movement profile. This kind of targeting is very specific to the opponent and we hope that our agent will learn that such behavior is not effective in certain regions and then try to avoid them.\\
 
 \subsection*{Evaluation Methodology}
-In order to measure the agent's performance, we require a performance measure. The agent's health is a good place to start, though that alone will have some drawbacks.\\
+We need to devise a way to check the effectiveness of a evasion scheme, at its essence we are testing the ability of the agent to stay alive, but we cannot use just the survival time as a measure of the effectiveness of a strategy. The effectiveness of the scheme is tested by the ability of the agent to dodge a particular shot fired at it. This is done through an estimate of the shot which is implemented using \emph{Bullet Tracking}\\
 
-In Robocode, in order to fire, an agent must use some of its own health. If the agent's health were it only performance measure, it is foreseeable that an agent will quickly get stuck in a local minimum by choosing not to fire at the enemy at all and instead try to survive by simply dodging the enemy's incoming fire. While this might work initially, as the agent will be drawn closer and closer to the enemy as its opponent loses health, it is easy to imagine that the agent will still get considerable damage.\\
+\subsubsection*{Bullet Tracking}
+In order to determine if the used method was most effective in dodging the bullet that was fired at the agent, we need to devise a way to track a bullet. In Robocode this is not a straight forward task as the agent cannot sense a bullet using its radar. However, in order to fire a bullet a tank needs to use up some of its own energy. The radar-sensor can detect a drop in energy of the opponent, using this we can determine if the enemy has fired a bullet and if so, how fast it will travel outwards. This is given by the formula:
+$$\emph{Bullet Velocity} = 20 - 3 * \emph{Energy Drop}$$
+Using this coupled with some basic Newtonian Physics\footnote{$\emph{Distance} = \emph{Velocity} * \emph{Time}$}, we can predict an equi-potential contour plot of how far away the bullet will be from the opponent at a given time step. The plots will be circular and will resemble the motion of a ripple on the surface of a pond. Hence we call these estimates \emph{waves}. Figure \ref{b_wave} illustrates this. Our objective is to see if we get hit by a bullet when the projected wave hits us in which case we register a failure of the dodge strategy, otherwise we can conclude that we have successfully dodged the bullet. \\
 
-Hence we need to devise a reward scheme that rewards the agent for effectively attacking the enemy, effectively dodging incoming fire and staying alive. These rewards will probably be set manually, although if time permits, these rewards can also be optimized using machine learning techniques.
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=7 cm]{bullet_wave.png}
+	\caption{Bullet waves at different time steps}
+	\label{b_wave}
+\end{figure}
+
+We are currently at a point where we can begin to collect data for evasive maneuvering. During the course of the training we will look at the effectiveness of each strategy as the ability to dodge a particular shot, we will also ignore the other bullets we get hit by in our attempts to dodge a tracked bullet.
+
 
 \section{Future Milestones}
 There will be five milestones to be completed before the project is finished: firstly, we will gather training data, train the SVMs,
 and run tests for the evasion strategies. We will then repeat these processes while trying to reduce the number of features used. The next stage will be working on firing strategies. The last milestone is writing the
 project report.
 
-\subsection{Gathering Training Data}
-We have now written a robot that randomly selects an evasion strategy when fired upon. The next step is 
-to gather training data. Every data point consists of a description of the battlefield at the time the bullet was fired, which
-evasion strategy was selected, and if the bullet hit or missed the robot.
+\subsection*{Gathering Training Data}
+We recently finished designing an agent that randomly selects an evasion strategy when fired upon, and documents the features upon being fired upon. The next step is to gather training data on each evasion strategy using this agent against multiple agents. Every data point consists of a description of the battlefield at the time the bullet was fired, which evasion strategy was selected, and if the bullet hit or missed the robot.
 
-Date: 03/16
+{\bf Completion Date:}  03/16
 
-\subsection{Training SVMs}
-With the training data, we will then proceed to train the SVMs for each strategy, using the description of the battlefield as
-the features, and hit/not hit as the classification labels. We plan on using libsvm, which has a Java plugin, as our SVM backend.
+\subsection*{Training SVMs}
+With the training data from above, we will begin to train the SVMs for each evasion strategy, using the description of the battlefield as the features (with some manipulation to produce the true desired features), and hit/not hit as the classification labels. We plan on using libsvm, which has a Java plugin, as our SVM backend.
 
-Date: 03/23
+{\bf Completion Date:}   03/23
 
-\subsection{Testing}
-We will then assess the performance of the system. We will modify our robot to look at the SVMs corresponding to each strategy every time
-a bullet is fired, and choose the best strategy in a way that maximizes the probability of not being hit. We will then compare the
-performance of this implementation versus randomly choosing a strategy.
+\subsection*{Testing}
+Next, we will assess the performance of the system. We will modify our robot to look at the SVMs corresponding to each strategy every time a bullet is fired, and choose the best strategy in a way that maximizes the probability of not being hit. We will then compare the performance of this implementation versus randomly choosing a strategy.
 
-Date: 03/30
-\subsection{Feature Space Reduction}
-In order to minimize the complexity of the model, and to possibly increase the performance by not overfitting, we will try to reduce
-the number of features used to describe the battlefield. In order to do so, we will train and test the robot with different combinations
-of features, keeping track of how the performance is affected by it.
+{\bf Completion Date:}  03/30
 
-Date: 04/06
+\subsection*{Feature Space Reduction}
+In order to minimize the complexity of the model, and to possibly increase the performance by avoiding over-fitting, we will try to reduce the number of features used to describe the battlefield. In order to do so, we will train and test the robot with different combinations of features, keeping track of how the performance is affected. 
 
-\subsection{Offensive Strategies}
-Having learned good evasion tactics, we will then focus on the offensive strategies. We have decided to leave the details of how we
-will handle this intentionally vague. The idea is to learn from our experience with the evasive strategies, and build upon them.
+{\bf Completion Date:}  04/06
 
-Date: 04/20
+\subsection*{Offensive Strategies}
+Having learned good evasion tactics, we will then focus on the offensive strategies. We have decided to leave the details of how we will handle this intentionally vague. We hope to to learn from our experience with the evasive strategies in order to build upon them when implementing our targeting scheme. 
 
-\subsection{Final Report}
+{\bf Completion Date:}  04/20
+
+\subsection*{Final Report}
 The final report is due on 04/24.
 
 \section{Conclusion}
+
+Thus far, we have successfully written an agent capable of implementing the previously discussed evasion techniques when fired upon by an opposing agent. This agent is also capable of continuously tracking the enemy, as well as the bullets fired from the enemy, in an effort to capture the data needed to train each evasion strategy's SVM. We are currently in the process of choosing the exact features desired from the environment upon each evasion attempt, and will then begin collecting data with which to train the SVMs on. After such training, we will then be able to evaluate the evasion system in an effort to maximize the agent's ability to evade bullets as well as to capture those features most important to understanding the best strategy given each unique situation. Lastly, we will move onto repeating these steps, with the additional knowledge gained throughout our experience, to design an effective targeting and firing system. At the end of this project, we will have novelly employed machine learning techniques to artificial intelligence agents in order to improve their ability to make decision informed by their perceptual knowledge of the environment.
 
 \bibliographystyle{IEEEtranS}
 \bibliography{sources}

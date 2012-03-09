@@ -15,9 +15,13 @@ public class EvasionMovements {
 	// robot
 	AdvancedRobot robot;
 	
+	// output flag
+	boolean output;
+	
 	// constructor call
-	public EvasionMovements(AdvancedRobot robot){
+	public EvasionMovements(AdvancedRobot robot, boolean output){
 		this.robot = robot;
+		this.output = output;
 	}
 	
 	/**
@@ -142,19 +146,24 @@ public class EvasionMovements {
 		// execute chosen evasion technique
 		if(evasion == 0){
 			evadeLeft(e);
-			System.out.println("Evading Left");
+			if(output)
+				System.out.println("	Evading Left");
 		} else if (evasion == 1) {
 			evadeRight(e);
-			System.out.println("Evading Right");
+			if(output)
+				System.out.println("	Evading Right");
 	    } else if (evasion == 2) {
 			random();
-			System.out.println("Evading Randomly");
+			if(output)
+				System.out.println("	Evading Randomly");
 	    } else if (evasion == 3) {
 			halt();
-			System.out.println("Evading Halt");
+			if(output)
+				System.out.println("	Evading Halt");
 	    } else {
 			feign();
-			System.out.println("Evading Feign");
+			if(output)
+				System.out.println("	Evading Feign");
 		}
 		
 	}
