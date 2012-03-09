@@ -44,6 +44,7 @@ public class Robbie extends AdvancedRobot
 		CONSTANTS = new Constants();
 		
 		CONSTANTS.mirrorBehaviorEnable();
+                
 		setTurnRadarRight(Double.POSITIVE_INFINITY);	
 		
 		
