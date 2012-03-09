@@ -105,7 +105,7 @@ The purpose of this project is to incorporate machine learning algorithms in a R
 
 \section{Proposed Approach}
 
-Building a Robocode agent equipped with machine learning algorithms to bette inform its decision making will be broken into two unique tasks: evasion and targeting. Each task will have a subset of strategies which the agent can choose to employ in order to best carry out the current task (evasion or targeting). In order to decide which strategy to employ for a given task, the agent will make use of machine learning in order analyze the current situation within the environment and choose the strategy which will best achieve 
+Building a Robocode agent equipped with machine learning algorithms to better inform its decision making will be broken into two unique tasks: evasion and targeting. Each task will have a subset of strategies which the agent can choose to employ in order to best achieve a goal attached to the current task of evasion or targeting. In order to decide which strategy to employ for a given task, the agent will make use of machine learning techniques to analyze the current situation within the environment and choose the strategy which maximizes the likelihood of achieving the task goal. 
 
 Each sub--agent will have a variety of strategies, each of which will be optimized against the opponent. The effectiveness of the strategies will also be evaluated in real time to determine which strategy or set of strategies play out the best. We propose to do this using a combination of machine learning algorithms and genetic programming methodologies. Each individual strategy will be optimized against an opponent using genetic programming methods. During the optimization period, the agent would only be allowed to use a given strategy and the various individual parameters of the strategy would then be fine--tuned over the course of the training rounds. After this the agent is allowed to use all the trained strategies against the opponent. Reinforcement learning would then be employed to determine the agents preference of each strategy as it plays against the opponent.
 
@@ -156,22 +156,6 @@ only mildly successful \cite{strategies}
 
 
 \section{Experimental Results}
-
-The first phase of our implementation involves actually writing the code for our evasion strategy. To this end we have devised a default behavior called \emph{mirroring} where the agent tries to mimic the actions of the opponent to a certain degree. The evasion strategies build up on this and when called, they override the mirroring behavior. 
-
-\subsubsection*{Mirroring Behavior}
-
-\subsection*{Evasion Strategies Implemented}
-
-\subsubsection*{Dodge Left/Right}
-
-\subsubsection*{Feign}
-
-\subsubsection*{Random Movement}
-
-\subsubsection*{Bullet Tracking}
-In order to determine if the used method was most effective in dodging the bullet that was fired at the agent, we need to devise a way to track a bullet. In Robocode this is not a straight forward task as the agent cannot sense a bullet using its radar. However, in order to fire a bullet a tank needs to use up some of its own energy. The radar-sensor can detect a drop in energy 
-
 
 \subsection*{Evaluation Methodology}
 In order to measure the agent's performance, we require a performance measure. The agent's health is a good place to start, though that alone will have some drawbacks.\\
