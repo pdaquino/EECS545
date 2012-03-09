@@ -12,7 +12,8 @@ import robocode.util.Utils;
  */
 public class Robbie extends AdvancedRobot
 {
-	 
+	
+	// constant object 
 	Constants CONSTANTS;
 	
 	// evasion techniques
@@ -41,11 +42,14 @@ public class Robbie extends AdvancedRobot
 		// body, gun, radar color
 		setColors(Color.red,Color.blue,Color.green);
 		
+		// constant object
 		CONSTANTS = new Constants();
 		
+		// enable mirroring behavior
 		CONSTANTS.mirrorBehaviorEnable();
-		setTurnRadarRight(Double.POSITIVE_INFINITY);	
 		
+		// search for opponent using radar
+		setTurnRadarRight(Double.POSITIVE_INFINITY);	
 		
 		// main robot loop
 		while(true) {
@@ -71,7 +75,7 @@ public class Robbie extends AdvancedRobot
 		double radarTurn = getHeading() + e.getBearing() - getRadarHeading();
  		
 		// turn radar according to angle above
-    		setTurnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
+    	setTurnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
 
 		if(CONSTANTS.getMirrorBehaviorFlag()){
 			mirrorBehavior(e);
@@ -91,9 +95,9 @@ public class Robbie extends AdvancedRobot
             double d;        
             d = CONSTANTS.mirror_distance - (getEnergy() - e.getEnergy());
             F = CONSTANTS.mirror_Force_k1*(e.getDistance() - d);
-            out.println("d = "+d);
-            out.println("dist to enemy = "+e.getDistance());
-            out.println("F = "+F);
+            //out.println("d = "+d);
+            //out.println("dist to enemy = "+e.getDistance());
+            //out.println("F = "+F);
             setTurnRight(e.getBearing());
             setAhead(F);
             execute();
@@ -110,8 +114,7 @@ public class Robbie extends AdvancedRobot
 		
 		if(hit){
 			out.println("	Bullet Being Tracked Hit Us");
-			setAhead(0);
-			setTurnLeft(0);
+			CONSTANTS.mirrorBehaviorEnable();
 		}
 		else
 			out.println("	A Different Bullet Hit US");
@@ -141,8 +144,7 @@ public class Robbie extends AdvancedRobot
 			boolean passed = incoming.bulletPassed(getX(), getY(), getTime());
 			if(passed){
 				out.println("	The Bullet Being Tracked Missed");
-				setAhead(0);
-				setTurnLeft(0);
+				CONSTANTS.mirrorBehaviorEnable();
 			}
 			else
 				out.println("	Bullet is still active");
@@ -162,6 +164,7 @@ public class Robbie extends AdvancedRobot
 			if(eDrop > 0 && eDrop <= 3) {
 				
 				// enemy fired a bullet, begin tracking
+				CONSTANTS.mirrorBehaviorDisable();
 				incoming = new BulletTracking(eDrop, lastE, new double[] {getX(), getY(), getHeading()}, getTime());
 				em.executeRandomEvasion(lastE);
 				out.println("Enemy Fired a Bullet");
