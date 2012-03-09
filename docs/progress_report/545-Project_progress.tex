@@ -145,6 +145,37 @@ In Robocode, in order to fire, an agent must use some of its own health. If the 
 Hence we need to devise a reward scheme that rewards the agent for effectively attacking the enemy, effectively dodging incoming fire and staying alive. These rewards will probably be set manually, although if time permits, these rewards can also be optimized using machine learning techniques.
 
 \section{Future Milestones}
+There will be five milestones to be completed before the project is finished: firstly, we will gather training data, train the SVMs,
+and run tests for the evasion strategies. The next stage will be working on firing strategies, using the same approach. We will then repeat these processes while trying to reduce the number of features used. The last milestone is writing the
+project report.
+
+\subsection{Training data}
+We have now written code that allows us to randomly select an evasion strategy when the robot is fired upon. The next step is 
+to gather training data. Every data point consists of a description of the battlefield at the time the bullet was fired, which
+evasion strategy was selected, and if the bullet hit or missed the robot.
+
+Date: 03/16
+
+\subsection{Training SVMs}
+With the training data, we will then proceed to train the SVMs for each strategy, using the description of the battlefield as
+the features, and hit/not hit as the classification labels. We plan on using libsvm, which has a Java plugin, as our SVM backend.
+
+Date: 03/30
+
+\subsection{Testing}
+We will then assess the performance of the system. We will modify our robot to look at the SVMs corresponding to each strategy every time
+a bullet is fired, and choose the best strategy in a way that maximizes the probability of not being hit. We will then compare the
+performance of this implementation versus randomly choosing a strategy.
+
+Date: 03/30
+\subsection{Feature Space Reduction}
+todo
+
+\subsection{Firing Strategies}
+todo
+
+\subsection{Final Report}
+todo
 
 \section{Conclusion}
 
