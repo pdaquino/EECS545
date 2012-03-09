@@ -100,7 +100,6 @@ public class Robbie extends AdvancedRobot
             //out.println("F = "+F);
             setTurnRight(e.getBearing());
             setAhead(F);
-            execute();
         }
 	
 
