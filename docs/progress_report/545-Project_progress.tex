@@ -142,7 +142,7 @@ While there is little within the literature of applying machine learning techniq
 The first phase of our implementation involves devising the physics and writing the code for our evasion strategies, plus for the general movement.
 
 \subsubsection*{General Movement}
-The default behavior of the agent is to closely mimick the behavior of the opponent while maintaining a set distance from it. The force of attraction/repulsion between the agent and its opponent is given by:
+The default behavior of the agent is to closely mimic the behavior of the opponent while maintaining a set distance from it. The force of attraction/repulsion between the agent and its opponent is given by:
 $$\emph{Force} = k_1 * (\emph{Distance to Opponent} - d)$$
 where $k_1$ is a proportional factor while $d$ is the distance to maintain from the opponent. Thus if the agent is further away from the opponent than desired, it will experience an attractive force $+_{ve}F$ which will move it towards the opponent. Conversely, if the agent is to close to the opponent, it will experience a repulsive force $-_{ve}F$, which will guide it away. It is also evident that \emph{Force} becomes zero as \emph{Distance to Opponent}  $\rightarrow d$.\\ 
 
