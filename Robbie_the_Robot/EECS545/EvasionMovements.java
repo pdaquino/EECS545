@@ -138,7 +138,7 @@ public class EvasionMovements {
     }
 
 	// choose a random evasion to execute
-	public void executeRandomEvasion(ScannedRobotEvent e) {
+	public String executeRandomEvasion(ScannedRobotEvent e) {
 		
 		// int to hold which evasion to execute
 		int evasion = rand.nextInt(5);
@@ -148,24 +148,27 @@ public class EvasionMovements {
 			evadeLeft(e);
 			if(output)
 				System.out.println("	Evading Left");
+			return "evadeLeft";
 		} else if (evasion == 1) {
 			evadeRight(e);
 			if(output)
 				System.out.println("	Evading Right");
+			return "evadeRight";
 	    } else if (evasion == 2) {
 			random();
 			if(output)
 				System.out.println("	Evading Randomly");
+			return "random";
 	    } else if (evasion == 3) {
 			halt();
 			if(output)
 				System.out.println("	Evading Halt");
+			return "halt";
 	    } else {
 			feign();
 			if(output)
 				System.out.println("	Evading Feign");
+			return "feign";
 		}
-		
 	}
-	
 }

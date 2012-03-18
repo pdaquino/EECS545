@@ -16,6 +16,13 @@ public class Robbie extends AdvancedRobot
 	double envWidth;
 	double envHeight;
 	
+	// last time orientation of robot and enemy
+	double lastRobotHeading = 0;
+	double lastEnemyHeading = 0;
+	
+	// current evasion strategy
+	String strategy;
+	
 	// constant object 
 	Constants CONSTANTS;
 	
@@ -67,6 +74,11 @@ public class Robbie extends AdvancedRobot
 			// update tracking of enemy bullet
 			if(lastE != null)
 				updateBulletTracking();
+				
+			// update last bearing for both enemy and robot
+			lastRobotHeading = getHeading();
+			if(lastE != null)
+				lastEnemyHeading = lastE.getHeading();
 		}
 	}
 
@@ -170,7 +182,7 @@ public class Robbie extends AdvancedRobot
 			double enemyY = getY() + lastE.getDistance()*Math.cos(Math.toRadians(beta));
 			
 			// ensure enemy is not close to a wall IOT avoid mistaking wall collision for a bullet fire
-			if(enemyX < 25 || enemyX > (envWidth - 25) || enemyY < 30 || enemyY > (envHeight - 25)) {
+			if(enemyX < 25 || enemyX > (envWidth - 25) || enemyY < 25 || enemyY > (envHeight - 25)) {
 			
 				// reset previous energy value
 				prevEnergy = lastE.getEnergy();
@@ -197,10 +209,32 @@ public class Robbie extends AdvancedRobot
 					out.println("Enemy Fired a Bullet");
 				
 				// select a random evasion movement and employ it
-				em.executeRandomEvasion(lastE);
+				strategy = em.executeRandomEvasion(lastE);
 			}
 		}
 	} 
+
+	// return the last scan
+	public ScannedRobotEvent getLastE() {
+		return lastE;
+	}
+	
+	// return last robot heading
+	public double getLastRobotHeading() {
+		return lastRobotHeading;
+	}
+
+	// return last enemy heading
+	public double getLastEnemyHeading() {
+		return lastEnemyHeading;
+	}
+
+	// return last employed strategy
+	public String getStrategy() {
+		return strategy;
+	}
+
+		
 
     
     //@Override THIS IS STILL HERE FOR PPPPEEEEEDDDDRRRRRROOOOOOO

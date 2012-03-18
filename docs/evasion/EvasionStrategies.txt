@@ -15,13 +15,17 @@ Strategies
 	-Pick a random location in the environment and head towards that location. 
 
 Features
-1.) Relative bearing to opponent
-2.) Relative velocity to opponent
-3.) Distance and relative bearing to middle of room
-4.) Distance between agent and opponent
-5.) Location in the environment (x, y, theta)
-6.) Velocity in the environment (vx, vy, yaw)
-7.) Proximity to environment walls
+*1.) Relative bearing to opponent
+*2.) Relative velocity to opponent
+*3.) Distance and relative bearing to middle of room
+*4.) Distance between agent and opponent
+*5.) Location in the environment (x, y, theta)
+*6.) Velocity in the environment (vx, vy, yaw)
+*7.) Agent Health
+*8.) Opponent Health
+*9.) Hit/Miss
+*10.) Strategy Used
+*11.) Opponent Name
 
 
 Data Gathering Pseudo Code
