@@ -38,7 +38,7 @@ public class EvasionLog {
     
     public void endTrackingBullet(boolean hit){
         //Pass hit/miss data to state object
-        state.result(hit);
+        state.bulletHit(hit);        
         writeToFile(formatString(state));
     }
     
