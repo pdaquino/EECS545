@@ -94,14 +94,15 @@ public class State
 		opponentRelativeY = e.getDistance()*Math.sin(Math.toRadians(angle));
 		opponentRelativeT = Utils.normalRelativeAngleDegrees(robotT-opponentT);
 
-		// opponent relative velocity NEEDS FINISHED
-		opponentRelativeVX = 0;
-		opponentRelativeVY = 0;
-		opponentRelativeVT = 0;	
+		// opponent relative velocity
+		angle = Utils.normalRelativeAngleDegrees(robotT-robot.getLastEnemyHeading());
+		opponentRelativeVX = e.getVelocity()*Math.cos(Math.toRadians(opponentRelativeT));
+		opponentRelativeVY = e.getVelocity()*Math.sin(Math.toRadians(opponentRelativeT));
+		opponentRelativeVT = (Utils.normalRelativeAngleDegrees(opponentRelativeT - angle))/2;	
 		
-		// distance and relative bearing to room center NEEDS FINISHED
-		distanceToCenter = 0;
-		relativeBearingToCenter = 0;
+		// distance and relative bearing to room center
+		distanceToCenter = Math.sqrt(Math.pow(robotX-(robot.getEnvWidth()/2),2) + Math.pow(robotY-(robot.getEnvHeight()/2),2));
+		relativeBearingToCenter = Math.atan2((robot.getEnvHeight()/2)-robotY, (robot.getEnvWidth()/2) - robotX);
 	
 		// distance to opponent
 		distanceToOpponent = e.getDistance();
@@ -117,10 +118,12 @@ public class State
 		opponent = e.getName();
 	}
 
+	// return state to write to file
 	public String[] getState() {
 		return null;
 	}
 
+	// set the result of the bullet
 	public void bulletHit(boolean result){
 		if(result)
 			hit = 1;

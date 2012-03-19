@@ -234,9 +234,16 @@ public class Robbie extends AdvancedRobot
 		return strategy;
 	}
 
-		
+	// return height of environment
+	public double getEnvHeight() {
+		return envHeight;
+	}
 
-    
+	// return width of environment
+	public double getEnvWidth() {
+		return envWidth;
+	}
+
     //@Override THIS IS STILL HERE FOR PPPPEEEEEDDDDRRRRRROOOOOOO
     //public void onKeyPressed(java.awt.event.KeyEvent e) {
         //halt();
