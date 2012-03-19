@@ -20,9 +20,9 @@ public class State
 	double robotVT;
 	
 	// opponent x, y, theta location globally
-        double opponentX;
-        double opponentY;
-        double opponentT;
+    double opponentX;
+    double opponentY;
+    double opponentT;
 	
 	// opponent velocity in x, y, and theta globally
    	double opponentVX;

@@ -75,6 +75,7 @@ public class Robbie extends AdvancedRobot
 			// update tracking of enemy bullet
 			if(lastE != null)
 				updateBulletTracking();
+			
 				
 			// update last bearing for both enemy and robot
 			lastRobotHeading = getHeading();
