@@ -1,10 +1,11 @@
 package EECS545;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.io.PrintStream;
+import robocode.RobocodeFileOutputStream;
+
 
 /*
  * Logs data for training
@@ -14,7 +15,7 @@ import java.util.Date;
 
 public class EvasionLog {    
     State state;
-    BufferedWriter out;
+    PrintStream out;
     
     String baseFileName = "evasion.log.";
     
@@ -28,8 +29,12 @@ public class EvasionLog {
         
         rob = robot;
         try {
-            out = new BufferedWriter(new FileWriter(fileName, true));            
+//<<<<<<< Updated upstream
+            //out = new BufferedWriter(new FileWriter(fileName, true));            
             rob.out.println("Opened log file " + fileName);
+//=======
+            out = new PrintStream(new RobocodeFileOutputStream(rob.getDataFile(fileName)));            
+//>>>>>>> Stashed changes
         } 
         catch (IOException e) {
             rob.out.println("Error in trying to open the log file");
@@ -58,20 +63,19 @@ public class EvasionLog {
     
     private void writeToFile(String str){
         try{
-            out.write(str);
-            out.newLine();
+            out.println(str);
         }
-        catch(IOException e){
+        catch(Exception e){
             rob.out.println("Error in trying to write to the log file");
             rob.out.println(e.getMessage());            
         }
     }
     
-    private void close(){
+    public void close(){
         try{
             out.close();
         }
-        catch(IOException e){
+        catch(Exception e){
             rob.out.println("Error in trying to close the log file");
             rob.out.println(e.getMessage());
         }
