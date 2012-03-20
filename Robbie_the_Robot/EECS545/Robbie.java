@@ -1,7 +1,10 @@
 package EECS545;
 
-import robocode.*;
 import java.awt.Color;
+import robocode.AdvancedRobot;
+import robocode.HitByBulletEvent;
+import robocode.HitWallEvent;
+import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
 //Version 0.1
@@ -30,6 +33,12 @@ public class Robbie extends AdvancedRobot {
     double prevEnergy = 100.0;
     // tracking of a bullet 
     BulletTracking incoming = new BulletTracking();
+    // evasion log file
+    EvasionLog evasionLog = null;
+    
+    public Robbie() {
+        evasionLog = new EvasionLog(this);
+    }
 
     public void run() {
 
@@ -99,7 +108,9 @@ public class Robbie extends AdvancedRobot {
 
     }
 
-    private boolean evadeBullet() {
+    // evade a possible bullet (it could have been  wall hit).
+    // returns true if it was an actual bullet
+    private boolean evadePossibleBullet() {
         // calculate enemy's location
         double beta = Utils.normalRelativeAngleDegrees(getHeading() + lastE.getBearing());
         double enemyX = getX() + lastE.getDistance() * Math.sin(Math.toRadians(beta));
@@ -119,6 +130,9 @@ public class Robbie extends AdvancedRobot {
 
             // enemy fired a bullet, begin tracking
             incoming = new BulletTracking(eDrop, lastE, new double[]{getX(), getY(), getHeading()}, getTime());
+            
+            // also log the bullet
+            evasionLog.startTrackingBullet();
 
             // disable the mirror behavior
             CONSTANTS.mirrorBehaviorDisable();
@@ -159,7 +173,7 @@ public class Robbie extends AdvancedRobot {
 
         // check if the bullet that hit us is the bullet we were tracking
         if (incoming.checkHit(e.getHeading(), getX(), getY(), getTime())) {
-
+            evasionLog.endTrackingBullet(true);
             // output message
             if (output) {
                 out.println("		Bullet Being Tracked Hit Us");
@@ -192,7 +206,7 @@ public class Robbie extends AdvancedRobot {
 
             // check if the tracked bullet has missed us
             if (incoming.bulletPassed(getX(), getY(), getTime())) {
-
+                evasionLog.endTrackingBullet(false);
                 // output message
                 if (output) {
                     out.println("		The Bullet Being Tracked Missed");
@@ -203,7 +217,7 @@ public class Robbie extends AdvancedRobot {
             }
             // we are not currently tracking a bullet	
         } else {
-            evadeBullet();
+            evadePossibleBullet();
         }
     }
 
