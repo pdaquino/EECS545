@@ -1,7 +1,9 @@
 package EECS545;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
+import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
@@ -39,26 +41,20 @@ public class State
         OppName
     }
     
-    private HashMap<Feature, String> features;
+    private EnumMap<Feature, String> features = new EnumMap<Feature, String>(Feature.class);
+    private AdvancedRobot robot;
     
     protected final void addFeature(Feature f, double value) {
         addFeature(f, Double.toString(value));
     }
     
     protected final void addFeature(Feature f, String value) {
-        try{
             if( features.put(f, value) != null)  {
-                //System.err.println("Warning: feature " + f + " is being overwritten");
-                /*^ can't access System.err.. if you want to really debug this 
-                 * with a text O/P you'll have to pass a Robbie-object and use:
-                 *      rob_obj.out.println("......")
-                 */
+                robot.out.println("Warning: feature " + f + " is being overwritten");
+            } else {
+                robot.out.println("Feature " + f + "=" + value + " added successfully");
             }
         }
-        catch(Exception e){
-            
-        }
-    }
     
     public String getFeature(Feature f) {
         return features.get(f);
@@ -116,7 +112,7 @@ public class State
 	
 	// constructor
 	public State(Robbie robot) {
-		
+		this.robot = robot;
 		// last scanned event
 		ScannedRobotEvent e = robot.getLastE();
 	
@@ -195,7 +191,17 @@ public class State
 
 	// return state to write to file
 	public String[] getState() {
-            return (String[]) features.values().toArray();
+            return features.values().toArray(new String[0]);
+            /*
+            robot.out.println("values.length = " + values.length);
+            robot.out.println("values = " + values.toString());
+
+            ArrayList<String> valuesStrings = new ArrayList<String>(values.length);
+            for(Object o : values) {
+                robot.out.println(o);
+                valuesStrings.add(o.toString());
+            }
+            return valuesStrings.toArray(new String[0]);*/
 	}
         
         // returns a list with all the feature names, in the same order

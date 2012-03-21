@@ -9,7 +9,7 @@ public class Constants{
 	double mirror_distance = 200.0;	//Distance to keep b/w Robbie and Opponent
 	double mirror_Force_k1 = 1.5; //Decides b/w just Lateral Inversion and Diagonol Inversion
 	public boolean mirror_Behavior_Enable;
-        public boolean evasionLog_Enable = false;//Enables/Disables the evasion log - should be true for training
+        public boolean evasionLog_Enable = true;//Enables/Disables the evasion log - should be true for training
 	/*
 	*	Sets the mirroring constants
 	*/
