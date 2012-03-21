@@ -46,8 +46,17 @@ public class State
     }
     
     protected final void addFeature(Feature f, String value) {
-        if( features.put(f, value) != null)  {
-            System.err.println("Warning: feature " + f + " is being overwritten");
+        try{
+            if( features.put(f, value) != null)  {
+                //System.err.println("Warning: feature " + f + " is being overwritten");
+                /*^ can't access System.err.. if you want to really debug this 
+                 * with a text O/P you'll have to pass a Robbie-object and use:
+                 *      rob_obj.out.println("......")
+                 */
+            }
+        }
+        catch(Exception e){
+            
         }
     }
     

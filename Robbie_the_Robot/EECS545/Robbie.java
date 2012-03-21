@@ -44,10 +44,11 @@ public class Robbie extends AdvancedRobot {
     // evasion log file
     EvasionLog evasionLog = null;
     
-    public Robbie() {
-        //evasionLog = new EvasionLog(this);
-    }
-
+    /*  Do not create a constructor for Robbie, it creats a whole bunch of weird
+     *  errors. Put all initialization code in the run() method
+     *  -
+     */
+    
     public void run() {
 
         // grab battle field information
@@ -74,6 +75,20 @@ public class Robbie extends AdvancedRobot {
 
         // search for opponent using radar
         setTurnRadarRight(Double.POSITIVE_INFINITY);
+        
+        //Initializae Evasion Log
+        try{
+            if(CONSTANTS.evasionLog_Enable)
+                evasionLog = new EvasionLog(this);
+        }
+        catch(Exception e){
+            out.println("**ERROR in trying to initiliaze the EvasionLog obj");
+            out.println(e.getMessage());
+        }
+        
+        if(evasionLog == null){
+            out.println("** EvasionLog not Initiliazed **");
+        }
 
         // main robot loop
         while (true) {
@@ -140,7 +155,9 @@ public class Robbie extends AdvancedRobot {
             incoming = new BulletTracking(eDrop, lastE, new double[]{getX(), getY(), getHeading()}, getTime());
             
             // also log the bullet
-            //evasionLog.startTrackingBullet();
+            if(CONSTANTS.evasionLog_Enable){
+                evasionLog.startTrackingBullet();
+            }
 
             // disable the mirror behavior
             CONSTANTS.mirrorBehaviorDisable();
@@ -181,7 +198,9 @@ public class Robbie extends AdvancedRobot {
 
         // check if the bullet that hit us is the bullet we were tracking
         if (incoming.checkHit(e.getHeading(), getX(), getY(), getTime())) {
-            //evasionLog.endTrackingBullet(true);
+            if(CONSTANTS.evasionLog_Enable){
+                evasionLog.endTrackingBullet(true);
+            }
             // output message
             if (output) {
                 out.println("		Bullet Being Tracked Hit Us");
@@ -214,7 +233,9 @@ public class Robbie extends AdvancedRobot {
 
             // check if the tracked bullet has missed us
             if (incoming.bulletPassed(getX(), getY(), getTime())) {
-                //evasionLog.endTrackingBullet(false);
+                if(CONSTANTS.evasionLog_Enable){
+                    evasionLog.endTrackingBullet(false);
+                }
                 // output message
                 if (output) {
                     out.println("		The Bullet Being Tracked Missed");
