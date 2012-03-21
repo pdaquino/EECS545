@@ -1,18 +1,8 @@
 package EECS545;
 
-//<<<<<<< Updated upstream
 import java.awt.Color;
-import robocode.AdvancedRobot;
-import robocode.HitByBulletEvent;
-import robocode.HitWallEvent;
-import robocode.ScannedRobotEvent;
-//=======
-//import java.io.IOException;
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
-//import robocode.*;
-//import java.io.PrintStream;
-//>>>>>>> Stashed changes
+import robocode.*;
+
 import robocode.util.Utils;
 
 //Version 0.1
@@ -279,6 +269,12 @@ public class Robbie extends AdvancedRobot {
     public double getEnvWidth() {
         return envWidth;
     }
+    
+    public void onRoundEnded(RoundEndedEvent event) {
+       out.println("The round has ended");
+       evasionLog.close();
+   }
+    
     //@Override THIS IS STILL HERE FOR PPPPEEEEEDDDDRRRRRROOOOOOO
     //public void onKeyPressed(java.awt.event.KeyEvent e) {
     //halt();
