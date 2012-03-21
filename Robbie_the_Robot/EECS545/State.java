@@ -192,16 +192,6 @@ public class State
 	// return state to write to file
 	public String[] getState() {
             return features.values().toArray(new String[0]);
-            /*
-            robot.out.println("values.length = " + values.length);
-            robot.out.println("values = " + values.toString());
-
-            ArrayList<String> valuesStrings = new ArrayList<String>(values.length);
-            for(Object o : values) {
-                robot.out.println(o);
-                valuesStrings.add(o.toString());
-            }
-            return valuesStrings.toArray(new String[0]);*/
 	}
         
         // returns a list with all the feature names, in the same order
