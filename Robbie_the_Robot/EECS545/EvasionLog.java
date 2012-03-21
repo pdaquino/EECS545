@@ -29,13 +29,8 @@ public class EvasionLog {
         
         rob = robot;
         try {
-//<<<<<<< Updated upstream
-            //out = new BufferedWriter(new FileWriter(fileName, true));
             out = new PrintStream(new RobocodeFileOutputStream(rob.getDataFile(fileName)));            
             rob.out.println("Opened log file " + fileName);
-//=======
-            
-//>>>>>>> Stashed changes
         } 
         catch (IOException e) {
             rob.out.println("Error in trying to open the log file");

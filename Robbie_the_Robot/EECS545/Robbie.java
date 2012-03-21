@@ -1,18 +1,11 @@
 package EECS545;
 
-//<<<<<<< Updated upstream
 import java.awt.Color;
+import java.awt.Rectangle;
 import robocode.AdvancedRobot;
 import robocode.HitByBulletEvent;
 import robocode.HitWallEvent;
 import robocode.ScannedRobotEvent;
-//=======
-//import java.io.IOException;
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
-//import robocode.*;
-//import java.io.PrintStream;
-//>>>>>>> Stashed changes
 import robocode.util.Utils;
 
 //Version 0.1
@@ -44,16 +37,27 @@ public class Robbie extends AdvancedRobot {
     // evasion log file
     EvasionLog evasionLog = null;
     
-    /*  Do not create a constructor for Robbie, it creats a whole bunch of weird
+    //For Wall Avoidance
+    Rectangle battleArena;
+    long wallAvoidanceTime;
+    
+    /* 
+     * Do not create a constructor for Robbie, it creats a whole bunch of weird
      *  errors. Put all initialization code in the run() method
      *  -
      */
     
+    //Force Arbitrator for movement control
+        
     public void run() {
+        //Init start time to wallAvoidanceTime
+        wallAvoidanceTime = getTime();
 
         // grab battle field information
         envWidth = getBattleFieldWidth();
         envHeight = getBattleFieldHeight();
+        
+        battleArena = new Rectangle((int)(envWidth-CONSTANTS.wallAvoid_HBuffer),(int)(envHeight-CONSTANTS.wallAvoid_VBuffer));
 
         // radar and robot independent turning
         setAdjustRadarForRobotTurn(true);
@@ -89,10 +93,11 @@ public class Robbie extends AdvancedRobot {
         if(evasionLog == null){
             out.println("** EvasionLog not Initiliazed **");
         }
-
+        
+        
         // main robot loop
         while (true) {
-
+            
             // interrupts onScannedRobot event 
             scan();
 
@@ -127,6 +132,17 @@ public class Robbie extends AdvancedRobot {
         // if mirror behavior is enabled, continue to mirror opponent
         if (CONSTANTS.getMirrorBehaviorFlag()) {
             mirrorBehavior(e);
+        }
+        
+        if(CONSTANTS.wallAvoid_Enable){
+            if(!battleArena.contains(getX()-(CONSTANTS.wallAvoid_HBuffer/2), getY()-(CONSTANTS.wallAvoid_VBuffer/2))){
+                if(getTime()>wallAvoidanceTime){
+                    out.println("Wall Avoidance at T =" + getTime());
+                    strategy = em.executeRandomEvasion(lastE);
+                    out.println("Srategy Used :"+strategy);
+                    wallAvoidanceTime = getTime()+CONSTANTS.wallAvoid_timeWait;
+                }
+            }
         }
 
     }
@@ -184,11 +200,11 @@ public class Robbie extends AdvancedRobot {
         double d;
         d = CONSTANTS.mirror_distance - (getEnergy() - e.getEnergy());
         F = CONSTANTS.mirror_Force_k1 * (e.getDistance() - d);
-        //out.println("d = "+d);
+        //out.println("d = "+d);//debug
         //out.println("dist to enemy = "+e.getDistance());
         //out.println("F = "+F);
         setTurnRight(e.getBearing());
-        setAhead(F);
+        setAhead(F);        
     }
 
     /**
