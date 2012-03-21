@@ -57,9 +57,7 @@ public class Robbie extends AdvancedRobot {
         // grab battle field information
         envWidth = getBattleFieldWidth();
         envHeight = getBattleFieldHeight();
-        
-        battleArena = new Rectangle((int)(envWidth-CONSTANTS.wallAvoid_HBuffer),(int)(envHeight-CONSTANTS.wallAvoid_VBuffer));
-
+                        
         // radar and robot independent turning
         setAdjustRadarForRobotTurn(true);
 
@@ -95,6 +93,8 @@ public class Robbie extends AdvancedRobot {
             out.println("** EvasionLog not Initiliazed **");
         }
         
+        //Wall Avoidance 
+        battleArena = new Rectangle((int)(envWidth-CONSTANTS.wallAvoid_HBuffer),(int)(envHeight-CONSTANTS.wallAvoid_VBuffer));
         
         // main robot loop
         while (true) {
