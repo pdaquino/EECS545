@@ -1,23 +1,24 @@
 package EECS545;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import robocode.RobocodeFileOutputStream;
 
 
 /*
  * Logs data for training
- * out.write("aString");
- * out.close();
  */
 
 public class EvasionLog {    
-    State state;
-    PrintStream out;
+    private State state;
+    private PrintStream out;
+    private boolean hasPrintFeatureList = false;
     
-    String baseFileName = "evasion.log.";
+    private String baseFileName = "evasion.log.";
+    private String extension = ".txt";
     
     //String[] finalStateArray;
     
@@ -25,7 +26,8 @@ public class EvasionLog {
     
     public EvasionLog(Robbie robot){        
         String fileName = baseFileName +
-                new SimpleDateFormat("MM_dd_HH_mm_ss_S").format(new Date());
+                new SimpleDateFormat("MM_dd_HH_mm_ss_S").format(new Date()) +
+                extension;
         
         rob = robot;
         try {
@@ -40,7 +42,10 @@ public class EvasionLog {
     
     public void startTrackingBullet(){
         state = new State(rob);
-        writeToFile(formatString(state.getFeatureList()));
+        if(!hasPrintFeatureList) {
+            writeToFile(formatString(state.getFeatureList()));
+            hasPrintFeatureList = true;
+        }
     }
     
     public void endTrackingBullet(boolean hit){
@@ -50,11 +55,8 @@ public class EvasionLog {
     }
     
     private String formatString(String[] array){
-        String outputString = "";
-        for(int i=0; i<array.length; i++){
-            outputString = outputString+";"+array[i];
-        }        
-        return outputString;
+        // from http://stackoverflow.com/questions/794248/a-method-to-reverse-effect-of-java-string-split/6116469#6116469
+        return Arrays.toString(array).replace(", ", ";").replaceAll("[\\[\\]]", "");
     }
     
     private void writeToFile(String str){

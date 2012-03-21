@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import robocode.AdvancedRobot;
 import robocode.HitByBulletEvent;
 import robocode.HitWallEvent;
+import robocode.RoundEndedEvent;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
@@ -295,6 +296,12 @@ public class Robbie extends AdvancedRobot {
     public double getEnvWidth() {
         return envWidth;
     }
+    
+    public void onRoundEnded(RoundEndedEvent event) {
+       out.println("The round has ended");
+       evasionLog.close();
+   }
+    
     //@Override THIS IS STILL HERE FOR PPPPEEEEEDDDDRRRRRROOOOOOO
     //public void onKeyPressed(java.awt.event.KeyEvent e) {
     //halt();
