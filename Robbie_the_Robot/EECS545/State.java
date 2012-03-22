@@ -12,6 +12,7 @@ import robocode.util.Utils;
  */
 public class State {
     private String evasionStrategy;
+    private boolean bulletHit;
 
     public enum Feature {
 
@@ -38,7 +39,7 @@ public class State {
         DistanceToOpp,
         RobotHealth,
         OppHealth,
-        BulletHit,
+        //BulletHit,
         //StrategyEmployed,
         //OppName
     }
@@ -57,7 +58,7 @@ public class State {
         }
     }
 
-    public String getFeature(Feature f) {
+    public String getFeatureValue(Feature f) {
         return features.get(f);
     }
 
@@ -148,7 +149,7 @@ public class State {
 
     // returns a list with all the feature names, in the same order
     // as getState()
-    public String[] getFeatureList() {
+    public String[] getFeatureNames() {
         Feature[] fs = Feature.values();
         ArrayList<String> names = new ArrayList<String>();
         for (Feature f : fs) {
@@ -160,9 +161,13 @@ public class State {
     public String getEvasionStrategy() {
         return evasionStrategy;
     }
+    
+    public boolean getBulletHit() {
+        return bulletHit;
+    }
 
     // set the result of the bullet
     public void bulletHit(boolean hit) {
-        addFeature(Feature.BulletHit, hit ? 1 : -1);
+        bulletHit = hit;
     }
 }

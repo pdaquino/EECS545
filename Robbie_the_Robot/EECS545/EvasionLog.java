@@ -54,12 +54,24 @@ public class EvasionLog {
     public void endTrackingBullet(boolean hit){
         //Pass hit/miss data to state object
         state.bulletHit(hit);        
-        writeToFile(state.getEvasionStrategy(), formatString(state.getState()));
+        writeToFile(state.getEvasionStrategy(), formatString());
     }
     
-    private String formatString(String[] array){
-        // from http://stackoverflow.com/questions/794248/a-method-to-reverse-effect-of-java-string-split/6116469#6116469
-        return Arrays.toString(array).replace(", ", ";").replaceAll("[\\[\\]]", "");
+    private String formatString(){
+        // libsvm's format is
+        // label feature_id:feature_value feature_id:feature_value ...
+        // where
+        //  label_feature = 1 (miss) or -1 (hit)
+        //  feature_value = unique id for the feature
+        StringBuilder sb = new StringBuilder();
+        sb.append(state.getBulletHit() ? -1 : 1).append(' ');
+        String[] featureValues = state.getState();
+        for(int i = 0; i < featureValues.length; i++) {
+            // making the feature_id 1-based just to be safe (this is how
+            // the example files I have look like)
+            sb.append(i+1).append(':').append(featureValues[i]).append(' ');
+        }
+        return sb.toString();
     }
     
     private void writeToFile(String strategy, String str){
