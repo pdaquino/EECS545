@@ -13,9 +13,9 @@ import robocode.util.Utils;
 //Danger Will Robinson!
 //
 // API help : http://robocode.sourceforge.net/docs/robocode/robocode/Robot.html
-
 public class Robbie extends AdvancedRobot {
     // output flag
+
     boolean output = true;
     // battle field information
     double envWidth;
@@ -37,19 +37,15 @@ public class Robbie extends AdvancedRobot {
     BulletTracking incoming = new BulletTracking();
     // evasion log file
     EvasionLog evasionLog = null;
-    
     //For Wall Avoidance
     Rectangle battleArena;
     long wallAvoidanceTime;
-    
-    /* 
+
+    /*
      * Do not create a constructor for Robbie, it creats a whole bunch of weird
-     *  errors. Put all initialization code in the run() method
-     *  -
+     * errors. Put all initialization code in the run() method -
      */
-    
     //Force Arbitrator for movement control
-        
     public void run() {
         //Init start time to wallAvoidanceTime
         wallAvoidanceTime = getTime();
@@ -57,7 +53,7 @@ public class Robbie extends AdvancedRobot {
         // grab battle field information
         envWidth = getBattleFieldWidth();
         envHeight = getBattleFieldHeight();
-                        
+
         // radar and robot independent turning
         setAdjustRadarForRobotTurn(true);
 
@@ -78,27 +74,27 @@ public class Robbie extends AdvancedRobot {
 
         // search for opponent using radar
         setTurnRadarRight(Double.POSITIVE_INFINITY);
-        
+
         //Initializae Evasion Log
-        try{
-            if(CONSTANTS.evasionLog_Enable)
+        try {
+            if (CONSTANTS.evasionLog_Enable) {
                 evasionLog = new EvasionLog(this);
-        }
-        catch(Exception e){
+            }
+        } catch (Exception e) {
             out.println("**ERROR in trying to initiliaze the EvasionLog obj");
             out.println(e.getMessage());
         }
-        
-        if(evasionLog == null){
+
+        if (evasionLog == null) {
             out.println("** EvasionLog not Initiliazed **");
         }
-        
+
         //Wall Avoidance 
-        battleArena = new Rectangle((int)(envWidth-CONSTANTS.wallAvoid_HBuffer),(int)(envHeight-CONSTANTS.wallAvoid_VBuffer));
-        
+        battleArena = new Rectangle((int) (envWidth - CONSTANTS.wallAvoid_HBuffer), (int) (envHeight - CONSTANTS.wallAvoid_VBuffer));
+
         // main robot loop
         while (true) {
-            
+
             // interrupts onScannedRobot event 
             scan();
 
@@ -134,14 +130,14 @@ public class Robbie extends AdvancedRobot {
         if (CONSTANTS.getMirrorBehaviorFlag()) {
             mirrorBehavior(e);
         }
-        
-        if(CONSTANTS.wallAvoid_Enable){
-            if(!battleArena.contains(getX()-(CONSTANTS.wallAvoid_HBuffer/2), getY()-(CONSTANTS.wallAvoid_VBuffer/2))){
-                if(getTime()>wallAvoidanceTime){
+
+        if (CONSTANTS.wallAvoid_Enable) {
+            if (!battleArena.contains(getX() - (CONSTANTS.wallAvoid_HBuffer / 2), getY() - (CONSTANTS.wallAvoid_VBuffer / 2))) {
+                if (getTime() > wallAvoidanceTime) {
                     out.println("Wall Avoidance at T =" + getTime());
                     strategy = em.executeRandomEvasion(lastE);
-                    out.println("Srategy Used :"+strategy);
-                    wallAvoidanceTime = getTime()+CONSTANTS.wallAvoid_timeWait;
+                    out.println("Srategy Used :" + strategy);
+                    wallAvoidanceTime = getTime() + CONSTANTS.wallAvoid_timeWait;
                 }
             }
         }
@@ -170,9 +166,13 @@ public class Robbie extends AdvancedRobot {
 
             // enemy fired a bullet, begin tracking
             incoming = new BulletTracking(eDrop, lastE, new double[]{getX(), getY(), getHeading()}, getTime());
+
+            // select a random evasion movement and employ it
+            strategy = em.executeRandomEvasion(lastE);
             
-            // also log the bullet
-            if(CONSTANTS.evasionLog_Enable){
+            // also log the bullet (make sure that we are only logging after the
+            // strategy has been chosen)
+            if (CONSTANTS.evasionLog_Enable) {
                 evasionLog.startTrackingBullet();
             }
 
@@ -183,9 +183,6 @@ public class Robbie extends AdvancedRobot {
             if (output) {
                 out.println("Enemy Fired a Bullet");
             }
-
-            // select a random evasion movement and employ it
-            strategy = em.executeRandomEvasion(lastE);
         }
         return false;
     }
@@ -205,7 +202,7 @@ public class Robbie extends AdvancedRobot {
         //out.println("dist to enemy = "+e.getDistance());
         //out.println("F = "+F);
         setTurnRight(e.getBearing());
-        setAhead(F);        
+        setAhead(F);
     }
 
     /**
@@ -215,7 +212,7 @@ public class Robbie extends AdvancedRobot {
 
         // check if the bullet that hit us is the bullet we were tracking
         if (incoming.checkHit(e.getHeading(), getX(), getY(), getTime())) {
-            if(CONSTANTS.evasionLog_Enable){
+            if (CONSTANTS.evasionLog_Enable) {
                 evasionLog.endTrackingBullet(true);
             }
             // output message
@@ -250,7 +247,7 @@ public class Robbie extends AdvancedRobot {
 
             // check if the tracked bullet has missed us
             if (incoming.bulletPassed(getX(), getY(), getTime())) {
-                if(CONSTANTS.evasionLog_Enable){
+                if (CONSTANTS.evasionLog_Enable) {
                     evasionLog.endTrackingBullet(false);
                 }
                 // output message
@@ -296,12 +293,15 @@ public class Robbie extends AdvancedRobot {
     public double getEnvWidth() {
         return envWidth;
     }
-    
+
     public void onRoundEnded(RoundEndedEvent event) {
-       out.println("The round has ended");
-       evasionLog.close();
-   }
-    
+        out.println("The round has ended");
+        evasionLog.close();
+    }
+
+    public String[] listEvasionStrategies() {
+        return em.possibleMovements();
+    }
     //@Override THIS IS STILL HERE FOR PPPPEEEEEDDDDRRRRRROOOOOOO
     //public void onKeyPressed(java.awt.event.KeyEvent e) {
     //halt();

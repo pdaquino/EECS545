@@ -11,6 +11,7 @@ import robocode.util.Utils;
  * State - a class for tracking state when a bullet is fired
  */
 public class State {
+    private String evasionStrategy;
 
     public enum Feature {
 
@@ -38,8 +39,8 @@ public class State {
         RobotHealth,
         OppHealth,
         BulletHit,
-        StrategyEmployed,
-        OppName
+        //StrategyEmployed,
+        //OppName
     }
     private EnumMap<Feature, String> features = new EnumMap<Feature, String>(Feature.class);
     private AdvancedRobot robot;
@@ -133,10 +134,11 @@ public class State {
         addFeature(Feature.OppHealth, e.getEnergy());
 
         // strategy employed
-        addFeature(Feature.StrategyEmployed, robot.getStrategy());
+        //addFeature(Feature.StrategyEmployed, robot.getStrategy());
+        evasionStrategy = robot.getStrategy();
 
         // opponent name
-        addFeature(Feature.OppName, e.getName());
+        //addFeature(Feature.OppName, e.getName());
     }
 
     // return state to write to file
@@ -153,6 +155,10 @@ public class State {
             names.add(f.toString());
         }
         return names.toArray(new String[0]);
+    }
+    
+    public String getEvasionStrategy() {
+        return evasionStrategy;
     }
 
     // set the result of the bullet

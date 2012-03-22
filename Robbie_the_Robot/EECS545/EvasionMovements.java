@@ -171,4 +171,10 @@ public class EvasionMovements {
 			return "feign";
 		}
 	}
+        
+        public String[] possibleMovements() {
+            return new String[] {
+                "evadeLeft", "evadeRight", "halt", "feign", "random"
+            };
+        }
 }
