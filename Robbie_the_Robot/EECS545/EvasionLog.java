@@ -1,7 +1,6 @@
 package EECS545;
 
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import robocode.RobocodeFileOutputStream;
@@ -13,7 +12,7 @@ import robocode.RobocodeFileOutputStream;
 
 public class EvasionLog {    
     private State state;
-    private HashMap<String, PrintStream> outStreams = new HashMap<String, PrintStream>();
+    private HashMap<String, PrintWriter> outStreams = new HashMap<String, PrintWriter>();
     private boolean hasPrintFeatureList = false;
     
     private String baseFileName = "evasion.log.";
@@ -31,10 +30,10 @@ public class EvasionLog {
 
             rob = robot;
             try {
-                outStreams.put(s, new PrintStream(
-                        new RobocodeFileOutputStream(rob.getDataFile(fileName).getName(),
+                outStreams.put(s, new PrintWriter(new BufferedWriter(
+                        new FileWriter(rob.getDataFile(fileName).getName(),
                         true // append
-                        )));
+                        ), 2048)));
                 rob.out.println("Opened log file " + fileName);
             } catch (IOException e) {
                 rob.out.println("Error in trying to open the log file");
@@ -86,7 +85,7 @@ public class EvasionLog {
     
     public void close(){
         try{
-            for(PrintStream out : outStreams.values()) {
+            for(PrintWriter out : outStreams.values()) {
                 out.close();
             }
         }
