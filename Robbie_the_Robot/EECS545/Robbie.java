@@ -16,7 +16,7 @@ import robocode.util.Utils;
 public class Robbie extends AdvancedRobot {
     // output flag
 
-    boolean output = true;
+    boolean output = false;
     // battle field information
     double envWidth;
     double envHeight;
@@ -147,16 +147,19 @@ public class Robbie extends AdvancedRobot {
     // evade a possible bullet (it could have been  wall hit).
     // returns true if it was an actual bullet
     private boolean evadePossibleBullet() {
+	
         // calculate enemy's location
         double beta = Utils.normalRelativeAngleDegrees(getHeading() + lastE.getBearing());
         double enemyX = getX() + lastE.getDistance() * Math.sin(Math.toRadians(beta));
         double enemyY = getY() + lastE.getDistance() * Math.cos(Math.toRadians(beta));
+
         // ensure enemy is not close to a wall IOT avoid mistaking wall collision for a bullet fire
         if (enemyX < 25 || enemyX > (envWidth - 25) || enemyY < 25 || enemyY > (envHeight - 25)) {
             // reset previous energy value
             prevEnergy = lastE.getEnergy();
-            return true;
+            return false;
         }
+
         // energy drop of enemy
         double eDrop = prevEnergy - lastE.getEnergy();
         // reset previous energy value
