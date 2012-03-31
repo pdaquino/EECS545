@@ -20,9 +20,9 @@ public class EvasionLog {
     
     //String[] finalStateArray;
     
-    Robbie rob; //To access the Robocode PrintStream to O/P Error messages
+    MirroringEvadingRobot rob; //To access the Robocode PrintStream to O/P Error messages
     
-    public EvasionLog(Robbie robot){    
+    public EvasionLog(MirroringEvadingRobot robot){    
         // open one file for every strategy
         String[] strategies = robot.listEvasionStrategies();
         for (String s : strategies) {

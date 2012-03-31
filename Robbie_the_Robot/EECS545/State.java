@@ -59,7 +59,7 @@ public class State {
     }
 
     // constructor
-    public State(Robbie robot) {
+    public State(MirroringEvadingRobot robot) {
         this.robot = robot;
         // last scanned event
         ScannedRobotEvent e = robot.getLastE();
@@ -139,8 +139,8 @@ public class State {
     }
 
     // return state to write to file
-    public String[] getState() {
-        return features.values().toArray(new String[0]);
+    public Double[] getState() {
+        return features.values().toArray(new Double[0]);
     }
 
     // returns a list with all the feature names, in the same order

@@ -177,4 +177,10 @@ public class EvasionMovements {
                 "evadeLeft", "evadeRight", "halt", "feign", "random"
             };
         }
+        
+        public void evade(String strategy, ScannedRobotEvent e) {
+            if(strategy.equals("evadeLeft")) {
+                
+            }
+        }
 }
