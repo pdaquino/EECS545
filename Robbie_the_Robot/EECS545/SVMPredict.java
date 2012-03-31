@@ -11,6 +11,9 @@ public class SVMPredict {
 
 	// svm model
 	svm_model model;
+	
+	// identification
+	String strategy;
 
 	// scaling factors
 	double[] featureMax;
@@ -26,7 +29,7 @@ public class SVMPredict {
 	public static void main(String args[]) throws IOException {
 
 		// testing functionality
-		SVMPredict tester = new SVMPredict(args[0], args[1]);
+		SVMPredict tester = new SVMPredict(args[0], args[1], "testing");
 		tester.readFile(args[2]);
 
 		// testing the original test values by scaling and testing
@@ -45,13 +48,23 @@ public class SVMPredict {
 	}
 
 	// constructor
-	public SVMPredict(String modelFile, String scaleFile) throws IOException {
+	public SVMPredict(String modelFile, String scaleFile, String strategy) throws IOException {
 
+		// lock in strategy
+		this.strategy = strategy;
+	
 		// load in SVM model
 		model = svm.svm_load_model(modelFile);
 
 		// load in training scale
 		getScale(scaleFile);
+	}
+
+	// get strategy
+	public String getStrategy(){
+		
+		return strategy;
+	
 	}
 
 	// reads in scale file for data scaling
@@ -178,7 +191,7 @@ public class SVMPredict {
 	}
 
 	// tests a single data point
-	private double testPoint(double[] features) {
+	public double predict(double[] features) {
 
 		// return test value
 		double[] val = new double[1];
