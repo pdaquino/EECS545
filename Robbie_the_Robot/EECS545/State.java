@@ -43,14 +43,10 @@ public class State {
         //StrategyEmployed,
         //OppName
     }
-    private EnumMap<Feature, String> features = new EnumMap<Feature, String>(Feature.class);
+    private EnumMap<Feature, Double> features = new EnumMap<Feature, Double>(Feature.class);
     private AdvancedRobot robot;
 
     protected final void addFeature(Feature f, double value) {
-        addFeature(f, Double.toString(value));
-    }
-
-    protected final void addFeature(Feature f, String value) {
         if (features.put(f, value) != null) {
             robot.out.println("Warning: feature " + f + " is being overwritten");
         } else {
@@ -58,7 +54,7 @@ public class State {
         }
     }
 
-    public String getFeatureValue(Feature f) {
+    public Double getFeatureValue(Feature f) {
         return features.get(f);
     }
 

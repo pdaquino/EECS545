@@ -64,7 +64,7 @@ public class EvasionLog {
         //  feature_value = unique id for the feature
         StringBuilder sb = new StringBuilder();
         sb.append(state.getBulletHit() ? -1 : 1).append(' ');
-        String[] featureValues = state.getState();
+        Double[] featureValues = state.getState();
         for(int i = 0; i < featureValues.length; i++) {
             // making the feature_id 1-based just to be safe (this is how
             // the example files I have look like)
