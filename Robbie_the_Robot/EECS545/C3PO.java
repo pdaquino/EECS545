@@ -16,10 +16,10 @@ public class C3PO extends MirroringEvadingRobot {
     protected void initRobot() {
         // SVMs
         try {
-            predictors.add(new SVMPredict("/svm_models/leftModel.txt", "/svm_models/leftScale.txt", "evadeLeft"));
-            predictors.add(new SVMPredict("/svm_models/rightModel.txt", "/svm_models/rightScale.txt", "evadeRight"));
-            predictors.add(new SVMPredict("/svm_models/haltModel.txt", "/svm_models/haltScale.txt", "halt"));
-            predictors.add(new SVMPredict("/svm_models/feignModel.txt", "/svm_models/feignScale.txt", "feign"));
+            predictors.add(new SVMPredict(getDataFile("/svm_models/leftModel.txt").getAbsolutePath(), getDataFile("/svm_models/leftScale.txt").getAbsolutePath(), "evadeLeft"));
+            predictors.add(new SVMPredict(getDataFile("/svm_models/rightModel.txt").getAbsolutePath(), getDataFile("/svm_models/rightScale.txt").getAbsolutePath(), "evadeRight"));
+            predictors.add(new SVMPredict(getDataFile("/svm_models/haltModel.txt").getAbsolutePath(), getDataFile("/svm_models/haltScale.txt").getAbsolutePath(), "halt"));
+            predictors.add(new SVMPredict(getDataFile("/svm_models/feignModel.txt").getAbsolutePath(), getDataFile("/svm_models/feignScale.txt").getAbsolutePath(), "feign"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -35,6 +35,8 @@ public class C3PO extends MirroringEvadingRobot {
 		for(SVMPredict predictor:predictors){
 
 			double val = predictor.predict(state.getState());
+			
+			out.println("Strategy: " + predictor.getStrategy() + " Value: " + val);
 			
 			if(val > bestValue){
 				bestValue = val;
