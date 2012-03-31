@@ -27,6 +27,29 @@ public class C3PO extends MirroringEvadingRobot {
 
     @Override
     protected String evadeBullet(ScannedRobotEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
+	
+		State state = new State(this);
+		double bestValue = 0;
+		String bestStrategy = new String();
+		
+		for(SVMPredict predictor:predictors){
+
+			double val = predictor.predict(state.getState());
+			
+			if(val > bestValue){
+				bestValue = val;
+				bestStrategy = predictor.getStrategy();
+			}	
+		}
+	
+		if(bestValue <=0){
+			out.println("Chose Random Strategy");	
+			out.println();
+			return "random";
+		}
+			
+		out.println("Chose " + bestStrategy + " Strategy");
+		out.println();
+		return bestStrategy;
     }
 }							

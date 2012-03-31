@@ -191,7 +191,7 @@ public class SVMPredict {
 	}
 
 	// tests a single data point
-	public double predict(double[] features) {
+	public double predict(Double[] features) {
 
 		// return test value
 		double[] val = new double[1];
