@@ -27,7 +27,6 @@ Features
 *10.) Strategy Used
 *11.) Opponent Name
 
-
 Data Gathering Pseudo Code
 	while(1)
 	    until opponent fires
@@ -37,6 +36,22 @@ Data Gathering Pseudo Code
 		employ strategy until bullet has passed (wave VS 5 second rule)
 	    end
 	end
+
+Test Results
+  *Trained on data from 1000 battles
+  *Tested on data from 10000 battles
+  *Same opponent used for both train/test set
+  *Results:
+	evadeRight: 93.10%
+	evadeLeft:  88.33%
+	feign:      97.86%
+	halt:       97.10%
+	random:	    61.87%
+
+
+
+
+
 
 
 
