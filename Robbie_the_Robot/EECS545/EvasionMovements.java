@@ -172,15 +172,24 @@ public class EvasionMovements {
 		}
 	}
         
-        public String[] possibleMovements() {
-            return new String[] {
-                "evadeLeft", "evadeRight", "halt", "feign", "random"
-            };
-        }
+    public String[] possibleMovements() {
+        return new String[] {
+            "evadeLeft", "evadeRight", "halt", "feign", "random"
+        };
+    }
         
-        public void evade(String strategy, ScannedRobotEvent e) {
-            if(strategy.equals("evadeLeft")) {
-                
-            }
-        }
+    // employ pre-determined evasion strategy
+    public void evade(String strategy, ScannedRobotEvent e) {
+        
+        if(strategy.equals("evadeLeft"))
+            evadeLeft(e);
+        else if(strategy.equals("evadeRight"))
+            evadeRight(e);
+        else if(strategy.equals("halt"))
+            halt();
+        else if(strategy.equals("feign"))
+            feign();
+        else
+            random();
+    }
 }

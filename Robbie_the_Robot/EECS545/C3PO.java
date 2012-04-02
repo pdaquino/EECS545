@@ -44,14 +44,18 @@ public class C3PO extends MirroringEvadingRobot {
 			}	
 		}
 	
+        // output what strategy was chosen
 		if(bestValue <=0){
 			out.println("Chose Random Strategy");	
 			out.println();
 			return "random";
 		}
-			
 		out.println("Chose " + bestStrategy + " Strategy");
 		out.println();
+        
+        // execute chosen evasion strategy
+        em.evade(bestStrategy, lastE);
+		
 		return bestStrategy;
     }
 }							
