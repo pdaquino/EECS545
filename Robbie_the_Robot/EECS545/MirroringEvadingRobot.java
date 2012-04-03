@@ -11,7 +11,7 @@ import robocode.util.Utils;
  * @author Pedro
  */
 public abstract class MirroringEvadingRobot extends AdvancedRobot {
-   boolean output = false;
+   boolean output = true;
     // battle field information
     double envWidth;
     double envHeight;
@@ -91,9 +91,6 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
             out.println("** EvasionLog not Initiliazed **");
         }
 
-        //Wall Avoidance 
-        battleArena = new Rectangle((int) (envWidth - CONSTANTS.wallAvoid_HBuffer), (int) (envHeight - CONSTANTS.wallAvoid_VBuffer));
-
         // main robot loop
         while (true) {
 
@@ -104,7 +101,6 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
             if (lastE != null) {
                 updateBulletTracking();
             }
-
 
             // update last bearing for both enemy and robot
             lastRobotHeading = getHeading();
@@ -129,21 +125,18 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
         // turn radar according to angle above
         setTurnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
 
-        // if mirror behavior is enabled, continue to mirror opponent
+		// too close to a wall
+        if (CONSTANTS.wallAvoid_Enable) {
+			if(getX() < CONSTANTS.wallAvoidDistance || getX() > (envWidth - CONSTANTS.wallAvoidDistance) || getY() < CONSTANTS.wallAvoidDistance || getY() > (envHeight - CONSTANTS.wallAvoidDistance)){
+				em.halt();
+				out.println("Stopping engines...too close to wall");
+            }
+        }
+
+		 // if mirror behavior is enabled, continue to mirror opponent
         if (CONSTANTS.getMirrorBehaviorFlag()) {
             mirrorBehavior(e);
         }
-
-//        if (CONSTANTS.wallAvoid_Enable) {
-//            if (!battleArena.contains(getX() - (CONSTANTS.wallAvoid_HBuffer / 2), getY() - (CONSTANTS.wallAvoid_VBuffer / 2))) {
-//                if (getTime() > wallAvoidanceTime) {
-//                    out.println("Wall Avoidance at T =" + getTime());
-//                    strategy = em.executeRandomEvasion(lastE);
-//                    out.println("Srategy Used :" + strategy);
-//                    wallAvoidanceTime = getTime() + CONSTANTS.wallAvoid_timeWait;
-//                }
-//            }
-//        }
 
     }
 
@@ -173,6 +166,12 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
             // enemy fired a bullet, begin tracking
             incoming = new BulletTracking(eDrop, lastE, new double[]{getX(), getY(), getHeading()}, getTime());
 
+
+			// output message
+            if (output) {
+                out.println("Enemy Fired a Bullet");
+            }
+		
             // select a random evasion movement and employ it
             // strategy = em.executeRandomEvasion(lastE);
             strategy = evadeBullet(lastE);
@@ -186,10 +185,6 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
             // disable the mirror behavior
             CONSTANTS.mirrorBehaviorDisable();
 
-            // output message
-            if (output) {
-                out.println("Enemy Fired a Bullet");
-            }
         }
         return false;
     }
@@ -236,7 +231,8 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
      * onHitWall: What to do when you hit a wall
      */
     public void onHitWall(HitWallEvent e) {
-        // Replace the next line with any behavior you would like
+	
+		out.println("HIT A WALL!!!!!!");
     }
 
     /**
