@@ -34,9 +34,9 @@ public class EvasionLog {
                         new FileWriter(rob.getDataFile(fileName).getName(),
                         true // append
                         ), 2048)));
-                rob.out.println("Opened log file " + fileName);
+                rob.out.println("Opened evsion log file " + fileName);
             } catch (IOException e) {
-                rob.out.println("Error in trying to open the log file");
+                rob.out.println("Error in trying to open the evasion log file");
                 rob.out.println(e.getMessage());
             }
         }

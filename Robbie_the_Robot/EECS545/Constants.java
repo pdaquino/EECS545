@@ -15,6 +15,7 @@ public class Constants{
     double mirror_Force_k1 = 1.5; //Decides b/w just Lateral Inversion and Diagonol Inversion
     public boolean mirror_Behavior_Enable;
     public boolean evasionLog_Enable = true;//Enables/Disables the evasion log - should be true for training
+    public boolean survivalLog_Enable = true;//Enables/Disables the survival log
     /*
     *	Sets the mirroring constants
     */
