@@ -12,7 +12,7 @@ import robocode.util.Utils;
  */
 public abstract class MirroringEvadingRobot extends AdvancedRobot {
 	//output option
-   	boolean output = true;
+   	boolean output = false;
 	// close to wall flag
 	boolean closeToWall = false;
     // battle field information

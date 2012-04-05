@@ -36,8 +36,6 @@ public class C3PO extends MirroringEvadingRobot {
 
 			double val = predictor.predict(state.getState());
 			
-			out.println("Strategy: " + predictor.getStrategy() + " Value: " + val);
-			
 			if(val > bestValue){
 				bestValue = val;
 				bestStrategy = predictor.getStrategy();
@@ -46,13 +44,9 @@ public class C3PO extends MirroringEvadingRobot {
 	
         // output what strategy was chosen
 		if(bestValue <=0){
-			out.println("Chose Random Strategy");	
-			out.println();
 			return "random";
 		}
-		out.println("Chose " + bestStrategy + " Strategy");
-		out.println();
-        
+	
         // execute chosen evasion strategy
         em.evade(bestStrategy, lastE);
 		
