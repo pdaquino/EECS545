@@ -37,6 +37,8 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
     BulletTracking incoming = new BulletTracking();
     // evasion log file
     EvasionLog evasionLog = null;
+    //survival log file
+    SurvivalLog survLog = null;
     
     // method must return the strategy it performed
     protected abstract String evadeBullet(ScannedRobotEvent e);
@@ -89,6 +91,20 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
 
         if (evasionLog == null) {
             out.println("** EvasionLog not Initiliazed **");
+        }
+        
+        //Initializae Survival Log
+        try {
+            if (CONSTANTS.survivalLog_Enable) {
+                survLog = new SurvivalLog(this);
+            }
+        } catch (Exception e) {
+            out.println("**ERROR in trying to initiliaze the SurvivalLog obj");
+            out.println(e.getMessage());
+        }
+
+        if (survLog == null) {
+            out.println("** SurvivalLog not Initiliazed **");
         }
 
         // main robot loop
@@ -307,6 +323,7 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
     public void onRoundEnded(RoundEndedEvent event) {
         out.println("The round has ended");
         evasionLog.close();
+        survLog.endSLog(this.getTime());
     }
 
     public String[] listEvasionStrategies() {
