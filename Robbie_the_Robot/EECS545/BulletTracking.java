@@ -77,7 +77,7 @@ public class BulletTracking
 			double distBulletTraveled = velocity*(time - bulletTime);
 		
 			// check if bullet has passed
-			if((distToEnemy + 40) < distBulletTraveled) {
+			if((distToEnemy + 45) < distBulletTraveled) {
 				tracking = false;
 				return true;
 			}

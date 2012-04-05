@@ -13,13 +13,13 @@ public class EvasionMovements {
 	Random rand = Utils.getRandom();
 	
 	// robot
-	AdvancedRobot robot;
+	MirroringEvadingRobot robot;
 	
 	// output flag
 	boolean output;
 	
 	// constructor call
-	public EvasionMovements(AdvancedRobot robot, boolean output){
+	public EvasionMovements(MirroringEvadingRobot robot, boolean output){
 		this.robot = robot;
 		this.output = output;
 	}
@@ -187,4 +187,48 @@ public class EvasionMovements {
         else
             random();
     }
+
+	// move towards center of the room
+	public void moveToCenter() {
+		
+		// angle to center
+		double phi = -Math.toDegrees(Math.atan2((robot.getEnvHeight()/2)-robot.getY(), (robot.getEnvWidth()/2)-robot.getX())) + 90;
+		
+		// angle to x axis relative to robot's heading
+		double psi = Utils.normalRelativeAngleDegrees(robot.getHeading());
+		
+		// angle to center of room relative to robot's heading
+		double ang = -Utils.normalRelativeAngleDegrees(psi - phi);
+		
+		// checking conditions for which direction to turn / direction of engines 
+		if(Math.abs(ang) < 90) {
+			
+			if(ang > 0) {
+				
+				robot.setTurnRight(ang);
+				robot.setAhead(Double.POSITIVE_INFINITY);
+				
+			} else {
+			
+				robot.setTurnLeft(ang);
+				robot.setAhead(Double.POSITIVE_INFINITY);
+			
+			}	
+		} else {
+		
+			if(ang > 0) {
+				
+				robot.setTurnLeft(180 - ang);
+				robot.setBack(Double.POSITIVE_INFINITY);
+				
+			} else {
+			
+				robot.setTurnRight(180 - Math.abs(ang));
+				robot.setBack(Double.POSITIVE_INFINITY);
+			
+			}	
+		}
+		
+	}
+	
 }

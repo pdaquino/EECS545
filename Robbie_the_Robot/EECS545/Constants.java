@@ -7,7 +7,7 @@ package EECS545;
 public class Constants{
 
     //Wall Avoidance
-    int wallAvoidDistance = 55; 
+    int wallAvoidDistance = 60; 
     int wallAvoid_timeWait = 15; //How much time to wait to see if action was useful
     boolean wallAvoid_Enable = true; // Don't enable for Training
     //Mirroring Movement Constants
