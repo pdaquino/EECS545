@@ -39,14 +39,14 @@ public class R2D2 extends MirroringEvadingRobot {
         double totalWeight = 0;
         for(SVMPredict predictor : predictors) {
             double val = predictor.predict(state);
-            out.println("* " + predictor.getStrategy() + ": " + val);
+            //out.println("* " + predictor.getStrategy() + ": " + val);
             if(val > 0) {
                 positivePredictions.add(val);
                 positivePredictors.add(predictor);
                 totalWeight += val;
             }
         }
-        out.println("* total weight: " + totalWeight);
+        //out.println("* total weight: " + totalWeight);
         if (totalWeight == 0) {
             out.println("Chose Random Strategy");
             out.println();
