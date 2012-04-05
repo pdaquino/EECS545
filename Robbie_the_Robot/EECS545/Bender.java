@@ -7,7 +7,7 @@ import robocode.ScannedRobotEvent;
 
 
 // API help : http://robocode.sourceforge.net/docs/robocode/robocode/Robot.html
-public class C3PO extends MirroringEvadingRobot {
+public class Bender extends MirroringEvadingRobot {
 
     // State object to grab features
     private List<SVMPredict> predictors = new ArrayList<SVMPredict>();
@@ -36,14 +36,14 @@ public class C3PO extends MirroringEvadingRobot {
 
 			double val = predictor.predict(state.getState());
 			
-			if(val > bestValue){
+			if(val < bestValue){
 				bestValue = val;
 				bestStrategy = predictor.getStrategy();
 			}	
 		}
 	
         // output what strategy was chosen
-		if(bestValue <=0){
+		if(bestValue >=0){
 			em.evade("random", lastE);
 			return "random";
 		}
@@ -53,4 +53,4 @@ public class C3PO extends MirroringEvadingRobot {
 		
 		return bestStrategy;
     }
-}							
+}											
