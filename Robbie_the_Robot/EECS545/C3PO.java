@@ -39,7 +39,7 @@ public class C3PO extends MirroringEvadingRobot {
 			if(val > bestValue){
 				bestValue = val;
 				bestStrategy = predictor.getStrategy();
-			}	
+			}
 		}
 	
         // output what strategy was chosen

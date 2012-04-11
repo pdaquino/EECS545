@@ -194,7 +194,7 @@ public class SVMPredict {
 	public double predict(Double[] features) {
 
 		// return test value
-		double[] val = new double[1];
+		double[] val = new double[2];
 		
 		// svm_node test point
 		svm_node[] point = new svm_node[numScaledFeatures];
@@ -217,15 +217,19 @@ public class SVMPredict {
 		}
 
 		// prediction
-		svm.svm_predict_values(model, point, val);
-		return val[0];
+		double predClass = svm.svm_predict_probability(model, point, val);
+		
+		if(predClass == 1)
+			return val[0];
+		else
+			return -val[0];
 	}
 
 	// for testing using main method only
 	private double testPoint(svm_node[] node) {
 
 		// return test value
-		double[] val = new double[1];
+		double[] val = new double[2];
 
 		// svm_node test point
 		svm_node[] point = new svm_node[numScaledFeatures];
@@ -247,7 +251,11 @@ public class SVMPredict {
 		}
 
 		// prediction
-		svm.svm_predict_values(model, point, val);
-		return val[0];
+		double predClass = svm.svm_predict_probability(model, point, val);
+
+		if(predClass == 1)
+			return val[0];
+		else
+			return -val[0];
 	}
 }
