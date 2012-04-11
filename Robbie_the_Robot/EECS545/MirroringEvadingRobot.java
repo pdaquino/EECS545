@@ -1,4 +1,3 @@
-
 package EECS545;
 
 import java.awt.Color;
@@ -8,18 +7,20 @@ import robocode.util.Utils;
 
 /**
  *
- * @author Pedro . . . you may have refactored . . . but this isn't all yours, selfish!
+ * @author Pedro . . . you may have refactored . . . but this isn't all yours,
+ * selfish!
  */
 public abstract class MirroringEvadingRobot extends AdvancedRobot {
-	//output option
-   	boolean output = false;
-	// close to wall flag
-	boolean closeToWall = false;
+    //output option
+
+    boolean output = false;
+    // close to wall flag
+    boolean closeToWall = false;
     // battle field information
     double envWidth;
     double envHeight;
-	//energy drop of opponent
-	double eDrop = 0;
+    //energy drop of opponent
+    double eDrop = 0;
     // last time orientation of robot and enemy
     double lastRobotHeading = 0;
     double lastEnemyHeading = 0;
@@ -28,7 +29,7 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
     // constant object 
     Constants CONSTANTS;
     // evasion techniques
-    EvasionMovements em = new EvasionMovements((MirroringEvadingRobot)this, output);
+    EvasionMovements em = new EvasionMovements((MirroringEvadingRobot) this, output);
     // holds the last scan of the enemy for access to other methods
     ScannedRobotEvent lastE;
     // holds the previous energy of the opponent
@@ -39,10 +40,12 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
     EvasionLog evasionLog = null;
     //survival log file
     SurvivalLog survLog = null;
-    
+
     // method must return the strategy it performed
     protected abstract String evadeBullet(ScannedRobotEvent e);
-    protected void initRobot() { }
+
+    protected void initRobot() {
+    }
 
     /*
      * Do not create a constructor for Robbie, it creats a whole bunch of weird
@@ -50,8 +53,8 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
      */
     //Force Arbitrator for movement control
     public void run() {
-        
-		// initialize robot
+
+        // initialize robot
         initRobot();
 
         // grab battle field information
@@ -92,7 +95,7 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
         if (evasionLog == null) {
             out.println("** EvasionLog not Initiliazed **");
         }
-        
+
         //Initializae Survival Log
         try {
             if (CONSTANTS.survivalLog_Enable) {
@@ -141,29 +144,31 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
         // turn radar according to angle above
         setTurnRadarRight(Utils.normalRelativeAngleDegrees(radarTurn));
 
-		// if mirror behavior is enabled, continue to mirror opponent
-        if (CONSTANTS.getMirrorBehaviorFlag()) 
+        // if mirror behavior is enabled, continue to mirror opponent
+        if (CONSTANTS.getMirrorBehaviorFlag()) {
             mirrorBehavior(e);
-		else if (closeToWall)
-			em.halt();
+        } else if (closeToWall) {
+            em.halt();
+        }
 
-		// if too close to a wall, move away from it towards the center of the room
+        // if too close to a wall, move away from it towards the center of the room
         if (CONSTANTS.wallAvoid_Enable) {
-			if(getX() < CONSTANTS.wallAvoidDistance || getX() > (envWidth - CONSTANTS.wallAvoidDistance) || getY() < CONSTANTS.wallAvoidDistance || getY() > (envHeight - CONSTANTS.wallAvoidDistance)){
-				if(output)
-					out.println("Too close to wall - heading towards center");
-				em.moveToCenter();
-				closeToWall = true;
+            if (getX() < CONSTANTS.wallAvoidDistance || getX() > (envWidth - CONSTANTS.wallAvoidDistance) || getY() < CONSTANTS.wallAvoidDistance || getY() > (envHeight - CONSTANTS.wallAvoidDistance)) {
+                if (output) {
+                    out.println("Too close to wall - heading towards center");
+                }
+                em.moveToCenter();
+                closeToWall = true;
+            } else {
+                closeToWall = false;
             }
-			else
-				closeToWall = false;
         }
     }
 
     // evade a possible bullet (it could have been  wall hit).
     // returns true if it was an actual bullet
     private void evadePossibleBullet() {
-	
+
         // calculate enemy's location
         double beta = Utils.normalRelativeAngleDegrees(getHeading() + lastE.getBearing());
         double enemyX = getX() + lastE.getDistance() * Math.sin(Math.toRadians(beta));
@@ -177,7 +182,7 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
         }
 
         // update energy drop of enemy
-		eDrop = prevEnergy - lastE.getEnergy();
+        eDrop = prevEnergy - lastE.getEnergy();
         // reset previous energy value
         prevEnergy = lastE.getEnergy();
         // check boundaries of firing
@@ -186,14 +191,14 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
             // enemy fired a bullet, begin tracking
             incoming = new BulletTracking(eDrop, lastE, new double[]{getX(), getY(), getHeading()}, getTime());
 
-			// output message
+            // output message
             if (output) {
                 out.println("Enemy Fired a Bullet");
             }
-		
+
             // select an evasion movement
             strategy = evadeBullet(lastE);
-            
+
             // also log the bullet (make sure that we are only logging after the
             // strategy has been chosen)
             if (CONSTANTS.evasionLog_Enable) {
@@ -247,9 +252,10 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
      * onHitWall: What to do when you hit a wall
      */
     public void onHitWall(HitWallEvent e) {
-	
-		if(output)
-			out.println("HIT A WALL!!!!!!");
+
+        if (output) {
+            out.println("HIT A WALL!!!!!!");
+        }
     }
 
     /**
@@ -264,7 +270,7 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
 
             // reset previous energy value
             prevEnergy = lastE.getEnergy();
-			
+
             // check if the tracked bullet has missed us
             if (incoming.bulletPassed(getX(), getY(), getTime())) {
                 if (CONSTANTS.evasionLog_Enable) {
@@ -314,10 +320,10 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
         return envWidth;
     }
 
-	// return energy drop of enemy
-	public double getEnemyEnergyDrop() {
-		return eDrop;
-	}
+    // return energy drop of enemy
+    public double getEnemyEnergyDrop() {
+        return eDrop;
+    }
 
     @Override
     public void onRoundEnded(RoundEndedEvent event) {
