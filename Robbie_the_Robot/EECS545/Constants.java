@@ -36,6 +36,6 @@ public class Constants{
         return mirror_Behavior_Enable;
     }
     
-    public double fiePower = 1;//Sets the fire power of our guns
+    public double firePower = 1;//Sets the fire power of our guns
        
 }

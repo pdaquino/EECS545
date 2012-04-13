@@ -1,12 +1,15 @@
-package EECS545;
+package EECS545.target;
 
 //As the suggests does nothing.
+
+import robocode.ScannedRobotEvent;
+
 public class NOP implements Action{
     String name = "No Action Gun";    
     
     
-    public boolean execute() {
-        return true;
+    public void execute(ScannedRobotEvent e) {
+        // nop
     }
 
     public String getName() {
