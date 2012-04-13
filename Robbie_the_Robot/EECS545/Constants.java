@@ -35,5 +35,7 @@ public class Constants{
     public boolean getMirrorBehaviorFlag(){
         return mirror_Behavior_Enable;
     }
+    
+    public double fiePower = 1;//Sets the fire power of our guns
        
 }

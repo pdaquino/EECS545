@@ -335,4 +335,8 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
     public String[] listEvasionStrategies() {
         return em.possibleMovements();
     }
+    
+    public Constants getConstants(){
+        return CONSTANTS;
+    }
 }

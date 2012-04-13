@@ -6,7 +6,7 @@ import robocode.ScannedRobotEvent;
 
 /**
  * Marvin is our Q-Learner
- * @author Pedro, KK and Shiva (happy now?)
+ * @author Pedro, KK and Shiva (happy now?) You made my day!
  */
 public class Marvin extends MirroringEvadingRobot {
 
