@@ -4,16 +4,16 @@ package EECS545.target;
 
 import robocode.ScannedRobotEvent;
 
-public class NOP implements Action{
-    String name = "No Action Gun";    
+public class NOP extends Action{ 
     
     
     public void execute(ScannedRobotEvent e) {
         // nop
     }
 
-    public String getName() {
-        return name;
+    @Override
+    protected String makeName() {
+        return "NOP";
     }
     
 }

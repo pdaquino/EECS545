@@ -12,10 +12,10 @@ import robocode.util.Utils;
  *
  * @author Shiva
  */
-public class Gun implements Action {
-    String name;
+public class Gun extends Action {
     MirroringEvadingRobot robot;
-    double orientation;    
+    double orientation;
+    String name;
     
     /*
      * Initializes the Gun class.
@@ -27,9 +27,9 @@ public class Gun implements Action {
      * @orientation - the angulat offset from the central line that connects the
      * enemy and the gun. +ve for Clockwise -ve for Anti CLockwise
      */
-    public Gun(MirroringEvadingRobot robot, String name, double orientation){
+    public Gun(MirroringEvadingRobot robot, double orientation){
         this.robot = robot;
-        this.name = name;               
+        this.name = Double.toString(orientation);               
     }
     
     /*
@@ -49,11 +49,9 @@ public class Gun implements Action {
         robot.setTurnGunRight(Utils.normalRelativeAngleDegrees(gunTurn));        
     }
     
-    /*
-     * Returns the name of the Gun as well as its orientation as a String
-     */
-    public String getName() {
-        return new String("Gun"+name+":"+orientation);
+    @Override
+    protected String makeName() {
+        return "Gun"+name+":"+orientation;
     }
     
 }

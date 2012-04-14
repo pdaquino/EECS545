@@ -1,10 +1,6 @@
 package EECS545;
 
-import EECS545.target.Weight;
-import EECS545.target.WeightsIO;
 import java.awt.Color;
-import java.awt.Rectangle;
-import java.util.List;
 import robocode.*;
 import robocode.util.Utils;
 
@@ -44,11 +40,6 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
     //survival log file
     SurvivalLog survLog = null;
     
-    //TEMP
-    List<Weight> wts;
-    WeightsIO wtIO;
-     
-    //END TEMP
     // method must return the strategy it performed
     protected abstract String evadeBullet(ScannedRobotEvent e);
 
@@ -60,6 +51,7 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
      * errors. Put all initialization code in the run() method -
      */
     //Force Arbitrator for movement control
+    @Override
     public void run() {
 
         // initialize robot
@@ -79,7 +71,9 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
         setAdjustRadarForGunTurn(true);
 
         // body, gun, radar color
-        setColors(Color.red, Color.blue, Color.green);
+        // maize and blue, for crying out loud!
+        // (stupid java doesn't have Color.maize.. assholes)
+        setColors(Color.yellow, Color.blue, Color.blue);
 
         // constant object
         CONSTANTS = new Constants();
@@ -117,18 +111,7 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
         if (survLog == null) {
             out.println("** SurvivalLog not Initiliazed **");
         }
-        
-        //TMP
-        wtIO = new WeightsIO(this);
-        if(!wtIO.weightFileExists()){
-            wtIO.initWeights(CONSTANTS.no_of_RL_weights);
-            out.println("Creating a new weight log");
-        }
-        else{
-            out.println("Wts File already exist");
-        }
-        wts = wtIO.loadWeights();
-        //End TEMP
+
         // main robot loop
         while (true) {
 
@@ -349,11 +332,6 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
         out.println("The round has ended");
         evasionLog.close();
         survLog.endSLog(this.getTime());
-        //TMP
-        for(Weight wt:wts)
-            wt.setWeight(wt.getWeight()+1.0);
-        wtIO.saveWeights(wts);
-        //End TMP
     }
 
     public String[] listEvasionStrategies() {

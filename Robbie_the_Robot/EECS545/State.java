@@ -2,6 +2,7 @@ package EECS545;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashMap;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
@@ -46,6 +47,10 @@ public class State {
     private EnumMap<Feature, Double> features = new EnumMap<Feature, Double>(Feature.class);
     private AdvancedRobot robot;
 
+    public static int getNumFeatures() {
+        return EnumSet.allOf(State.Feature.class).size();
+    }
+    
     protected final void addFeature(Feature f, double value) {
         if (features.put(f, value) != null) {
             robot.out.println("Warning: feature " + f + " is being overwritten");

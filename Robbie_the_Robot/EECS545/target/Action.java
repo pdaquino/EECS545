@@ -6,8 +6,9 @@ import robocode.ScannedRobotEvent;
  *
  * @author Shiva
  */
-public interface Action {
-    public void execute(ScannedRobotEvent e);
+public abstract class Action {
+    public abstract void execute(ScannedRobotEvent e);
     
-    public String getName();
+    protected abstract String makeName();
+    public String getName() { return makeName(); }
 }
