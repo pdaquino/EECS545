@@ -37,5 +37,8 @@ public class Constants{
     }
     
     public double firePower = 1;//Sets the fire power of our guns
-       
+    
+    //RL Weights Constants
+    public double init_RL_weight = 0;//Default initializing weight for the RL-shooter
+    public int no_of_RL_weights = 10;
 }
