@@ -26,7 +26,7 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
     // current evasion strategy
     String strategy;
     // constant object 
-    Constants CONSTANTS;
+    protected Constants CONSTANTS;
     // evasion techniques
     EvasionMovements em = new EvasionMovements((MirroringEvadingRobot) this, output);
     // holds the last scan of the enemy for access to other methods
@@ -54,6 +54,9 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
     @Override
     public void run() {
 
+        // constant object
+        CONSTANTS = new Constants();
+        
         // initialize robot
         initRobot();
 
@@ -74,10 +77,7 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
         // maize and blue, for crying out loud!
         // (stupid java doesn't have Color.maize.. assholes)
         setColors(Color.yellow, Color.blue, Color.blue);
-
-        // constant object
-        CONSTANTS = new Constants();
-
+        
         // enable mirroring behavior
         CONSTANTS.mirrorBehaviorEnable();
 
@@ -114,7 +114,6 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
 
         // main robot loop
         while (true) {
-
             // interrupts onScannedRobot event 
             scan();
 
@@ -136,7 +135,6 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
      */
     @Override
     public void onScannedRobot(ScannedRobotEvent e) {
-
         // update last scan object
         lastE = e;
 
@@ -220,8 +218,10 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
      */
     private void mirrorBehavior(ScannedRobotEvent e) {
         double F;
-        double d;
-        d = CONSTANTS.mirror_distance - (getEnergy() - e.getEnergy());
+        double d = CONSTANTS.mirror_distance;
+        if(CONSTANTS.mirror_variable_distance) {
+          d -= (getEnergy() - e.getEnergy());
+        }
         F = CONSTANTS.mirror_Force_k1 * (e.getDistance() - d);
         //out.println("d = "+d);//debug
         //out.println("dist to enemy = "+e.getDistance());

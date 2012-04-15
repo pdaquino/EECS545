@@ -5,6 +5,8 @@
 package EECS545.target;
 
 import EECS545.MirroringEvadingRobot;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
@@ -13,45 +15,63 @@ import robocode.util.Utils;
  * @author Shiva
  */
 public class Gun extends Action {
-    MirroringEvadingRobot robot;
-    double orientation;
-    String name;
-    
+
+    private MirroringEvadingRobot robot;
+    private double orientation;
+    private boolean finished = false;
+
     /*
      * Initializes the Gun class.
-     * 
+     *
      * @param robot - instance of the calling class
-     * 
+     *
      * @param name - integer name of the Gun
-     * 
+     *
      * @orientation - the angulat offset from the central line that connects the
      * enemy and the gun. +ve for Clockwise -ve for Anti CLockwise
      */
-    public Gun(MirroringEvadingRobot robot, double orientation){
+    public Gun(MirroringEvadingRobot robot, double orientation) {
+        this.orientation = orientation;
         this.robot = robot;
-        this.name = Double.toString(orientation);               
     }
-    
+
     /*
-     * Fires the gun. Ensure that the the robot's gun has completed the required 
+     * Fires the gun. Ensure that the the robot's gun has completed the required
      * turn before caalling execute other wise it will fail and return FALSE.
      */
     public void execute(ScannedRobotEvent e) {
+        finished = false;
         turnGun(e);
-        // block while the gun is turning
-        while(Math.abs(robot.getGunTurnRemaining())>0){}
-            robot.setFire(robot.getConstants().firePower);
-        }
-    
-    private void turnGun(ScannedRobotEvent e){
+        robot.out.println(makeName() + " is turning...");
+    }
+
+    private void turnGun(ScannedRobotEvent e) {
         double gunTurn = robot.getHeading() + e.getBearing() - robot.getGunHeading();
         gunTurn += orientation;
-        robot.setTurnGunRight(Utils.normalRelativeAngleDegrees(gunTurn));        
+        robot.setTurnGunRight(Utils.normalRelativeAngleDegrees(gunTurn));
     }
-    
+
     @Override
     protected String makeName() {
-        return "Gun"+name+":"+orientation;
+        return "Gun" + orientation;
     }
-    
+
+    @Override
+    public boolean isFinished() {
+        if (finished) {
+            return true;
+        }
+        if (Math.abs(robot.getGunTurnRemaining()) > 0) {
+            return false;
+        } else {
+            if(robot.setFireBullet(robot.getConstants().firePower) != null) {
+                robot.out.println(makeName() + " fired successfully");
+                finished = true;
+            } else {
+                robot.out.println(makeName() + " couldn't fire; will try again");
+                finished = false;
+            }
+            return finished;
+        }
+    }
 }

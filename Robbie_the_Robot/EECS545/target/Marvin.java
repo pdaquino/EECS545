@@ -18,10 +18,10 @@ public class Marvin extends MirroringEvadingRobot {
     // the filename where we store the ranges of the features
     private static final String scalerFilename = "qrange.txt";
     // the number of guns
-    public static final int numGuns = 5;
+    public static final int numGuns = 6;
     // orientation of the left- and rightmost guns
-    public static final double minGunOrientation = -50;
-    public static final double maxGunOrientation = 50;
+    public static final double minGunOrientation = -30;
+    public static final double maxGunOrientation = 30;
     
     private ActionTracker actionTracker = null;
 
@@ -36,10 +36,14 @@ public class Marvin extends MirroringEvadingRobot {
 
     @Override
     protected void initRobot() {
+        CONSTANTS.mirror_variable_distance = false;
         try {
             WeightsIO wIO = new WeightsIO(this);
             if(wIO.weightFileExists()) {
                 weights = wIO.loadWeights();
+                out.println("Marvin: read weights from file");
+            } else {
+                out.println("Marvin: no weights file found; initializing weights to 0");
             }
             // if we pass QLearner an empty list of weights, it'll just
             // create default weights
@@ -60,12 +64,14 @@ public class Marvin extends MirroringEvadingRobot {
             out.println("Chose action " + a.getName());
             a.execute(e);
             actionTracker = new ActionTracker(a, this);
+            //actionTracker.setVerbose(true);
         } else {
             actionTracker.trackTime();
             if(actionTracker.isFinished()) {
                 // it can be finished either because enough time has passed
                 // (if the action was NOP) or because the bullet hit or missed
                 // the bullet status is update in the event handlers below
+                out.println("Marvin: actionTracker has finished");
                 learn();
                 actionTracker = null; // we are done with this tracker
             }
@@ -107,10 +113,14 @@ public class Marvin extends MirroringEvadingRobot {
     private List<Action> createActions() {
         List<Action> actns = new ArrayList<Action>();
         actns.add(new NOP());
-        double gunOrientInterval = (maxGunOrientation - minGunOrientation) / numGuns;
-        for(int i = 0; i < numGuns; i++) {
-            double gunOrientation = minGunOrientation + i*gunOrientInterval;
-            actns.add(new Gun(this, gunOrientation));
+//        double gunOrientInterval = (maxGunOrientation - minGunOrientation) / numGuns;
+//        for(int i = 0; i < numGuns; i++) {
+//            double gunOrientation = minGunOrientation + i*gunOrientInterval;
+//            actns.add(new Gun(this, gunOrientation));
+//        }
+        double[] guns = { -20, -10, -5, 0, 5, 10, 20 };
+        for(int i = 0; i < guns.length; i++) {
+            actns.add(new Gun(this, guns[i]));
         }
         return actns;
     }

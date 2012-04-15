@@ -1,12 +1,12 @@
 package EECS545.target;
 
 import EECS545.MirroringEvadingRobot;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Saves and reloads learned weights b/w rounds.
@@ -56,7 +56,7 @@ public class WeightsIO {
         PrintWriter weightLogWrite = null;
         try {
             weightLogWrite = new PrintWriter(new BufferedWriter(new FileWriter(
-                            rob.getDataFile(fileName).getAbsolutePath(),false), 2048));            
+                            fileName,false), 2048));            
             //^false is used to prevent file append
             weightLogWrite.println(weights.size());
             for (WeightVector wt : weights) {
@@ -77,7 +77,7 @@ public class WeightsIO {
         Scanner weightLogRead = null;
         List<WeightVector> weights = null;
         try {
-            weightLogRead = new Scanner(rob.getDataFile(fileName));
+            weightLogRead = new Scanner(fileName);
             int size = weightLogRead.nextInt();
             weights = new ArrayList<WeightVector>(size);
             for(int i=0;i<size;i++){   

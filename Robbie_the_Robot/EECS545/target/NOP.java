@@ -15,5 +15,10 @@ public class NOP extends Action{
     protected String makeName() {
         return "NOP";
     }
+
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
     
 }

@@ -26,30 +26,64 @@ public class ActionTracker {
     private Action action = null;
     private MirroringEvadingRobot rob;
     
+    private boolean verbose = false;
+    
     public ActionTracker(Action a, MirroringEvadingRobot rob) {
         this.action = a;
         this.rob = rob;
         if(a.getName().equals("NOP")) {
             trackingNOP = true;
         }
-        this.roundCaptureSPrime = rob.getTime() + sPrimeWait;
+        if(a.isFinished()) {
+            this.roundCaptureSPrime = rob.getTime() + sPrimeWait;
+            rob.out.println("action finished in ctor; waiting until turn " + roundCaptureSPrime);
+        }
         this.s = new State(rob);
     }
     
     public void trackTime() {
-        if(sPrime == null && rob.getTime() >= roundCaptureSPrime) {
+        if(roundCaptureSPrime == -1) {
+            if(action.isFinished()) {
+                this.roundCaptureSPrime = rob.getTime() + sPrimeWait;
+                output("trackTime: action just finished; waiting until turn " + roundCaptureSPrime + " to capture s'");
+            } else {
+                output("trackTime: action isn't finished yet");
+            }
+            return;
+        }
+        if (sPrime == null && rob.getTime() >= roundCaptureSPrime) {
+            output("trackTime: capturing s'");
             sPrime = new State(rob);
-            if(trackingNOP) {
+            if (trackingNOP) {
+                output("trackTime: was tracking NOP action; we are finished now");
                 finished = true;
+            }
+        } else {
+            if (sPrime != null) {
+                //output("trackTime: s' has been captured already");
+            } else {
+                output("trackTime: waiting until round " + roundCaptureSPrime + " to capture s'");
             }
         }
     }
     
+    public void setVerbose(boolean v) {
+        this.verbose = v;
+    }
+    private void output(String s) {
+        if(verbose) {
+            rob.out.println("ActionTracker: " + s);
+        }
+    }
     public void updateBulletStatus(BulletHitEvent e) {
         assert(!trackingNOP);
         reward = Rewards.getReward(e);
+        output("Bullet hit, reward = " + reward);
         if(sPrime == null) {
             sPrime = new State(rob);
+            output("Event happened before capturing s'; capturing now");
+        } else {
+            output("s' has been captured");
         }
         finished = true;
     }
@@ -57,8 +91,12 @@ public class ActionTracker {
     public void updateBulletStatus(BulletHitBulletEvent e) {
         assert(!trackingNOP);
         reward = Rewards.getReward(e);
+        output("Bullet hit another bullet, reward = " + reward);
         if(sPrime == null) {
             sPrime = new State(rob);
+            output("Event happened before capturing s'; capturing now");
+        } else {
+            output("s' has been captured");
         }
         finished = true;
     }
@@ -66,8 +104,12 @@ public class ActionTracker {
     public void updateBulletStatus(BulletMissedEvent e) {
         assert(!trackingNOP);
         reward = Rewards.getReward(e);
+        output("Bullet missed, reward = " + reward);
         if(sPrime == null) {
             sPrime = new State(rob);
+            output("Event happened before capturing s'; capturing now");
+        } else {
+            output("s' has been captured");
         }
         finished = true;
     }
