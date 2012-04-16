@@ -20,5 +20,10 @@ public class NOP extends Action{
     public boolean isFinished() {
         return true;
     }
+
+    @Override
+    public double getAngle() {
+        return -1;
+    }
     
 }

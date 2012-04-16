@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- *
+ * DEPRECATED. THIS CLASS IS NOT BEING USED.
  * @author Pedro
  */
 public class QLearner {
@@ -46,16 +46,16 @@ public class QLearner {
     }
     
     public void learn(State s, Action a, double reward, State sPrime) {
-        WeightVector w_a = weightMap.get(a.getName());
-        Double[] f = s.getState();
-        for(int i = 0; i < w_a.size(); i++) {
-            double maxQ_sPrime = GreedyPolicy.chooseAction(
-                    new ArrayList<WeightVector>(weightMap.values()), scaler,
-                    sPrime).Q;
-            double Q_s_a = w_a.transTimes(f);
-            double adjustment = alpha*f[i]*(reward + gamma*maxQ_sPrime - Q_s_a);
-            w_a.updateWeight(i, adjustment);
-        }
+//        WeightVector w_a = weightMap.get(a.getName());
+//        Double[] f = s.getState();
+//        for(int i = 0; i < w_a.size(); i++) {
+//            double maxQ_sPrime = GreedyPolicy.chooseAction(
+//                    new ArrayList<WeightVector>(weightMap.values()), scaler,
+//                    sPrime).Q;
+//            double Q_s_a = w_a.transTimes(f);
+//            double adjustment = alpha*f[i]*(reward + gamma*maxQ_sPrime - Q_s_a);
+//            w_a.updateWeight(i, adjustment);
+//        }
     }
 
     private WeightVector makeDefaultWeightVector(String actionName) {

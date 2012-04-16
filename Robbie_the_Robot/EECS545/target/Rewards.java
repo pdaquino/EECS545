@@ -14,7 +14,7 @@ public class Rewards {
      * Reward when the bullet hits the opponent
      */
     public static double getReward(BulletHitEvent e) {
-        return 40; // TODO does this value make sense?
+        return 0.8; // TODO does this value make sense?
     }
     /*
      * Reward when the bullet hits another bullet
@@ -25,11 +25,11 @@ public class Rewards {
     }
     
     public static double getReward(BulletMissedEvent e) {
-        return -10;
+        return -0.1;
     }
     
     public static double getRewardNOP() {
-        return -1;
+        return -0.001;
     }
     
 }

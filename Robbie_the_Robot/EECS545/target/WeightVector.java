@@ -3,6 +3,7 @@ package EECS545.target;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -51,6 +52,13 @@ public class WeightVector {
         return sum;
     }
     
+    public double transTimes(Double[] b, double scaledFiringAngle) {
+        List<Double> bList = new ArrayList<Double>(
+                Arrays.asList(b));  
+        bList.add(scaledFiringAngle);
+        return transTimes(bList);
+    }
+    
     public void updateWeight(int idx, double adjustment) {
         double w = weights.get(idx);
         weights.set(idx, w + adjustment);
@@ -67,12 +75,13 @@ public class WeightVector {
     }
     
     public static WeightVector fromString(String s) {
+        Output.println("fromString: " + s);
         Scanner lineScanner = new Scanner(s);
-        String name = lineScanner.next();
+        //String name = lineScanner.next();
         List<Double> weights = new ArrayList<Double>();
         while(lineScanner.hasNextDouble()) {
             weights.add(lineScanner.nextDouble());
         }
-        return new WeightVector(name, weights);
+        return new WeightVector("new", weights);
     }
 }

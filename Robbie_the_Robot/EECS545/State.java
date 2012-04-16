@@ -44,11 +44,15 @@ public class State {
         //StrategyEmployed,
         //OppName
     }
+    
+    private final static Double[] d = {730.0};// 688.8367594606118  };//, 300.4132523387888 }; //, 150.87124839028206, -0.0, 0.0, 30.43562419514103, 326.16939747909163, 532.8044165193943, -44.887449642946876, 0.0, -0.0, -67.44372482147344, 429.9220459939413, -26.463238732920278, 164.24130196677106, 0.0, -0.0, -97.87934901661447, 288.8370550902409, -179.91802428896366, 430.73572946280194, 100.0, 0.0 };
+    
     private EnumMap<Feature, Double> features = new EnumMap<Feature, Double>(Feature.class);
     private AdvancedRobot robot;
 
     public static int getNumFeatures() {
-        return EnumSet.allOf(State.Feature.class).size();
+        return d.length;
+        //return EnumSet.allOf(State.Feature.class).size();
     }
     
     protected final void addFeature(Feature f, double value) {
@@ -142,7 +146,14 @@ public class State {
 
     // return state to write to file
     public Double[] getState() {
-        return features.values().toArray(new Double[0]);
+        //return features.values().toArray(new Double[0]);
+        
+        return d;
+//        Double[] t = new Double[features.values().size()];
+//        t[0] = 1.0;
+//        for(int i = 1; i < t.length; i++)
+//            t[i] = .0;
+//        return t;
     }
 
     // returns a list with all the feature names, in the same order

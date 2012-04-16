@@ -25,12 +25,12 @@ public class Marvin extends MirroringEvadingRobot {
     
     private ActionTracker actionTracker = null;
 
-    private List<WeightVector> weights = new ArrayList<WeightVector>();
+    //private List<WeightVector> weights = new ArrayList<WeightVector>();
     private FeatureScaler scaler;
     
-    private List<Action> actions = null;
+    //private List<Action> actions = null;
     
-    private QLearner qLearner = null;
+    private SingleWQLearner qLearner = null;
     
     private Random rnd = new Random();
 
@@ -39,17 +39,18 @@ public class Marvin extends MirroringEvadingRobot {
         CONSTANTS.mirror_variable_distance = false;
         try {
             WeightsIO wIO = new WeightsIO(this);
+            WeightVector weights = null;
             if(wIO.weightFileExists()) {
-                weights = wIO.loadWeights();
+                weights = wIO.loadWeights().get(0);
                 out.println("Marvin: read weights from file");
             } else {
                 out.println("Marvin: no weights file found; initializing weights to 0");
             }
             // if we pass QLearner an empty list of weights, it'll just
             // create default weights
-            actions = createActions();
+            //actions = createActions();
             scaler = new FeatureScaler(scalerFilename);
-            qLearner = new QLearner(actions, weights, scaler);
+            qLearner = new SingleWQLearner(weights, scaler);
         } catch (IOException ex) {
             out.println(ex.getMessage());
         }
@@ -107,34 +108,37 @@ public class Marvin extends MirroringEvadingRobot {
     @Override
     public void onRoundEnded(RoundEndedEvent event) {
         super.onRoundEnded(event);
-        new WeightsIO(this).saveWeights(weights);
+        List<WeightVector> weightsList = new ArrayList<WeightVector>();
+        weightsList.add(qLearner.getW());
+        new WeightsIO(this).saveWeights(weightsList);
     } 
 
-    private List<Action> createActions() {
-        List<Action> actns = new ArrayList<Action>();
-        actns.add(new NOP());
-//        double gunOrientInterval = (maxGunOrientation - minGunOrientation) / numGuns;
-//        for(int i = 0; i < numGuns; i++) {
-//            double gunOrientation = minGunOrientation + i*gunOrientInterval;
-//            actns.add(new Gun(this, gunOrientation));
+//    private List<Action> createActions() {
+//        List<Action> actns = new ArrayList<Action>();
+//        actns.add(new NOP());
+////        double gunOrientInterval = (maxGunOrientation - minGunOrientation) / numGuns;
+////        for(int i = 0; i < numGuns; i++) {
+////            double gunOrientation = minGunOrientation + i*gunOrientInterval;
+////            actns.add(new Gun(this, gunOrientation));
+////        }
+//        double[] guns = { -20, -10, -5, 0, 5, 10, 20 };
+//        for(int i = 0; i < guns.length; i++) {
+//            actns.add(new Gun(this, guns[i]));
 //        }
-        double[] guns = { -20, -10, -5, 0, 5, 10, 20 };
-        for(int i = 0; i < guns.length; i++) {
-            actns.add(new Gun(this, guns[i]));
-        }
-        return actns;
-    }
+//        return actns;
+//    }
 
     private Action chooseRandomAction() {
-        int idx = rnd.nextInt(actions.size());
-        return actions.get(idx);
+        double rndScaledAngle = rnd.nextDouble();
+//        return new Gun(this, Gun.scaleToOrientation(rndScaledAngle));
+        return new Gun(this, 0.3);
     }
 
     private void learn() {
         assert(actionTracker != null);
         qLearner.learn(
                 actionTracker.getS(),
-                actionTracker.getAction(),
+                actionTracker.getAction().getAngle(),
                 actionTracker.getReward(),
                 actionTracker.getsPrime());
     }

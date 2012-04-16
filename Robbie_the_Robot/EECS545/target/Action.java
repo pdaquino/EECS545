@@ -11,4 +11,5 @@ public abstract class Action {
     public abstract boolean isFinished();
     protected abstract String makeName();
     public String getName() { return makeName(); }
+    public abstract double getAngle();
 }

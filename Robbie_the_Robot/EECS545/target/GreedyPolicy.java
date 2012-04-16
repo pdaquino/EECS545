@@ -12,24 +12,29 @@ import java.util.List;
  */
 public class GreedyPolicy {
     public static class Choice {
-        public String actionName;
+        public double orientation;
         public double Q;
-        public Choice(String n, double q) {
-            this.actionName = n;
+        public Choice(double orientation, double q) {
+            this.orientation = orientation;
             this.Q = q;
         }
     }
-    public static Choice chooseAction(List<WeightVector> weights, FeatureScaler scaler,
+    public static Choice chooseAction(WeightVector w, FeatureScaler scaler,
             State s) {
         double max = Double.NEGATIVE_INFINITY;
-        String bestAction = null;
-        for(WeightVector w : weights) {
-            double q = w.transTimes(scaler.scale(s.getState()));
+        double bestAngle = 0;
+        
+        double scaledAngle = 0;
+        Double[] scaledFeatures = scaler.scale(s.getState());        
+        while(scaledAngle < 1) {
+            double q = w.transTimes(scaledFeatures, scaledAngle);
             if(q > max) {
                 max = q;
-                bestAction = w.getActionName();
+                bestAngle = scaledAngle;
             }
+            scaledAngle += 1 / Gun.ORIENTATION_ARCH;
         }
-        return new Choice(bestAction, max);
+        Output.println("GreedyPolicy chose to fire at " + bestAngle);
+        return new Choice(Gun.scaleToOrientation(bestAngle), max);
     }
 }

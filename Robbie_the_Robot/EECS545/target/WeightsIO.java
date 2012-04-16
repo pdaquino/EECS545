@@ -2,6 +2,7 @@ package EECS545.target;
 
 import EECS545.MirroringEvadingRobot;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class WeightsIO {
 //    }
     
     public boolean weightFileExists(){
-        return rob.getDataFile(fileName).exists();
+        return new File(fileName).exists();
     }
     
 //    public void setWeights(List<Weight> weights){
@@ -76,9 +77,11 @@ public class WeightsIO {
     public List<WeightVector> loadWeights(){
         Scanner weightLogRead = null;
         List<WeightVector> weights = null;
+        Output.println("Reading weights from " + fileName);
         try {
-            weightLogRead = new Scanner(fileName);
+            weightLogRead = new Scanner(new File(fileName));
             int size = weightLogRead.nextInt();
+            weightLogRead.next();
             weights = new ArrayList<WeightVector>(size);
             for(int i=0;i<size;i++){   
                 weights.add(WeightVector.fromString(weightLogRead.nextLine()));
@@ -87,7 +90,9 @@ public class WeightsIO {
         catch (Exception ex) {
             rob.out.println("Error in trying to access the weights to read from "
                                                             + "the log file");
-            rob.out.println(ex.getMessage());
+            rob.out.println(ex.toString());
+            ex.printStackTrace();
+            
             return null;
         } finally {
             if(weightLogRead != null)

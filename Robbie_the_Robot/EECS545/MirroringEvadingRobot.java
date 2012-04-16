@@ -1,5 +1,6 @@
 package EECS545;
 
+import EECS545.target.Output;
 import java.awt.Color;
 import robocode.*;
 import robocode.util.Utils;
@@ -54,6 +55,8 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
     @Override
     public void run() {
 
+        Output.setOutStream(out);
+        
         // constant object
         CONSTANTS = new Constants();
         
@@ -77,7 +80,6 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
         // maize and blue, for crying out loud!
         // (stupid java doesn't have Color.maize.. assholes)
         setColors(Color.yellow, Color.blue, Color.blue);
-        
         // enable mirroring behavior
         CONSTANTS.mirrorBehaviorEnable();
 

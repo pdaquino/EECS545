@@ -19,7 +19,19 @@ public class Gun extends Action {
     private MirroringEvadingRobot robot;
     private double orientation;
     private boolean finished = false;
+    public static final double ORIENTATION_ARCH = 80;
+    public static final double MIN_ORIENTATION = -ORIENTATION_ARCH/2;
+    public static final double MAX_ORIENTATION = ORIENTATION_ARCH/2;
 
+    public static double orientationToScale(double orientation) {
+        double scale = orientation / (ORIENTATION_ARCH/2) + 1;
+        return scale;
+    }
+    
+    public static double scaleToOrientation(double scale) {
+        return (scale*ORIENTATION_ARCH/2 - ORIENTATION_ARCH/2);
+    }
+    
     /*
      * Initializes the Gun class.
      *
@@ -73,5 +85,10 @@ public class Gun extends Action {
             }
             return finished;
         }
+    }
+
+    @Override
+    public double getAngle() {
+        return orientation;
     }
 }
