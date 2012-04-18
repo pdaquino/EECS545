@@ -16,6 +16,7 @@ public class Constants{
     public boolean mirror_Behavior_Enable;
     public boolean evasionLog_Enable = true;//Enables/Disables the evasion log - should be true for training
     public boolean survivalLog_Enable = true;//Enables/Disables the survival log
+    public boolean mirror_variable_distance = true;
     /*
     *	Sets the mirroring constants
     */
@@ -35,5 +36,10 @@ public class Constants{
     public boolean getMirrorBehaviorFlag(){
         return mirror_Behavior_Enable;
     }
-       
+    
+    public double firePower = 2;//Sets the fire power of our guns
+    
+    //RL Weights Constants
+    public double init_RL_weight = 0;//Default initializing weight for the RL-shooter
+    public int no_of_RL_weights = 10;
 }

@@ -1,7 +1,7 @@
 package EECS545;
 
+import EECS545.target.Output;
 import java.awt.Color;
-import java.awt.Rectangle;
 import robocode.*;
 import robocode.util.Utils;
 
@@ -27,7 +27,7 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
     // current evasion strategy
     String strategy;
     // constant object 
-    Constants CONSTANTS;
+    protected Constants CONSTANTS;
     // evasion techniques
     EvasionMovements em = new EvasionMovements((MirroringEvadingRobot) this, output);
     // holds the last scan of the enemy for access to other methods
@@ -40,7 +40,7 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
     EvasionLog evasionLog = null;
     //survival log file
     SurvivalLog survLog = null;
-
+    
     // method must return the strategy it performed
     protected abstract String evadeBullet(ScannedRobotEvent e);
 
@@ -52,8 +52,14 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
      * errors. Put all initialization code in the run() method -
      */
     //Force Arbitrator for movement control
+    @Override
     public void run() {
 
+        Output.setOutStream(out);
+        
+        // constant object
+        CONSTANTS = new Constants();
+        
         // initialize robot
         initRobot();
 
@@ -71,11 +77,9 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
         setAdjustRadarForGunTurn(true);
 
         // body, gun, radar color
-        setColors(Color.red, Color.blue, Color.green);
-
-        // constant object
-        CONSTANTS = new Constants();
-
+        // maize and blue, for crying out loud!
+        // (stupid java doesn't have Color.maize.. assholes)
+        setColors(Color.yellow, Color.blue, Color.blue);
         // enable mirroring behavior
         CONSTANTS.mirrorBehaviorEnable();
 
@@ -112,7 +116,6 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
 
         // main robot loop
         while (true) {
-
             // interrupts onScannedRobot event 
             scan();
 
@@ -134,7 +137,6 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
      */
     @Override
     public void onScannedRobot(ScannedRobotEvent e) {
-
         // update last scan object
         lastE = e;
 
@@ -218,8 +220,10 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
      */
     private void mirrorBehavior(ScannedRobotEvent e) {
         double F;
-        double d;
-        d = CONSTANTS.mirror_distance - (getEnergy() - e.getEnergy());
+        double d = CONSTANTS.mirror_distance;
+        if(CONSTANTS.mirror_variable_distance) {
+          d -= (getEnergy() - e.getEnergy());
+        }
         F = CONSTANTS.mirror_Force_k1 * (e.getDistance() - d);
         //out.println("d = "+d);//debug
         //out.println("dist to enemy = "+e.getDistance());
@@ -334,5 +338,9 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
 
     public String[] listEvasionStrategies() {
         return em.possibleMovements();
+    }
+    
+    public Constants getConstants(){
+        return CONSTANTS;
     }
 }
