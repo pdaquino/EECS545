@@ -219,10 +219,16 @@ public class SVMPredict {
 		// prediction
 		double predClass = svm.svm_predict_probability(model, point, val);
 		
-		if(predClass == 1)
-			return val[0];
+		double value;
+		if(val[0] > val[1])
+			value = val[0];
 		else
-			return -val[0];
+			value = val[1];
+		
+		if(predClass == 1)
+			return value;
+		else
+			return -value;
 	}
 
 	// for testing using main method only
