@@ -130,7 +130,7 @@ public class Marvin extends MirroringEvadingRobot {
 
     private Action chooseRandomAction() {
         double rndScaledAngle = rnd.nextDouble();
-//        return new Gun(this, Gun.scaleToOrientation(rndScaledAngle));
+        //return new Gun(this, Gun.scaleToOrientation(rndScaledAngle));
         return new Gun(this, 0.3);
     }
 

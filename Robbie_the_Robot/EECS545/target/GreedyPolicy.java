@@ -20,7 +20,7 @@ public class GreedyPolicy {
         }
     }
     public static Choice chooseAction(WeightVector w, FeatureScaler scaler,
-            State s) {
+            ReducedState s) {
         double max = Double.NEGATIVE_INFINITY;
         double bestAngle = 0;
         

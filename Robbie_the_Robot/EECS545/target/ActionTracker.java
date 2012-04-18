@@ -20,8 +20,8 @@ public class ActionTracker {
     private boolean trackingNOP = false;
     private long roundCaptureSPrime = -1;
     private double reward;
-    private State s = null; // state when we fired
-    private State sPrime = null; // state sPrimeWait turns after we fired
+    private ReducedState s = null; // state when we fired
+    private ReducedState sPrime = null; // state sPrimeWait turns after we fired
     private boolean finished = false;
     private Action action = null;
     private MirroringEvadingRobot rob;
@@ -38,7 +38,7 @@ public class ActionTracker {
             this.roundCaptureSPrime = rob.getTime() + sPrimeWait;
             rob.out.println("action finished in ctor; waiting until turn " + roundCaptureSPrime);
         }
-        this.s = new State(rob);
+        this.s = new ReducedState(rob);
     }
     
     public void trackTime() {
@@ -53,7 +53,7 @@ public class ActionTracker {
         }
         if (sPrime == null && rob.getTime() >= roundCaptureSPrime) {
             output("trackTime: capturing s'");
-            sPrime = new State(rob);
+            sPrime = new ReducedState(rob);
             if (trackingNOP) {
                 output("trackTime: was tracking NOP action; we are finished now");
                 finished = true;
@@ -80,7 +80,7 @@ public class ActionTracker {
         reward = Rewards.getReward(e);
         output("Bullet hit, reward = " + reward);
         if(sPrime == null) {
-            sPrime = new State(rob);
+            sPrime = new ReducedState(rob);
             output("Event happened before capturing s'; capturing now");
         } else {
             output("s' has been captured");
@@ -93,7 +93,7 @@ public class ActionTracker {
         reward = Rewards.getReward(e);
         output("Bullet hit another bullet, reward = " + reward);
         if(sPrime == null) {
-            sPrime = new State(rob);
+            sPrime = new ReducedState(rob);
             output("Event happened before capturing s'; capturing now");
         } else {
             output("s' has been captured");
@@ -106,7 +106,7 @@ public class ActionTracker {
         reward = Rewards.getReward(e);
         output("Bullet missed, reward = " + reward);
         if(sPrime == null) {
-            sPrime = new State(rob);
+            sPrime = new ReducedState(rob);
             output("Event happened before capturing s'; capturing now");
         } else {
             output("s' has been captured");
@@ -126,11 +126,11 @@ public class ActionTracker {
         return reward;
     }
 
-    public State getS() {
+    public ReducedState getS() {
         return s;
     }
 
-    public State getsPrime() {
+    public ReducedState getsPrime() {
         return sPrime;
     }
     
