@@ -34,7 +34,7 @@ public class GreedyPolicy {
             }
             scaledAngle += 1 / Gun.ORIENTATION_ARCH;
         }
-        Output.println("GreedyPolicy chose to fire at " + bestAngle);
+        Output.println("GreedyPolicy chose to fire at " + Gun.scaleToOrientation(bestAngle));
         return new Choice(Gun.scaleToOrientation(bestAngle), max);
     }
 }
