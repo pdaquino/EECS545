@@ -20,7 +20,7 @@ public class GreedyPolicy {
         }
     }
     public static Choice chooseAction(WeightVector w, FeatureScaler scaler,
-            State s) {
+            ReducedState s) {
         double max = Double.NEGATIVE_INFINITY;
         double bestAngle = 0;
         
@@ -34,7 +34,7 @@ public class GreedyPolicy {
             }
             scaledAngle += 1 / Gun.ORIENTATION_ARCH;
         }
-        Output.println("GreedyPolicy chose to fire at " + bestAngle);
+        Output.println("GreedyPolicy chose to fire at " + Gun.scaleToOrientation(bestAngle));
         return new Choice(Gun.scaleToOrientation(bestAngle), max);
     }
 }

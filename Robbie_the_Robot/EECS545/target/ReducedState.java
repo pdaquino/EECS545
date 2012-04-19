@@ -1,18 +1,21 @@
-package EECS545;
 
+package EECS545.target;
+
+import EECS545.MirroringEvadingRobot;
+import EECS545.State;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashMap;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
 /**
- * State - a class for tracking state when a bullet is fired
+ *
+ * @author Pedro
  */
-public class State {
-    private String evasionStrategy;
+public class ReducedState {
+private String evasionStrategy;
     private boolean bulletHit;
 
     public enum Feature {
@@ -23,12 +26,12 @@ public class State {
         RobotGlobalVelX,
         RobotGlobalVelY,
         RobotGlobalVelT,
-        OppGlobalPoseX,
-        OppGlobalPoseY,
-        OppGlobalPoseT,
-        OppGlobalVelX,
-        OppGlobalVelY,
-        OppGlobalVelT,
+        //OppGlobalPoseX,
+        //OppGlobalPoseY,
+        //OppGlobalPoseT,
+        //OppGlobalVelX,
+        //OppGlobalVelY,
+        //OppGlobalVelT,
         OppRelPoseX,
         OppRelPoseY,
         OppRelPoseT,
@@ -36,11 +39,11 @@ public class State {
         OppRelVelY,
         OppRelVelT,
         RobotDistCenter,
-        RobotBearingCenter,
+        //RobotBearingCenter,
         DistanceToOpp,
-        RobotHealth,
-        OppHealthDrop,
-		AngleFired
+        //RobotHealth,
+        //OppHealthDrop,
+	//	AngleFired
         //BulletHit,
         //StrategyEmployed,
         //OppName
@@ -53,7 +56,7 @@ public class State {
 
     public static int getNumFeatures() {
         //return d.length;
-        return EnumSet.allOf(State.Feature.class).size();
+        return EnumSet.allOf(Feature.class).size();
     }
     
     protected final void addFeature(Feature f, double value) {
@@ -69,7 +72,7 @@ public class State {
     }
 
     // constructor for evading robot
-    public State(MirroringEvadingRobot robot) {
+    public ReducedState(MirroringEvadingRobot robot) {
         this.robot = robot;
         // last scanned event
         ScannedRobotEvent e = robot.getLastE();
@@ -89,23 +92,23 @@ public class State {
         addFeature(Feature.RobotGlobalVelX, robotVX);
         addFeature(Feature.RobotGlobalVelY, robotVY);
         addFeature(Feature.RobotGlobalVelT, robotVT);
-
+        
         // calculate enemy's location
         double angle = Utils.normalRelativeAngleDegrees(robot.getHeading() + e.getBearing());
         double opponentX = robotX + e.getDistance() * Math.sin(Math.toRadians(angle));
         double opponentY = robotY + e.getDistance() * Math.cos(Math.toRadians(angle));
 		double opponentT = -1 * Utils.normalRelativeAngleDegrees(e.getHeading()-90);
-        addFeature(Feature.OppGlobalPoseX, opponentX);
-        addFeature(Feature.OppGlobalPoseY, opponentY);
-        addFeature(Feature.OppGlobalPoseT, opponentT);
+//        addFeature(Feature.OppGlobalPoseX, opponentX);
+//        addFeature(Feature.OppGlobalPoseY, opponentY);
+//        addFeature(Feature.OppGlobalPoseT, opponentT);
 
         // calculate enemy's velocity
         double opponentVX = e.getVelocity() * Math.cos(Math.toRadians(opponentT));
         double opponentVY = e.getVelocity() * Math.sin(Math.toRadians(opponentT));
 		double opponentVT = -1 * ((Utils.normalRelativeAngleDegrees(e.getHeading() - robot.getLastEnemyHeading())) / 2);
-        addFeature(Feature.OppGlobalVelX, opponentVX);
-        addFeature(Feature.OppGlobalVelY, opponentVY);
-        addFeature(Feature.OppGlobalVelT, opponentVT);
+//        addFeature(Feature.OppGlobalVelX, opponentVX);
+//        addFeature(Feature.OppGlobalVelY, opponentVY);
+//        addFeature(Feature.OppGlobalVelT, opponentVT);
 
         // opponent relative location
         angle = -1 * e.getBearing();
@@ -128,16 +131,16 @@ public class State {
         double distanceToCenter = Math.sqrt(Math.pow(robotX - (robot.getEnvWidth() / 2), 2) + Math.pow(robotY - (robot.getEnvHeight() / 2), 2));
         double bearingToCenter = Math.toDegrees(Math.atan2((robot.getEnvHeight() / 2) - robotY, (robot.getEnvWidth() / 2) - robotX));
         addFeature(Feature.RobotDistCenter, distanceToCenter);
-        addFeature(Feature.RobotBearingCenter, bearingToCenter);
+//        addFeature(Feature.RobotBearingCenter, bearingToCenter);
 
         // distance to opponent
         addFeature(Feature.DistanceToOpp, e.getDistance());
 
         // health values
-        addFeature(Feature.RobotHealth, robot.getEnergy());
-        addFeature(Feature.OppHealthDrop, robot.getEnemyEnergyDrop());
+//        addFeature(Feature.RobotHealth, robot.getEnergy());
+//        addFeature(Feature.OppHealthDrop, robot.getEnemyEnergyDrop());
         
-        addFeature(Feature.AngleFired, 0);
+//        addFeature(Feature.AngleFired, 0);
 
         // strategy employed
         //addFeature(Feature.StrategyEmployed, robot.getStrategy());
@@ -147,78 +150,6 @@ public class State {
         //addFeature(Feature.OppName, e.getName());
     }
 
-    // constructor
-    public State(MirroringTargetingRobot robot) {
-        this.robot = robot;
-        // last scanned event
-        ScannedRobotEvent e = robot.getLastE();
-
-        // calculate robot's location
-        double robotX = robot.getX();
-        double robotY = robot.getY();
-        double robotT = -1 * Utils.normalRelativeAngleDegrees(robot.getHeading()-90);
-        addFeature(Feature.RobotGlobalPoseX, robotX);
-        addFeature(Feature.RobotGlobalPoseY, robotY);
-        addFeature(Feature.RobotGlobalPoseT, robotT);
-
-        // calculate robot's velocity
-        double robotVX = robot.getVelocity() * Math.cos(Math.toRadians(robotT));
-        double robotVY = robot.getVelocity() * Math.sin(Math.toRadians(robotT));
-        double robotVT = -1 * ((Utils.normalRelativeAngleDegrees(robot.getHeading() - robot.getLastRobotHeading())) / 2);
-        addFeature(Feature.RobotGlobalVelX, robotVX);
-        addFeature(Feature.RobotGlobalVelY, robotVY);
-        addFeature(Feature.RobotGlobalVelT, robotVT);
-
-        // calculate enemy's location
-        double angle = Utils.normalRelativeAngleDegrees(robot.getHeading() + e.getBearing());
-        double opponentX = robotX + e.getDistance() * Math.sin(Math.toRadians(angle));
-        double opponentY = robotY + e.getDistance() * Math.cos(Math.toRadians(angle));
-		double opponentT = -1 * Utils.normalRelativeAngleDegrees(e.getHeading()-90);
-        addFeature(Feature.OppGlobalPoseX, opponentX);
-        addFeature(Feature.OppGlobalPoseY, opponentY);
-        addFeature(Feature.OppGlobalPoseT, opponentT);
-
-        // calculate enemy's velocity
-        double opponentVX = e.getVelocity() * Math.cos(Math.toRadians(opponentT));
-        double opponentVY = e.getVelocity() * Math.sin(Math.toRadians(opponentT));
-		double opponentVT = -1 * ((Utils.normalRelativeAngleDegrees(e.getHeading() - robot.getLastEnemyHeading())) / 2);
-        addFeature(Feature.OppGlobalVelX, opponentVX);
-        addFeature(Feature.OppGlobalVelY, opponentVY);
-        addFeature(Feature.OppGlobalVelT, opponentVT);
-
-        // opponent relative location
-        angle = -1 * e.getBearing();
-        double opponentRelativeX = e.getDistance() * Math.cos(Math.toRadians(angle));
-        double opponentRelativeY = e.getDistance() * Math.sin(Math.toRadians(angle));
-        double opponentRelativeT = Utils.normalRelativeAngleDegrees(opponentT - robotT);
-        addFeature(Feature.OppRelPoseX, opponentRelativeX);
-        addFeature(Feature.OppRelPoseY, opponentRelativeY);
-        addFeature(Feature.OppRelPoseT, opponentRelativeT);
-
-        // opponent relative velocity
-        double opponentRelativeVX = opponentVX - robotVX;
-        double opponentRelativeVY = opponentVY - robotVY;
-        double opponentRelativeVT = opponentVT - robotVT;
-        addFeature(Feature.OppRelVelX, opponentRelativeVX);
-        addFeature(Feature.OppRelVelY, opponentRelativeVY);
-        addFeature(Feature.OppRelVelT, opponentRelativeVT);
-
-        // distance and relative bearing to room center
-        double distanceToCenter = Math.sqrt(Math.pow(robotX - (robot.getEnvWidth() / 2), 2) + Math.pow(robotY - (robot.getEnvHeight() / 2), 2));
-        double bearingToCenter = Math.toDegrees(Math.atan2((robot.getEnvHeight() / 2) - robotY, (robot.getEnvWidth() / 2) - robotX));
-        addFeature(Feature.RobotDistCenter, distanceToCenter);
-        addFeature(Feature.RobotBearingCenter, bearingToCenter);
-
-        // distance to opponent
-        addFeature(Feature.DistanceToOpp, e.getDistance());
-
-        // health values
-        addFeature(Feature.RobotHealth, robot.getEnergy());
-        addFeature(Feature.OppHealthDrop, e.getEnergy());
-
-        // angle fired
-        addFeature(Feature.AngleFired, robot.getAngleFired());
-    }
 
     // return state to write to file
     public Double[] getState() {

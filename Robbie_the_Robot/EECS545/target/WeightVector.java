@@ -44,7 +44,7 @@ public class WeightVector {
     
     public double transTimes(Double[] b) {
         if(b.length != weights.size())
-            throw new IllegalArgumentException("Dimensions don't match");
+            throw new IllegalArgumentException("Dimensions don't match (" + weights.size() + " vs " + b.length + ")");
         double sum = 0;
         for(int i = 0; i < b.length; i++) {
             sum += weights.get(i) * b[i];
