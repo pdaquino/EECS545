@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Pedro
  */
-public class GreedyPolicy {
+public class SingleWGreedyPolicy {
     public static class Choice {
         public double orientation;
         public double Q;
@@ -26,8 +26,9 @@ public class GreedyPolicy {
         
         double scaledAngle = 0;
         Double[] scaledFeatures = scaler.scale(s.getState());        
-        while(scaledAngle < 1) {
+        while(scaledAngle < 2) {
             double q = w.transTimes(scaledFeatures, scaledAngle);
+            Output.println("Angle " + Gun.scaleToOrientation(scaledAngle) + " => Q = " + q);
             if(q > max) {
                 max = q;
                 bestAngle = scaledAngle;
