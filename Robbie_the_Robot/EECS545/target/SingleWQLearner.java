@@ -40,7 +40,7 @@ public class SingleWQLearner {
                 Arrays.asList(scaler.scale(s.getState())));  
         scaledFeatures.add(Gun.orientationToScale(firingAngle));
         
-        double maxQ_sPrime = GreedyPolicy.chooseAction(w,
+        double maxQ_sPrime = SingleWGreedyPolicy.chooseAction(w,
                     scaler,
                     sPrime).Q;
         double Q_s_a = w.transTimes(scaledFeatures);                

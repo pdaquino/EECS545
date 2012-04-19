@@ -19,7 +19,7 @@ public class Robocop extends MirroringEvadingRobot {
     private long lastActionTurn = 0;
     private WeightVector weights = null;
     private final long TURN_QUOTA_ACTION = 2;
-    private final double MIN_Q_TO_SHOOT = 0.4;
+    private final double MIN_Q_TO_SHOOT = -0.2;
 
     @Override
     protected void initRobot() {
@@ -82,7 +82,7 @@ public class Robocop extends MirroringEvadingRobot {
 
     private Action chooseBestAction(ScannedRobotEvent e) {
         ReducedState s = new ReducedState(this);
-        GreedyPolicy.Choice choice = GreedyPolicy.chooseAction(weights, scaler, s);
+        SingleWGreedyPolicy.Choice choice = SingleWGreedyPolicy.chooseAction(weights, scaler, s);
         if (choice.Q > MIN_Q_TO_SHOOT) {
             Output.println("Decided to shoot heading " + choice.orientation + " with Q = " + choice.Q);
             return new Gun(this, choice.orientation);
