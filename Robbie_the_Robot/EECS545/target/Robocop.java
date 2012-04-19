@@ -2,10 +2,8 @@ package EECS545.target;
 
 import EECS545.MirroringEvadingRobot;
 import java.io.IOException;
-import robocode.BulletHitBulletEvent;
-import robocode.BulletHitEvent;
-import robocode.BulletMissedEvent;
-import robocode.ScannedRobotEvent;
+import java.util.List;
+import robocode.*;
 
 /**
  * Robocop uses a greedy policy on an approximated linear value function.
@@ -15,19 +13,20 @@ import robocode.ScannedRobotEvent;
 public class Robocop extends MirroringEvadingRobot {
     private static final String scalerFilename = "qrange.txt";
     private FeatureScaler scaler;
-    private Action lastAction = null;
+    private Gun lastAction = null;
     private long lastActionTurn = 0;
-    private WeightVector weights = null;
+    //private WeightVector weights = null;
+    private List<WeightVector> weightsList = null;
     private final long TURN_QUOTA_ACTION = 2;
-    private final double MIN_Q_TO_SHOOT = -0.2;
-
+    private final double MIN_Q_TO_SHOOT = 1.2;
+    
     @Override
     protected void initRobot() {
         CONSTANTS.mirror_variable_distance = false;
         try {
             WeightsIO wIO = new WeightsIO(this);
             if (wIO.weightFileExists()) {
-                weights = wIO.loadWeights().get(0);
+                weightsList = wIO.loadWeights();
                 out.println("Marvin: read weights from file");
             } else {
                 throw new RuntimeException("Robocop: no weights file found");
@@ -42,7 +41,7 @@ public class Robocop extends MirroringEvadingRobot {
     public void onScannedRobot(ScannedRobotEvent e) {
         super.onScannedRobot(e);
         if (lastAction == null) {
-            Action a = chooseBestAction(e);
+            Gun a = chooseBestAction(e);
             out.println("Chose action " + (a == null ? " NOP" : a.getName()));
             if (a != null) {
                 a.execute(e);
@@ -51,6 +50,7 @@ public class Robocop extends MirroringEvadingRobot {
             lastActionTurn = getTime();
         } else {
             if (lastAction.isFinished()) {
+                Bullet firedBullet = lastAction.getBullet();
                 Output.println("Last action finished on time");
                 lastAction = null;
             } else if (getTime() - lastActionTurn > TURN_QUOTA_ACTION) {
@@ -62,6 +62,7 @@ public class Robocop extends MirroringEvadingRobot {
 
     @Override
     public void onBulletHit(BulletHitEvent e) {
+        //e.getBullet().getName() 
         out.println("Bullet being tracked hit the opponent");
     }
 
@@ -80,12 +81,14 @@ public class Robocop extends MirroringEvadingRobot {
         return "feign";
     }
 
-    private Action chooseBestAction(ScannedRobotEvent e) {
+    private Gun chooseBestAction(ScannedRobotEvent e) {
         ReducedState s = new ReducedState(this);
-        SingleWGreedyPolicy.Choice choice = SingleWGreedyPolicy.chooseAction(weights, scaler, s);
+        //SingleWGreedyPolicy.Choice choice = SingleWGreedyPolicy.chooseAction(weights, scaler, s);
+        DiscreteWGreedyPolicy.Choice choice = DiscreteWGreedyPolicy.chooseAction(weightsList, scaler, s);
         if (choice.Q > MIN_Q_TO_SHOOT) {
             Output.println("Decided to shoot heading " + choice.orientation + " with Q = " + choice.Q);
-            return new Gun(this, choice.orientation);
+            //return new Gun(this, choice.orientation);
+            return new StochasticGun(this, choice.orientation, Constants.EPS);
         } else {
             Output.println("No good choice of firing angle (max Q = " + choice.Q + ")");
             return null;

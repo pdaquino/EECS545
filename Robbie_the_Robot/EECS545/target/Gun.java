@@ -7,6 +7,7 @@ package EECS545.target;
 import EECS545.MirroringEvadingRobot;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import robocode.Bullet;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
@@ -22,6 +23,7 @@ public class Gun extends Action {
     public static final double ORIENTATION_ARCH = 80;
     public static final double MIN_ORIENTATION = -ORIENTATION_ARCH/2;
     public static final double MAX_ORIENTATION = ORIENTATION_ARCH/2;
+    private Bullet bullet = null;
 
     public static double orientationToScale(double orientation) {
         double scale = orientation / (ORIENTATION_ARCH/2) + 1;
@@ -57,9 +59,13 @@ public class Gun extends Action {
         robot.out.println(makeName() + " is turning...");
     }
 
-    private void turnGun(ScannedRobotEvent e) {
+    protected void turnGun(ScannedRobotEvent e) {
+        turnGun(e, orientation);
+    }
+    
+    protected void turnGun(ScannedRobotEvent e, double angle) {
         double gunTurn = robot.getHeading() + e.getBearing() - robot.getGunHeading();
-        gunTurn += orientation;
+        gunTurn += angle;
         robot.setTurnGunRight(Utils.normalRelativeAngleDegrees(gunTurn));
     }
 
@@ -76,7 +82,8 @@ public class Gun extends Action {
         if (Math.abs(robot.getGunTurnRemaining()) > 0) {
             return false;
         } else {
-            if(robot.setFireBullet(robot.getConstants().firePower) != null) {
+            bullet = robot.setFireBullet(robot.getConstants().firePower); 
+            if(bullet != null) {
                 robot.out.println(makeName() + " fired successfully");
                 finished = true;
             } else {
@@ -86,6 +93,12 @@ public class Gun extends Action {
             return finished;
         }
     }
+
+    public Bullet getBullet() {
+        return bullet;
+    }
+    
+    
 
     @Override
     public double getAngle() {

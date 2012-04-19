@@ -81,7 +81,7 @@ public class WeightsIO {
         try {
             weightLogRead = new Scanner(new File(fileName));
             int size = weightLogRead.nextInt();
-            weightLogRead.next();
+            weightLogRead.nextLine(); // read up whitespace
             weights = new ArrayList<WeightVector>(size);
             for(int i=0;i<size;i++){   
                 weights.add(WeightVector.fromString(weightLogRead.nextLine()));
