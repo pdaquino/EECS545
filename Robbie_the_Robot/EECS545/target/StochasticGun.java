@@ -20,7 +20,17 @@ public class StochasticGun extends Gun {
     public StochasticGun(MirroringEvadingRobot robot, double orientation,
             double variation) {
         super(robot, orientation);
+        this.variation = variation;        
+    }
+    
+    /*
+     * Secondary constructor with Qval - used by Robocop
+     */
+    public StochasticGun(MirroringEvadingRobot robot, double orientation,
+            double variation, double Qval) {
+        super(robot, orientation);
         this.variation = variation;
+        setQval(Qval);
     }
     
     @Override

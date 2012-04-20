@@ -18,10 +18,13 @@ public class Robocop extends MirroringEvadingRobot {
     //private WeightVector weights = null;
     private List<WeightVector> weightsList = null;
     private final long TURN_QUOTA_ACTION = 2;
-    private final double MIN_Q_TO_SHOOT = 1.2;
+    private final double MIN_Q_TO_SHOOT = 0;    //For testing so that Robocop will
+                                                //fire at the highest Q value
+    
     
     @Override
     protected void initRobot() {
+        bLog = new BulletLog(this);
         CONSTANTS.mirror_variable_distance = false;
         try {
             WeightsIO wIO = new WeightsIO(this);
@@ -51,6 +54,7 @@ public class Robocop extends MirroringEvadingRobot {
         } else {
             if (lastAction.isFinished()) {
                 Bullet firedBullet = lastAction.getBullet();
+                bLog.addBullet(lastAction.getBullet().getName(), lastAction.getQval()); 
                 Output.println("Last action finished on time");
                 lastAction = null;
             } else if (getTime() - lastActionTurn > TURN_QUOTA_ACTION) {
@@ -62,7 +66,7 @@ public class Robocop extends MirroringEvadingRobot {
 
     @Override
     public void onBulletHit(BulletHitEvent e) {
-        //e.getBullet().getName() 
+        bLog.bulletResult(e.getBullet().getName(), true);
         out.println("Bullet being tracked hit the opponent");
     }
 
@@ -73,6 +77,7 @@ public class Robocop extends MirroringEvadingRobot {
 
     @Override
     public void onBulletMissed(BulletMissedEvent e) {
+        bLog.bulletResult(e.getBullet().getName(), false);
         out.println("Bullet being tracked missed");
     }
 
@@ -85,13 +90,15 @@ public class Robocop extends MirroringEvadingRobot {
         ReducedState s = new ReducedState(this);
         //SingleWGreedyPolicy.Choice choice = SingleWGreedyPolicy.chooseAction(weights, scaler, s);
         DiscreteWGreedyPolicy.Choice choice = DiscreteWGreedyPolicy.chooseAction(weightsList, scaler, s);
-        if (choice.Q > MIN_Q_TO_SHOOT) {
+        if (choice.Q > MIN_Q_TO_SHOOT) {            
             Output.println("Decided to shoot heading " + choice.orientation + " with Q = " + choice.Q);
             //return new Gun(this, choice.orientation);
-            return new StochasticGun(this, choice.orientation, Constants.EPS);
+            return new StochasticGun(this, choice.orientation, Constants.EPS, choice.Q);
         } else {
             Output.println("No good choice of firing angle (max Q = " + choice.Q + ")");
             return null;
         }
     }
+    
+    
 }

@@ -24,6 +24,8 @@ public class Gun extends Action {
     public static final double MIN_ORIENTATION = -ORIENTATION_ARCH/2;
     public static final double MAX_ORIENTATION = ORIENTATION_ARCH/2;
     private Bullet bullet = null;
+    
+    private double Qval;//The utility of this Gun
 
     public static double orientationToScale(double orientation) {
         double scale = orientation / (ORIENTATION_ARCH/2) + 1;
@@ -96,12 +98,21 @@ public class Gun extends Action {
 
     public Bullet getBullet() {
         return bullet;
-    }
-    
-    
+    }   
 
     @Override
     public double getAngle() {
         return orientation;
     }
+    
+    //Sets the utility of this Gun
+    public void setQval(double Qval) {
+        this.Qval = Qval;
+    }
+
+    //Gets the utility of this Gun
+    public double getQval() {
+        return Qval;
+    }   
+    
 }
