@@ -17,9 +17,9 @@ public class DiscreteWQLearner {
     private final int numFeatures = ReducedState.getNumFeatures();
     
     // important tweaking constants: learning rate
-    private final double alpha = 0.1;
+    private final double alpha = 0.2;
     // discount factor
-    private final double gamma = 0.8;
+    private final double gamma = 0.1;
     
     public DiscreteWQLearner(List<WeightVector> initialWeights,
             FeatureScaler scaler) {
