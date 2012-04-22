@@ -13,6 +13,7 @@
 %\setlength{\evensidemargin}{0in}
 %\setlength{\parindent}{1pc}
 \newcommand{\shortbar}{\begin{center}\rule{5ex}{0.1pt}\end{center}}
+\newcommand{\xxx}[1]{\textcolor{red}{#1}}
 %\renewcommand{\baselinestretch}{1.1}
 % Macros for course info
 \newcommand{\courseNumber}{EECS 545}
@@ -236,38 +237,62 @@ Figure \ref{b_wave} illustrates this wave pattern taken on by bullets. Our objec
 
 We are currently at a point where we can begin to collect data for evasive maneuvering. During the course of the training, we will look at the effectiveness of each strategy as the ability to dodge a particular shot while ignoring any other bullets which hit us during our evasive maneuver. We will collect data by running each evasion strategy multiple times against multiple different agents. 
 
-%\section{Future Milestones}
-%There will be five milestones to be completed before the project is finished: firstly, we will gather training data, train the SVMs,
-%and run tests for the evasion strategies. We will then repeat these processes while trying to reduce the number of features used. The next stage will be working on firing strategies. The last milestone is writing the
-%project report.
-%
-%\subsection*{Gathering Training Data}
-%We recently finished designing an agent that randomly selects an evasion strategy when fired upon, and documents the features upon being fired upon. The next step is to gather training data on each evasion strategy using this agent against multiple agents. Every data point consists of a description of the battlefield at the time the bullet was fired, which evasion strategy was selected, and if the bullet hit or missed the robot.
-%
-%{\bf Completion Date:}  03/16
-%
-%\subsection*{Training SVMs}
-%With the training data from above, we will begin to train the SVMs for each evasion strategy, using the description of the battlefield as the features (with some manipulation to produce the true desired features), and hit/not hit as the classification labels. We plan on using libsvm, which has a Java plugin, as our SVM backend.
-%
-%{\bf Completion Date:}   03/23
-%
-%\subsection*{Testing}
-%Next, we will assess the performance of the system. We will modify our robot to look at the SVMs corresponding to each strategy every time a bullet is fired, and choose the best strategy in a way that maximizes the probability of not being hit. We will then compare the performance of this implementation versus randomly choosing a strategy.
-%
-%{\bf Completion Date:}  03/30
-%
-%\subsection*{Feature Space Reduction}
-%In order to minimize the complexity of the model, and to possibly increase the performance by avoiding over-fitting, we will try to reduce the number of features used to describe the battlefield. In order to do so, we will train and test the robot with different combinations of features, keeping track of how the performance is affected. 
-%
-%{\bf Completion Date:}  04/06
-%
-%\subsection*{Offensive Strategies}
-%Having learned good evasion tactics, we will then focus on the offensive strategies. We have decided to leave the details of how we will handle this intentionally vague. We hope to to learn from our experience with the evasive strategies in order to build upon them when implementing our targeting scheme. 
-%
-%{\bf Completion Date:}  04/20
-%
-%\subsection*{Final Report}
-%The final report is due on 04/24.
+\section{Approach}
+
+\subsection{Evasion}
+
+\xxx{TODO}
+
+\subsection{Targeting}
+
+Two different methods for learning targeting strategies were used: support vector machines and Q-learning.
+
+\subsubsection{SVMs}
+
+\xxx{TODO}
+
+\subsubsection{Q-learning}
+Q-learning \cite{watkins92a} learns a $Q(s, a)$ function that attributes an utility value to taking an action $a$ at state $s$. This method
+has two interesting properties. First, it doesn't require a model of the environment. This is desirable because modelling the
+interactions between our robot, its opponent and the environment would be overly complex and time consuming. Second, the $Q$ function
+takes into account future states. For instance, it might be the case that
+at a certain state $s_0$, firing at the opponent will likely miss, but will make it move to a state with much higher utility. In this scenario,
+firing might be the optimal action even though the likelihood of hitting the opponent is low. It is impossible to learn this using our
+SVM-based approach, because it cares only about the current state.
+
+More specifically, we use a linear approximation for the $Q(s, a)$ function:
+
+$$Q(s, a) = w_a^T\phi(s)$$,
+
+where $w_a$ is a weight vector associated with that action, and $\phi(s)$ is the feature vector that encodes the current state.
+
+We could have alternatively modeled the function as $Q(s,a) = w^T\phi(s, a)$. This would have increased the learning rate because only
+one weight vector would be necessary. However, designing $\phi(s, a)$ is very challenging.
+
+In principle, there are infinite possible actions (all possible firing angles between $-180^{\circ} $ and $180^{\circ} $ -- we consider $0^{\circ}$ to be straight at the opponent),
+so we need to discretize the
+action space. Because we use a different weight vector for every action, it is desirable to minimize the number of actions in order
+to increase the learning rate. After some preliminary testing, we decided to limit the firing angle to $[-40^{\circ}, 40^{\circ}]$ degrees, and to uniformly discretize this arch into
+21 actions, each separated by $\Delta_a = 3.8^{\circ}$.
+
+To handle situations where the optimal firing angle is not exactly one of the 21 actions, we add randomness: when we choose to fire at angle $a_i$, we uniformly sample the actual
+firing angle between $a_i - \Delta_a/2$ and $a_i + \Delta_a/2$. In this case, the robot may happen to sample the optimal firing angle. Given enough training examples, it will
+eventually learn that choosing $a_i$ has the possibility of hitting the opponent. However, it makes learning harder and slower.
+
+Reinforcement learning problems generally deal with exploration/exploitation tradeoffs. In order to have more predictable and comparable results, we decided to
+create one robot for exploration, and one for exploitation. This is akin to training/testing in other machine learning problems.
+
+During training, we randomly choose an action $a_i$ and employ it. To evaluate its effectiveness, we need to know $s'$, the new state after we fire,
+and $R(s, a_i)$, the reward we obtained. We record $s'$ after $t$ have passed since firing. This captures information on
+how the opponent tried to evade the bullet (remember that the opponent is able to detect it has been fired upon, but is unable to know where the bullet is).
+The value of the reward $R(s, a_i)$ is discovered once the robot is notified the bullet hit or missed. We then apply the learning equation \cite{russelnorvig}:
+
+$$w_a = w_a + \alpha\left[R(s, a_i) + \gamma\max_{a'}Q(s', a') - Q(s, a_i)\right]\phi(s)$$
+
+After the weights have been updated, we fire again.
+
+We test using a greedy policy subject that fires at the angle with the highest $Q$ value. If the highest value at a certain state is below a threshold, then
+the agent does not fire.
 
 \section{Results}
 
