@@ -299,6 +299,7 @@ public class State {
     // return state to write to file
     public Double[] getState() {
         return features.values().toArray(new Double[0]);
+<<<<<<< HEAD
         
         //return d;
 //        Double[] t = new Double[features.values().size()];
@@ -306,6 +307,8 @@ public class State {
 //        for(int i = 1; i < t.length; i++)
 //            t[i] = .0;
 //        return t;
+=======
+>>>>>>> 255669dee2e63fe3669cbd7a645cd658f5e9edc8
         // return d;
     }
 
