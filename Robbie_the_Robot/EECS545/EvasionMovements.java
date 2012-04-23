@@ -13,13 +13,18 @@ public class EvasionMovements {
 	Random rand = Utils.getRandom();
 	
 	// robot
-	MirroringEvadingRobot robot;
+    private AdvancedRobot robot;
 	
 	// output flag
 	boolean output;
 	
 	// constructor call
 	public EvasionMovements(MirroringEvadingRobot robot, boolean output){
+		this.robot = robot; 
+		this.output = output;
+	}
+
+	public EvasionMovements(SVMBot robot, boolean output){
 		this.robot = robot;
 		this.output = output;
 	}
@@ -192,7 +197,7 @@ public class EvasionMovements {
 	public void moveToCenter() {
 		
 		// angle to center
-		double phi = -Math.toDegrees(Math.atan2((robot.getEnvHeight()/2)-robot.getY(), (robot.getEnvWidth()/2)-robot.getX())) + 90;
+		double phi = -Math.toDegrees(Math.atan2((robot.getBattleFieldHeight()/2)-robot.getY(), (robot.getBattleFieldWidth()/2)-robot.getX())) + 90;
 		
 		// angle to x axis relative to robot's heading
 		double psi = Utils.normalRelativeAngleDegrees(robot.getHeading());
