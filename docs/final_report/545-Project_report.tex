@@ -93,8 +93,7 @@
 
 \begin{abstract}
 
-In order for artificial intelligence agents to autonomously operate within a given environment, they must be capable of processing perceptual knowledge in such a manner as to maximize their performance measure \cite{russelnorvig}. For a competitively driven AI agent, this becomes increasingly important as the inability to intelligently process perceptual information will ultimately lead to defeat by those who are capable of such computation. To this end, the following describes the implementation of sophisticated machine learning techniques in an artificially driven tank battle simulator. Armed with such techniques, it is the goal of this project to provide a competitive, autonomous AI agent with the ability to determine how to best evade an opponent's attacks while striking in such a manner as to maximize the possibility of destroying the enemy. 
-
+Robocode\cite{robocode} is a battle-tank simulator, for which players write robots in Java that compete among each other. Traditionally, most robots have been hand-coded. In this project, we create a robot that uses machine learning techniques to decide which actions to take. In particular, we use support vector machines to learn evasion and targeting strategies, with competitive results. We also implement Q-learning to learn targeting strategies, but with less success. We test our robot against some of the best Robocode robots available.
 \end{abstract}
 
 \section{Introduction}
@@ -103,7 +102,17 @@ Initially released in 2001 with the aim of assisting in learning object oriented
 
 \subsection*{Statement of the Problem}
 
-The purpose of this project was to incorporate machine learning algorithms in a Robocode agent in order to optimize the agent's ability to stay alive during battles. Specifically, we focused on incorporating machine learning in two areas: \emph{evasion} and \emph{targeting} . With respect to evasion, we gathered environmental information on employing multiple missile evasion strategies against different opponents in an effort to determine which evasive strategy to employ given a specific situation to ultimately reduce the likelihood of being struck by an opponent's missile.  Furthermore, we used modeling machine learning algorithms in order to predict how an opponent will react upon learning that our agent has fired, thus allowing our agent to take advantage of the ability to predict opponent's behavior. Such an application of machine learning within multi-agent games provides the framework and motivation to explore different techniques in designing artificial agents capable of making perceptually informed decisions on how to best interact with their environment. 
+\xxx{Explain more about how Robocode works}
+
+The purpose of this project is to incorporate machine learning algorithms in a Robocode agent in order to optimize the agent's ability to stay alive during battles. Specifically, we focus on incorporating machine learning in two areas: \emph{evasion} and \emph{targeting}. To simplify the models, we consider these areas separately.
+
+With respect to evasion, our goal is to evade incoming bullets in order to maximize the expected lifetime of the agent. For targeting, the goal is to maximize the accuracy of the bullets our robot fires.
+
+We create agents that learn good strategies for both areas, and then create one robot that combines the learned evasion and targeting strategies. We then measure its performance by competing against human-written robots and evaluating the score of the battle, which is computed by Robocode based on damage inflicted and number of victories.
+
+\xxx{This probably should go in the next section (it was in the previous paragraph):}
+
+ we gather environmental information on employing multiple missile evasion strategies against different opponents in an effort to determine which evasive strategy to employ given a specific situation to ultimately reduce the likelihood of being struck by an opponent's missile.  Furthermore, we used machine learning algorithms in order to predict how an opponent will react upon learning that our agent has fired, thus allowing our agent to take advantage of the ability to predict opponent's behavior. Such an application of machine learning within multi-agent games provides the framework and motivation to explore different techniques in designing artificial agents capable of making perceptually informed decisions on how to best interact with their environment. 
 
 %\section{Experimental Approach}
 %
