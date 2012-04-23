@@ -15,6 +15,7 @@ import java.util.Scanner;
 public class WeightVector {
     private List<Double> weights;
     private String actionName = "Unknown";
+    private double orientation = 0;
     
     public WeightVector(List<Double> w) {
         this.weights = w;
@@ -22,6 +23,11 @@ public class WeightVector {
     
     public WeightVector(String actionName, List<Double> w) {
         this.actionName = actionName;
+        this.weights = w;
+    }
+    
+    public WeightVector(double orientation, List<Double> w) {
+        this.orientation = orientation;
         this.weights = w;
     }
     
@@ -36,6 +42,10 @@ public class WeightVector {
     public List<Double> getW() {
         return weights;
     }
+
+    public double getOrientation() {
+        return orientation;
+    }
     
     // returns w^T * b
     public double transTimes(List<Double> b) {
@@ -44,7 +54,7 @@ public class WeightVector {
     
     public double transTimes(Double[] b) {
         if(b.length != weights.size())
-            throw new IllegalArgumentException("Dimensions don't match");
+            throw new IllegalArgumentException("Dimensions don't match (" + weights.size() + " vs " + b.length + ")");
         double sum = 0;
         for(int i = 0; i < b.length; i++) {
             sum += weights.get(i) * b[i];
@@ -67,7 +77,7 @@ public class WeightVector {
     @Override
     public String toString() {
         StringBuilder blder = new StringBuilder();
-        blder.append(getActionName()).append(' ');
+        blder.append(getOrientation()).append(' ');
         for(Double w : weights) {
             blder.append(w).append(' ');
         }
@@ -77,11 +87,11 @@ public class WeightVector {
     public static WeightVector fromString(String s) {
         Output.println("fromString: " + s);
         Scanner lineScanner = new Scanner(s);
-        //String name = lineScanner.next();
+        double orientation = lineScanner.nextDouble();
         List<Double> weights = new ArrayList<Double>();
         while(lineScanner.hasNextDouble()) {
             weights.add(lineScanner.nextDouble());
         }
-        return new WeightVector("new", weights);
+        return new WeightVector(orientation, weights);
     }
 }

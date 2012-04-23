@@ -46,7 +46,7 @@ public class State {
         //OppName
     }
     
-    private final static Double[] d = {730.0};// 688.8367594606118  };//, 300.4132523387888 }; //, 150.87124839028206, -0.0, 0.0, 30.43562419514103, 326.16939747909163, 532.8044165193943, -44.887449642946876, 0.0, -0.0, -67.44372482147344, 429.9220459939413, -26.463238732920278, 164.24130196677106, 0.0, -0.0, -97.87934901661447, 288.8370550902409, -179.91802428896366, 430.73572946280194, 100.0, 0.0 };
+    //private final static Double[] d = {730.0, 688.8367594606118 , 300.4132523387888, 150.87124839028206, -0.0, 0.0, 30.43562419514103, 326.16939747909163, 532.8044165193943, -44.887449642946876, 0.0, -0.0, -67.44372482147344, 429.9220459939413, -26.463238732920278, 164.24130196677106, 0.0, -0.0, -97.87934901661447, 288.8370550902409, -179.91802428896366, 430.73572946280194, 100.0 };
     
     private EnumMap<Feature, Double> features = new EnumMap<Feature, Double>(Feature.class);
     private AdvancedRobot robot;
@@ -136,6 +136,8 @@ public class State {
         // health values
         addFeature(Feature.RobotHealth, robot.getEnergy());
         addFeature(Feature.OppHealthDrop, robot.getEnemyEnergyDrop());
+        
+        addFeature(Feature.AngleFired, 0);
 
         // strategy employed
         //addFeature(Feature.StrategyEmployed, robot.getStrategy());
@@ -304,6 +306,7 @@ public class State {
 //        for(int i = 1; i < t.length; i++)
 //            t[i] = .0;
 //        return t;
+        // return d;
     }
 
     // returns a list with all the feature names, in the same order

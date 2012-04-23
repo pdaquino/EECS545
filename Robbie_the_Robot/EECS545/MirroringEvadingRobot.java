@@ -1,5 +1,6 @@
 package EECS545;
 
+import EECS545.target.BulletLog;
 import EECS545.target.Output;
 import java.awt.Color;
 import robocode.*;
@@ -40,6 +41,8 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
     EvasionLog evasionLog = null;
     //survival log file
     SurvivalLog survLog = null;
+    //bullet log file
+    protected BulletLog bLog;    
     
     // method must return the strategy it performed
     protected abstract String evadeBullet(ScannedRobotEvent e);
@@ -334,6 +337,13 @@ public abstract class MirroringEvadingRobot extends AdvancedRobot {
         out.println("The round has ended");
         evasionLog.close();
         survLog.endSLog(this.getTime());
+        try{
+            bLog.close();
+        }
+        catch(Exception e){
+            out.println("*Error in closing Bullet Log: IGNORE if this isn't Robocop");
+            out.println(e.getMessage());
+        }
     }
 
     public String[] listEvasionStrategies() {

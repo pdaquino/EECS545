@@ -42,11 +42,11 @@ public class FeatureScaler {
     
     public Double[] scale(Double[] features) {
         if(features.length > min.size()) {
-            throw new IllegalArgumentException("The number of ranges and features must be the same.");
+            throw new IllegalArgumentException("The number of ranges and features must be the same. (" + features.length + " vs " + min.size() + ")");
         }
         Double[] scaled = new Double[features.length];
         for(int i = 0; i < features.length; i++) {
-            scaled[i] = scale(i, features[i]);
+            scaled[i] = scale(i, features[i])/2;
         }
         return scaled;
     }
