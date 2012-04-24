@@ -1,7 +1,9 @@
 %You can leave alone everything before Line 79.
 \documentclass{article}
 \usepackage{url,amsfonts, amsmath, amssymb, amsthm,color, enumerate}
- \usepackage{fullpage}
+\usepackage{fullpage}
+\usepackage{subfigure}
+\usepackage{graphicx}
 % Page layout
 %\setlength{\textheight}{8.75in}
 %\setlength{\columnsep}{2.0pc}
@@ -93,26 +95,22 @@
 
 \begin{abstract}
 
-Robocode\cite{robocode} is a battle-tank simulator, for which players write robots in Java that compete among each other. Traditionally, most robots have been hand-coded. In this project, we create a robot that uses machine learning techniques to decide which actions to take. In particular, we use support vector machines to learn evasion and targeting strategies, with competitive results. We also implement Q-learning to learn targeting strategies, but with less success. We test our robot against some of the best Robocode robots available.
+Robocode\cite{robocode} is a battle-tank simulator, for which players write robotic agents to compete amongst each other. Traditionally, agents actions have been hard-coded. In this project, we create a robot that uses machine learning techniques to decide which actions to take during a battle. Specifically, support vector machines are implemented to learn evasion and targeting strategies with competitive results. Q-learning is also implemented to learn targeting strategies, but with less success. Our agents is tested against a subset of competitive available Robocode robots.
 \end{abstract}
 
 \section{Introduction}
 
-Initially released in 2001 with the aim of assisting in learning object oriented programming, Robocode is an open source, dynamic, deterministic tank battling simulator implemented in Java. Each Robocode agent is designed with the ability to control a robotic tank, including a differentially-driven movement platform, a $360\,^{\circ}\mathrm{}$ rotating turret and an enemy scanning radar, in order to attempt to destroy other tanks with similar features but opposing strategies. While the environment has made creating a simple working agent capable of moving, targeting, and shooting easy, perfecting agents to do well against multiple opponent strategies has proven to be difficult. There has been research to optimize agents using both neural networks as well as genetic programming. However, little work has been done to incorporate sophisticated machine learning techniques designed to better inform Robocode agents when making decisions inside the battle environment.
+Initially released in 2001 with the aim of assisting the learning of object oriented programming, Robocode is an open source, dynamic, deterministic tank battling simulator. Each Robocode agent is designed to control a robotic tank equipped with differentially-driven movement capabilities, $360\,^{\circ}\mathrm{}$ rotating turret, and an enemy scanning radar. While the environment has made it simple to create a working agent capable of moving, targeting, and shooting, perfecting agents to do well against multiple opponent strategies has proven to be difficult. Research has been conducted to optimize agents using both neural networks as well as genetic programming. However, little work has been done to incorporate sophisticated machine learning algorithms to assist agents in the decision making process. 
 
 \subsection*{Statement of the Problem}
 
-\xxx{Explain more about how Robocode works}
+The purpose of this project is to equip a Robocode agent with machine learning algorithms in order to optimize the agent's ability to destroy opponent agents. Specifically, we focus on incorporating machine learning in two areas: \emph{evasion} and \emph{targeting}. To simplify the models, we consider these areas separately.
 
-The purpose of this project is to incorporate machine learning algorithms in a Robocode agent in order to optimize the agent's ability to stay alive during battles. Specifically, we focus on incorporating machine learning in two areas: \emph{evasion} and \emph{targeting}. To simplify the models, we consider these areas separately.
+With respect to evasion, our goal is to evade incoming bullets in such a manner as to minimize the enemy's ability to inflict damage. For targeting, the goal is to maximize the accuracy of the bullets fired by our agent. We create agents that separately learn each strategy, and then create one robot that combines the learned evasion and targeting strategies. We then measure its performance by competing against competitive human-written robots provided by the Robocode project. 
 
-With respect to evasion, our goal is to evade incoming bullets in order to maximize the expected lifetime of the agent. For targeting, the goal is to maximize the accuracy of the bullets our robot fires.
+%\xxx{This probably should go in the next section (it was in the previous paragraph):}
 
-We create agents that learn good strategies for both areas, and then create one robot that combines the learned evasion and targeting strategies. We then measure its performance by competing against human-written robots and evaluating the score of the battle, which is computed by Robocode based on damage inflicted and number of victories.
-
-\xxx{This probably should go in the next section (it was in the previous paragraph):}
-
- we gather environmental information on employing multiple missile evasion strategies against different opponents in an effort to determine which evasive strategy to employ given a specific situation to ultimately reduce the likelihood of being struck by an opponent's missile.  Furthermore, we used machine learning algorithms in order to predict how an opponent will react upon learning that our agent has fired, thus allowing our agent to take advantage of the ability to predict opponent's behavior. Such an application of machine learning within multi-agent games provides the framework and motivation to explore different techniques in designing artificial agents capable of making perceptually informed decisions on how to best interact with their environment. 
+ %we gather environmental information on employing multiple missile evasion strategies against different opponents in an effort to determine which evasive strategy to employ given a specific situation to ultimately reduce the likelihood of being struck by an opponent's missile.  Furthermore, we used machine learning algorithms in order to predict how an opponent will react upon learning that our agent has fired, thus allowing our agent to take advantage of the ability to predict opponent's behavior. Such an application of machine learning within multi-agent games provides the framework and motivation to explore different techniques in designing artificial agents capable of making perceptually informed decisions on how to best interact with their environment. 
 
 %\section{Experimental Approach}
 %
@@ -157,25 +155,23 @@ We create agents that learn good strategies for both areas, and then create one 
 \section{Review of Related Work}
 %We have found some articles describing genetic programming approaches to Robocode, but none that combines it with reinforcement learning. Eisenstein, in 2003, was the first to use genetic programming in this context \cite{gp2}. He found that, while he was able to beat some hand coded adversaries, his robots had a hard time learning how to target, and were therefore more likely to try to ram their opponents.\\
 
-Robocode was introduced to teach Java as an object oriented programming language. However it also provides a powerful base upon which artificial intelligence methods can built up, taught and tested. This aspect of Robocode was explored as early as 2004 by Hartness \cite{Hartness}. Over the years various approaches have been used to develop highly competitive robots in this platform. The most successful so far have been systems built up on hand tuned heuristics which are aided by statistical methods. The majority of the research work done in this environment has been towards the application of Genetic Algorithms in evolving agents rather than evolving strategies \cite{strategies, gp1, gp2}.  Shichel et al. \cite{gp1}, used genetic programming to evolve tank strategies for a robot in the HaikuBot category (which allows robots whose code is no longer than 4 lines). They evolved a population of 256 robots over approximately 400 generations. Their robot was ranked 3rd in the HaikuBot category. Woolley et al. \cite{woolley} discuss the implementation of a hybrid reactive robot control system and use Robocode as a platform to verify their claims. Their work focuses on the ability of their system to mimic existing reactive control architectures. Reinforcement learning has also been used in Robocode to develop movement strategies for agents\cite{gade}. Other researchers have looked into using Neuro-Evolutionary methods with Augmented Topologies (NEAT) and Artificial Neural Networks (ANNs) \cite{nielsenAI} to control the targeting systems.\\
+Robocode was introduced to teach Java as an object oriented programming language. However it also provides a powerful base upon which artificial intelligence methods can built up, taught and tested. This aspect of Robocode was explored as early as 2004\cite{Hartness}. Over the years, various approaches have been used to develop highly competitive robots in this platform. The most successful so far have been systems built upon hand tuned heuristics which are aided by statistical methods. The majority of the research work done in this environment has been towards the application of Genetic Algorithms in evolving agents rather than evolving strategies\cite{strategies, gp1, gp2}.  For example, Shichel et al.\cite{gp1}, used genetic programming to evolve tank strategies for a robot in the HaikuBot category which restricts agents to no more than 4 lines of code. To do so, they evolved a population of 256 robots over approximately 400 generations. Their robot has been ranked 3rd overall in the HaikuBot category. 
+Similarly, Woolley et al.\cite{woolley} discuss the implementation of a hybrid reactive robot control system and use Robocode as a platform to verify their claims. Their work focuses on the ability of their system to mimic existing reactive control architectures. 
 
-In one of the very few academic mentions of Robocode outside of the artificial intelligence field, Kobayashi et al. make a study of various sets of targeting strategies employed in Robocode \cite{strategies}. However they do not explicitly state any methods to calculate the expected utilities of employing each strategy given a scenario.\\
+Reinforcement learning has also been used in Robocode to develop movement strategies for agents\cite{gade}. Other researchers have looked into using Neuro-Evolutionary methods with Augmented Topologies (NEAT) and Artificial Neural Networks (ANNs) \cite{nielsenAI} to control the targeting systems. In one of the very few academic mentions of Robocode outside of the artificial intelligence field, Kobayashi et al. make a study of various sets of targeting strategies employed in Robocode \cite{strategies}. However they do not explicitly state any methods to calculate the expected utilities of employing each strategy given a scenario.
 
 %The majority of the successful agents documented within Robocode arena employ sophisticated hand tuned methods when evading bullets and targeting their opponent. Many of the advanced agents employ varying forms of the k-means algorithm to cluster similar environmental situations and learn from these situations. However, most of the actual firing of bullets and evading incoming rounds is not done using sophisticated, statistical algorithms. \\
 
 %Thus, our work will not only build upon the current ability to learn when to take certain actions in the environment, but also learn how to best carry out actions. 
-
 The work we present in this paper presents a novel implementation of a combination of Support Vector Machines and Reinforcement Learning methods to design an agent which is capable of competing with the top most agents in Robocode.
 
 \section{Experimental Methodology}
-In this section, we describe the methods used to learn evasion and targeting strategies, and the design tradeoffs involved. We approach evasion and targeting in different ways. We learn evasion strategies by training support vector machines on four simple evasion movements that we designed -- essentially, the evasion agent learns the likelihood of being hit if it employs any of these strategies. On the other hand, we use a more general approach to targeting: the targeting agent learns the optimal firing angle based on the current state of the battlefield.
+In this section, we describe the methods used to learn evasion and targeting strategies, and the design tradeoffs involved. Evasion strategies are learned by training support vector machines on four simple evasion movements. Targeting strategies are designed to learn the optimal firing angle. 
 
 \subsubsection*{Mirroring}
-\xxx{Shiva}
-We start by describing the default behavior of both agents, which we call mirroring. This behavior is followed by the targeting agent at all times, and by the evasion agent when it is not being fired upon. Mirroring forces the agent to closely mimic the behavior of the opponent while maintaining a set distance from it. The force of attraction/repulsion between the agent and its opponent is given by:
-
+We start by describing the default behavior of both agents, which we call mirroring. This behavior is implemented by the targeting agents at all times, and by the evasion agent when it is not being fired upon. Mirroring forces the agent to closely mimic the behavior of the opponent while maintaining a set distance from it. The force of attraction/repulsion between the agent and its opponent is given by:
 $$\emph{Force} = k_1 * (\emph{Distance to Opponent} - d)$$
-where $k_1$ is a proportional factor while $d$ is the distance to maintain from the opponent. Thus if the agent is further away from the opponent than desired, it will experience an attractive force $+_{ve}F$ which will move it towards the opponent. Conversely, if the agent is to close to the opponent, it will experience a repulsive force $-_{ve}F$, which will guide it away. It is also evident that \emph{Force} becomes zero as \emph{Distance to Opponent}  $\rightarrow d$.\\ 
+where $k_1$ is a proportional factor and $d$ is the distance to maintain from the opponent. Thus, if the agent is further away from the opponent than desired, it will experience an attractive force $+_{ve}F$ towards the opponent. Conversely, if the agent is to close to the opponent, it will experience a repulsive force $-_{ve}F$, guiding away from the opponent. It is also evident that \emph{Force} becomes zero as \emph{Distance to Opponent}  $\rightarrow d$.\\ 
 
 \begin{figure}[t]
 	\centering
@@ -184,44 +180,41 @@ where $k_1$ is a proportional factor while $d$ is the distance to maintain from 
 	\label{mirror}
 \end{figure}
 
-When the agent's health is higher, it moves closer to the opponent in order to maximize offensive capabilities. Else, the agent will move further away from the enemy to reduce the chance of being shot. $d$ is a function of the agent's health and the opponent's health which is determined as:
-$$d = d_{const} - k_2*(\emph{Health}_{Agent} - \emph{Health}_{Opponent})$$
-where $d_{const}$ is the minimum distance to maintain from the opponent, and $k_2$ provides regularization on how much to depend on the health difference.
+%When the agent's health is higher, it moves closer to the opponent in order to maximize offensive capabilities. Else, the agent will move further away from the enemy to reduce the chance of being shot. $d$ is a function of the agent's health and the opponent's health which is determined as:
+%$$d = d_{const} - k_2*(\emph{Health}_{Agent} - \emph{Health}_{Opponent})$$
+%where $d_{const}$ is the minimum distance to maintain from the opponent, and $k_2$ provides regularization on how much to depend on the health difference.
 
 %In general, the closer a tank is to the opponent, the higher the probability that it will hit the target. Thus, in order to improve the odds of our agent's firing solution, we would like the agent to be near the opponent. However, when trying to avoid being hit by incoming fire, we would like to be far from the opponent. In order to find a compromise we modeled $d$ as a function of the agent's health and the opponent's health. When the agent's health is higher, it moves closer to the opponent in order to maximize offensive capabilities. Else, the agent will move further away from the enemy to reduce the chance of being shot. Hence, the value of $d$ is determined as:
 %$$d = d_{const} - k_2*(\emph{Health}_{Agent} - \emph{Health}_{Opponent})$$
 %where $d_{const}$ is the minimum distance to maintain from the opponent, and $k_2$ provides regularization on how much to depend on the health difference.
 
 \subsection*{Evasion}
-When the opponent fires at the evasion agent, the mirroring behavior is suppressed and a random evasion movement is chosen. For training, we designe the system to choose a random movement so that the agent has the ability to explore the entire state space and not form a biased opinion early on, thereby limiting itself.
-
-\subsubsection*{Evasion Movements}
 We designed four simple evasion movements the agent can choose from. These movements were designed based on watching many battles and detecting patterns in the way that expertly-written robots behaved.
 
-\paragraph{Dodge Left/Right}
-In this movement, the agent moves to the left or right of the opponent when it is fired upon. This movement strategy is represented in Figure \ref{LR}, where $\Psi$ is the relative bearing to the opponent ($-180^{\circ} \leq \Psi \leq 180^{\circ}$). There are two different turning cases for $\Psi$: one when the agent is facing direction $d_1$ corresponding to bearing $\Psi_1$, and second when the agent is facing direction $d_2$ corresponding to bearing $\Psi_2$. Because we have a differential driven robot, we desire to turn a minimum distance to position our drive track perpendicular to the line of sight between us and the opponent. Achieving this angle is done in tandem with moving either forward or backward depending on whether we are dodging left or right. Dodging left / right are considered two different movements, giving the agent the ability to choose each separately.\\
+\subsubsection*{Dodge Left/Right}
+In this evasion movement, the agent moves tangentially left or right of the line of sight to the opponent when fired upon. This movement strategy is represented in Figure \ref{LR}, where $\Psi$ is the relative bearing to the opponent ($-180^{\circ} < \Psi \leq 180^{\circ}$). There are two different turning cases for $\Psi$: one when the agent is facing direction $d_1$ corresponding to bearing $\Psi_1$, and the other when the agent is facing direction $d_2$ corresponding to bearing $\Psi_2$. Because we have a differentially driven robot, we desire to turn a minimum distance to position our drive track perpendicular to the line of sight to the opponent. Achieving this angle is done in tandem with moving either forward or backward depending on whether we are dodging left or right. Dodging left/right are considered two different movements, giving the agent the ability to choose each separately.
 
 \begin{figure}[t]
 \begin{minipage}[b]{0.5\linewidth}
 	\centering
 		\includegraphics[width=6 cm]{LR}
-	\caption{Left--Right dodging strategy. \emph{Note -- in Robocode, the angles are positive in a clockwise direction}}
+	\caption{Dodge Left/Right Evasion Strategy.}
 	\label{LR}
 \end{minipage}
 \hspace{0.5cm}
 \begin{minipage}[b]{0.5\linewidth}
 	\centering
 		\includegraphics[width=6 cm]{Feign.png}
-	\caption{Feigning}
+	\caption{Feign Evasion Strategy}
 	\label{feign}
 \end{minipage}
 \end{figure}
 
-\paragraph{Feign}
-When feigning, the agent immediately reverses its direction of motion (Robocode allows for full speed both backwards and forwards). This movement is illustrated in Figure \ref{feign}.
+\subsubsection*{Feign}
+When feigning, the agent immediately reverses its direction of motion. Figure \ref{feign} illustrates this evasion strategy.
 
-\paragraph{Halt}
-Halting is to simply stop moving forward and stand still. This is useful against robots that assume the opponent will continue moving forward after it has been fired upon.
+\subsubsection*{Halt}
+Halting is to simply stop moving forward and stand still. This is useful against robots that assume the opponent will continue moving in a predictive manner after being fired upon.
 %Robocode physics will require the agent to slow down to a stand still and then accelerate in the new direction.
 %It is evident to us that this strategy will fail at closer distances and if the agent is moving directly towards or away from the opponent. Thus we expect the SVMs to discern this over time and only apply feign when it is optimal to do so.
 
@@ -231,8 +224,7 @@ Halting is to simply stop moving forward and stand still. This is useful against
 %For this strategy, we set the turn control and forward movement control to a random value chosen from a uniform distribution. Agents that move in such a random manner are said to have flat movement profiles. They are hard to target, but certain advanced opponents are programmed to monitor such movement strategies when the agent approaches a wall or a corner, in which case the very nature of the environment will cause a spike in their movement profile.
 
 \subsubsection*{Learning the Evasion Strategy}
-We use four support vector machines\footnote{We also experimented with using one single SVM and considering the movement adopted as a feature, but the performance was worse.}, one for each evasion movement, to learn its efficiency at different states. We measure the efficiency
-of an evasion movement $m$ when the agent is at state $s$ as how often the agent was able to dodge a bullet using $m$ when it was fired upon at state $s$. At its essence, we are testing the ability of the agent to stay alive, but with the simplifying assumption that bullets are independent (i.e. dodging a bullet is always good, regardless of the new state the agent goes to).
+In order to learn which strategy to implement when fired upon, 4 SVM models were trained, one for each strategy\footnote{We also experimented with using one single SVM and considering the movement adopted as a feature, but the performance was worse.}. We measure the efficiency of an evasion movement $m$ when the agent is at state $s$ as how often the agent was able to dodge a bullet using $m$ when it was fired upon at state $s$. At its essence, we are testing the ability of the agent to stay alive, but with the simplifying assumption that bullets are independent (i.e. dodging a bullet is always good, regardless of the new state the agent goes to).
 
 Each SVM is trained to predict whether employing a movement at a given state will result in the agent dodging the bullet (+1) or being hit
 (-1). The following features are used to represent the state of the battlefield:
@@ -248,13 +240,14 @@ Each SVM is trained to predict whether employing a movement at a given state wil
 	\item the health of the agent and of the opponent
 \end{itemize}
 
+\xxx{Pedro: you need to discuss this then . . . I suggest taking it out . . . your call}\\
 These features were heuristically selected. As described in the results, the F-score of every feature was computed to evaluate their contribution to the SVMs.
 
-In order to train the SVMs, we need to provide labels that express if the evasion strategy employed was effective in dodging the bullet that was fired at the agent. To do that, we track the bullet that was fired by the opponent. This is not a straightforward task in Robocode, as the agent cannot sense the position of a bullet using its radar. However, in order to fire a bullet, a tank must sacrifice some of its own energy. The radar-sensor can detect a drop in energy of the opponent, and using this we can determine if the enemy has fired a bullet as well as the bullet's velocity. This allows the agent to predict all the possible positions the bullet can be at a given time step.
+In order to train the SVMs, we need to provide labels that express if the evasion strategy employed was effective in dodging the bullet fired at the agent. To do so, we had to track the bullet that was fired by the opponent. This, in general, is not a straightforward task in Robocode, as the agent cannot sense the position of a bullet using its radar. However, in order to fire a bullet, a tank must sacrifice some of its own energy. The radar-sensor can detect such a drop in energy of the opponent, and using this we can determine if the enemy has fired a bullet. This allows the agent to predict all the possible positions the bullet can be at a given time step.
 %The contours will be circular while resembling the motion of a wave. Hence, these estimates are known as \emph{waves}.
-Figure \ref{b_wave} illustrates this wave pattern taken on by bullets. When the agent detects that the bullet wave cannot hit it anymore, we consider the evasion movement to have been successful and add a training point with label +1. If, however, the agent is hit by the bullet it is tracking, it adds a training point with label -1.
+Figure \ref{b_wave} illustrates the wave pattern taken on by bullets. When the agent detects that the bullet wave cannot hit it anymore, the evasion movement is considered to have been successful. 
 
-One consequence of our modelling approach is that the agent is only able to learn how to evade one bullet at a time. Subsequent bullets fired while the agent is already tracking a previous bullet are ignored.
+One consequence of this modeling approach is that the agent is only able to learn how to evade one bullet at a time. Subsequent bullets fired while the agent is already tracking a previous bullet are ignored.
 
 \begin{figure}[t]
 \begin{minipage}[b]{0.5\linewidth}
@@ -273,79 +266,96 @@ One consequence of our modelling approach is that the agent is only able to lear
 \end{figure}
 
 \subsection*{Targeting Strategies}
-The approach taken for targeting was completely different from the movement strategy. Instead of providing a set of targeting strategies based on heuristics such as linear movement targeting, circular movement targeting, etc. we chose to let our machine learning methods learn optimal targeting schemes from scratch. The objective of a targeting agent is to predict where the opponent will be in the future and shoot accordingly. The statespace for the targeting agent to act in is virtually infinite $[0^{\circ}, 360^{\circ}]$ , so in order make calculations tractable, we discretized the operating region as demonstrated in figure \ref{tget}. For both the SVM targeting scheme and the RL targeting scheme, we allowed the agent to choose one of 21 possible firing angles which were evenly distributed between $[-\frac{\theta}{2}, +\frac{\theta}{2}]$, where $\theta$ is the firing arc range and $0^{\circ}$ represents head on alignment with the opponent.
+The approach taken for targeting was different from the evasion strategy. Instead of providing a set of targeting strategies based on heuristics such as linear movement targeting, circular movement targeting, etc., we chose to let our machine learning methods learn optimal targeting schemes from scratch. The objective of a targeting agent is to predict where the opponent will be in the future and shoot accordingly. The values that the firing angle can take in continuos on the interval $[0^{\circ}, 360^{\circ}]$. In order to make calculations tractable, the operating region was discretized between $[-\frac{\theta}{2}, +\frac{\theta}{2}]$, where $\theta$ is the firing arc range and $0^{\circ}$ represents head on alignment with the opponent.
 
-\subsubsection*{SVMs}
+\subsubsection*{SVM}
+After successfully implementing SVMs for evasion purposes, an SVM was used to predict the best firing angle in order to not only allow the agent to successfully target the enemy, but also to serve as a benchmark for the Q-learning targeting strategy described below. Whereas multiple SVMs were trained for individual evasion strategies, a single SVM was used for targeting, treating the firing angle as an additional feature to those presented earlier. In order to assist in the data collection process, as well as to deal with the infinite targeting angle issue, the firing angle was limited to $[-40^{\circ}, 40^{\circ}]$ ($\theta = 80^{\circ}$) and discretized into 21 angles, each separated by $\Delta_a = 2^{\circ}$. This firing arc range of $\theta = 80^{\circ}$ ensures that the enemy agent is unable to outrun a fired shot based on the dimensions and physics of the environment. Furthermore, the discretization ensures that when used to target the enemy, only 21 different prediction calls (one for each possible firing angle) will be made to the SVM, reducing the overall decision making time required by the agent. Using models for each firing angle, as well as increasing the amount of firing angles in general, was explored and lead to large decision making times for the agent. 
 
-\xxx{TODO}
+Data for the targeting SVM was collected by having an agent pick a firing angle at random and fire upon the enemy. Bullet tracking for providing labels in targeting is simplified by the RoboCode environment as it provides full detailed information to agents about their own fired bullets, including if a bullet has hit an enemy or has exited the environment. Labels for targeting are added to training data points according to whether the bullet hits the enemy (+1) or misses and leaves the environment (-1). When determining how to fire using this targeting SVM, predictions must be made using the current features of the state with each possible firing angle. 
 
 \subsubsection*{Q-learning}
-Q-learning \cite{watkins92a} is a method to learn a $Q(s, a)$ function that attributes an utility value to taking an action $a$ at state $s$. This method
-has two interesting properties among other reinforcement learning algorithms. First, it doesn't require a model of the environment. This is desirable because modelling the
-interactions between our robot, its opponent and the environment would be overly complex and time consuming. Second, the $Q$ function
-takes into account future states. For instance, it might be the case that
-at a certain state $s_0$, firing at the opponent will likely miss, but will make it move to a state with much higher utility. In this scenario,
-firing might be the optimal action even though the likelihood of hitting the opponent is low. It is impossible to learn this using our
-SVM-based approach, because it cares only about the current state.
+Q-learning \cite{watkins92a} is a method to learn a function $Q(s, a)$ that attributes an utility value to taking an action $a$ at state $s$. This method has two interesting properties among other reinforcement learning algorithms. First, it doesn't require a model of the environment. This is desirable because modeling the interactions between our robot, its opponent, and the environment would be overly complex and time consuming. Second, the $Q$ function takes into account future states. For instance, it might be the case that at a certain state $s_0$, firing at the opponent will likely miss, but will make it move to a state with much higher utility. In this scenario, firing might be the optimal action even though the likelihood of hitting the opponent is low. It is impossible to learn this using our SVM-based approach, because such a model is affected only by the current state.
 
-More specifically, we use a linear approximation for the $Q(s, a)$ function:
+To implement Q-learning, we use a linear approximation for the $Q(s, a)$ function:
 
 $$Q(s, a) = w_a^T\phi(s)$$
 
-where $w_a$ is a weight vector associated with that action, and $\phi(s)$ is the feature vector that encodes the current state.\\
+where $w_a$ is a weight vector associated with that action, and $\phi(s)$ is the feature vector that encodes the current state. In principle, there are infinite possible actions due to the infinite amount of firing angles as discussed with the targeting SVM. Because we use a different weight vector for every action, it is desirable to minimize the number of actions in order to increase the learning rate. After some preliminary testing, we decided to limit the firing angle to the same 21 firing angles described in the SVM targeting strategy and demonstrated in Figure \ref{tget}.
 
-We could have alternatively modeled the function as $Q(s,a) = w^T\phi(s, a)$. This would have increased the learning rate because only
-one weight vector would be necessary. However, designing $\phi(s, a)$ is very challenging.
+To handle situations where the optimal firing angle is not exactly one of the 21 actions, we add randomness: when we choose to fire at angle $a_i$, we uniformly sample the actual firing angle between $a_i - \Delta_a/2$ and $a_i + \Delta_a/2$. In this case, the robot may happen to sample the optimal firing angle. Given enough training examples, it will eventually learn that choosing $a_i$ has the possibility of hitting the opponent.
 
-In principle, there are infinite possible actions (all possible firing angles between $-180^{\circ} $ and $180^{\circ} $ -- we consider $0^{\circ}$ to be straight at the opponent),
-so we need to discretize the
-action space. Because we use a different weight vector for every action, it is desirable to minimize the number of actions in order
-to increase the learning rate. After some preliminary testing, we decided to limit the firing angle to $[-40^{\circ}, 40^{\circ}]$ ($\theta = 80^{\circ}$), and to uniformly discretize this arch into
-21 actions, each separated by $\Delta_a = 3.8^{\circ}$, this is demonstrated in figure \ref{tget}.
-
-To handle situations where the optimal firing angle is not exactly one of the 21 actions, we add randomness: when we choose to fire at angle $a_i$, we uniformly sample the actual
-firing angle between $a_i - \Delta_a/2$ and $a_i + \Delta_a/2$. In this case, the robot may happen to sample the optimal firing angle. Given enough training examples, it will
-eventually learn that choosing $a_i$ has the possibility of hitting the opponent. However, it makes learning harder and slower.
-
-Reinforcement learning problems generally deal with exploration/exploitation tradeoffs. In order to have more predictable and comparable results, we decided to
-create one robot for exploration, and one for exploitation. This is akin to training/testing in other machine learning problems.
-
-During training, we randomly choose an action $a_i$ and employ it. To evaluate its effectiveness, we need to know $s'$, the new state after we fire,
-and $R(s, a_i)$, the reward we obtained. We record $s'$ after $t$ have passed since firing. This captures information on
-how the opponent tried to evade the bullet (remember that the opponent is able to detect it has been fired upon, but is unable to know where the bullet is).
-The value of the reward $R(s, a_i)$ is discovered once the robot is notified the bullet hit or missed. We then apply the learning equation \cite{russelnorvig}:
+Reinforcement learning problems generally deal with exploration/exploitation tradeoffs. In order to have more predictable and comparable results, we decided to create one robot for exploration, and one for exploitation. This is akin to training/testing in other machine learning problems. During training, we randomly choose an action $a_i$ and employ it. To evaluate its effectiveness, we need to know $s'$, the new state after we fire, and $R(s, a_i)$, the reward we obtained. We record $s'$ after $t$ have passed since firing. This captures information on how the opponent tried to evade the bullet (remember that the opponent is able to detect it has been fired upon, but is unable to know where the bullet is). The value of the reward $R(s, a_i)$ is discovered once the robot is notified the bullet hit or missed. We then apply the learning equation\cite{russelnorvig}:
 
 $$w_a = w_a + \alpha\left[R(s, a_i) + \gamma\max_{a'}Q(s', a') - Q(s, a_i)\right]\phi(s)$$
 
-After the weights have been updated, we fire again.\\
+After the weights have been updated, we fire again.
 
 \section{Results}
 
-\xxx{Short Intro?}
+For the described targeting and evasion strategies above, results were gathered by employing the strategies against a subset of 10 different enemy agents available online via the RoboCode project. Unfortunately, the repository of enemy agents boasted by RoboCode was unreachable during the course of the project for unknown reasons. However, the 10 agents that were available provided a means of gathering training data against a variation of differing strategies, ultimately allowing for evaluation of our algorithms. All SVM training, scaling, and parameter tuning was accomplished using LIBSVM, an open source SVM library\cite{libsvm}.
 
 \subsection*{Evasion Results}
-\xxx{TODO - K}
-\xxx{I've added a reference to the libSVM paper: \cite{libsvm}}
+Using the four evasion strategies (dodge left/right, halt, and feign), SVM models were trained using an RBF kernel with a 5-fold cross validation grid search to optimize the hyper-parameters (slack penalty and kernel bandwidth). Four different training datasets varying in size were gathered and used to train the models, leading to a total of 16 SVMs. Training data was collected using all different enemy agents, and a test data set comprised of 20,000 data points per each evasion strategy was used to test the prediction accuracy of the SVMs. As shown in Figure \ref{evade:all}\subref{evade:prediction}, while the number of training data points increases, so does the accuracy of the individual SVMs. However, such an increase begins to become less prevalent as the number of training data points increases.
+
+\begin{figure}[h]
+	\centering
+	\subfigure[]{
+		\includegraphics[width = 7.5 cm]{evadeFigures/prediction}
+		\label{evade:prediction}}
+	\subfigure[]{
+		\includegraphics[width = 7.5 cm]{evadeFigures/overallAccuracy}
+		\label{evade:accuracy}}
+	\subfigure[]{
+		\includegraphics[width = 7.5 cm]{evadeFigures/bestAccuracy}
+		\label{evade:bestAccuracy}}
+	\subfigure[]{
+		\includegraphics[width = 7.5 cm]{evadeFigures/bestEmployment}
+		\label{evade:bestEmployment}}
+\caption{SVM Evasion Testing Results.}
+\label{evade:all}
+\end{figure}
+
+Ultimately, we are interested in the evasion accuracy based on the employment of the SVM predictions. Using probability SVM models, three different employment agents were designed: one to employ the best evasion strategy, one to employ an evasion strategy sampled from a proportional distribution, and one to employ the worst evasion strategy, all according to the probability estimates provided by the SVMs. Each of these agents were then tested against the different opponents for 10,000 battles. Results from these tests are shown in Figure \ref{evade:all}\subref{evade:accuracy}. As expected, choosing the best evasion strategy according to the SVM probability estimates leads to the greatest evasion percentage, whereas choosing the worst evasion strategy leads to the worst evasion percentage.
+
+For all strategies, as the number of training examples increase, the performance begins to approach an asymptotic evasion percentage, suggesting that employment performance does not change as training examples continue to increase. This is to be expected due to the nature that each enemy agent will ultimately target their opponent in a different manner, thus leading to models not being capable of capturing every form of targeting.
+
+To understand exactly what has been learned by the evasion SVMs, we must look closer into the employment of each individual evasion strategy based on the number of training examples while using the best strategy at each instance. As depicted by Figure \ref{evade:all}\subref{evade:bestAccuracy}, we find that as the number of training examples increases, evading via halting or feigning seems to decrease in performance, while evading via movement to the left or right seems to increase. This is somewhat concerning, as we saw earlier that employing the best strategy leads to asymptotically increasing evasion performance. However, if we turn our attention to the employment percentage of each strategy as depicted in Figure \ref{evade:all}\subref{evade:bestEmployment}, we find that as the number of training examples increases, dodging left/right are used more often than halt and feign. Thus, we see that the SVMs are learning that there are more situations in which evading by movement to the left/right is likely to be successful compared to evading by halting or feigning.
+
+By visual inspection, we have found that dodging left/right is typically employed in a manner as to avoid placing the agent close to a wall. If there is a wall directly towards the evade left direction, the agent will typically choose to evade to the right, and vice versa. Similarly, feign is typically employed when the agent gets caught in a corner, which is a position which occurs infrequently (thus the low employment percentage of the strategy) and often yields to being hit by the bullet (thus the low evasion accuracy when feign is employed). Lastly, we typically only see halt employed when the agent is far away and both agents are in motion. Even then, halt is scarcely chosen as it is a rather ineffective evasion movement.
 
 \subsection*{Targeting Results}
-\xxx{Small intro}
-
 \subsubsection*{SVM Targeting}
-\xxx{TODO - K}
+In order to gather training data for the SVM targeting scheme, the agent's cannon was constantly kept aligned towards the enemy. The enemy was then fired upon by randomly picking one of the 21 different firing angles, firing according to this angle, and using the firing angle as an additional feature. An SVM model was then trained using an RBF kernel with a 5-fold cross validation grid search to optimize the hyper-parameters (slack penalty and kernel bandwidth), as done when training the evasion SVMs. Two different subsets of training data were collected: data when battling the best evasion agent using the evasion SVMs, and another set when battling all 10 enemy agents. Overall, eight models were trained using differing numbers of training poitns. A test data set, comprised of 100,000 data points collected from 10,000 battles against all enemy agents, was used to test the SVMs for prediction accuracy, as depicted in Figure \ref{target:all}\subref{target:prediction}. As the number of training data points increases, so does the accuracy of the SVMs. However, this increase tends to increase less gradually as the number of training data points increases. Furthermore, training by collecting data from multiple agents provides better models for prediction. 
+
+As was the case with the evasion SVMs, we are interested in is the accuracy based on the employment of these predictions. Using probability SVM models trained on all enemy agents, testing data was collected by firing at the multiple opponents for 1,000 battles whenever their was a greater than 60\% chance of hitting the enemy. This data was then separated to observe the accuracy of hitting the enemy at differing thresholds, as depicted in Figure \ref{target:all}\subref{target:accuracy}. We can see from this chart that as the probability threshold increases, so does the accuracy of hitting the enemy when firing upon them. Furthermore, the more data used to train the SVM model, the higher the accuracy. 
+
+\begin{figure}[h]
+	\centering
+	\subfigure[]{
+		\includegraphics[width = 7.5 cm]{targetFigures/prediction}
+		\label{target:prediction}}
+	\subfigure[]{
+		\includegraphics[width = 7.5 cm]{targetFigures/accuracy}
+		\label{target:accuracy}}
+	\subfigure[]{
+		\includegraphics[width = 7.5 cm]{targetFigures/strategies}
+		\label{target:strategies}}
+\caption{SVM Targeting Testing Results}
+\label{target:all}
+\end{figure}
+
+Lastly, we looked at these results compared with different firing strategies. In the chart below, an SVM model was trained from 4,000 data points drawn from the differeing opponents. The accuracy from the best firing angle according to the SVM is compared with the accuracy from the worst firing angle. These results are shown in Figure \ref{target:all}\subref{target:strategies}. As expected, choosing the worst firing angle has an extremely low targeting accuracy when compared with employing the best firing angle. As a benchmark, the accuracy of shooting directly at the opponent, as well as shooting at a random firing angle is shown. Overall, our SVM model is able to perform better at targeting the opponent than these other strategies, and we are capable of achieving ~90\% accuracy using these SVM models. 
+
+From observing this targeting scheme, it appears the SVM models have learned that the best time to fire at an opponent is when they are near by, or close to a corner / wall. When the enemy is near a wall / corner, the firing angle is often times chosen such that it will strike the enemy if they move away from the wall, or if they do nothing. Thus, similar to the evasion strategies that were learned, proximity to walls and corners plays a large part in an enemy being hit by fired bullets. 
 
 \subsubsection*{RL Targeting}
-\xxx{TODO - S}
-% this was somewhere else
-We test using a greedy policy subject that fires at the angle with the highest $Q$ value. If the highest value at a certain state is below a threshold, then
-the agent does not fire.
-
+\xxx{TODO - Shiva}
 
 \subsection*{Integrated Performance}
-\xxx{TODO - K}
+\xxx{TODO - Keegan - I will complete this once Shiva throws in the graph and table. It will only be ~ 1 paragraph worth of information.}
 
 \section{Conclusion}
-
-\xxx{TODO - P}
+\xxx{TODO - Pedro}
 
 %Thus far, we have successfully written an agent capable of implementing the previously discussed evasion techniques when fired upon by an opposing agent. This agent is also capable of continuously tracking the enemy, as well as the bullets fired from the enemy, in an effort to capture the data needed to train each evasion strategy's SVM. We are currently in the process of choosing the exact features desired from the environment upon each evasion attempt, and will then begin collecting data with which to train the SVMs on. After such training, we will then be able to evaluate the evasion system in an effort to maximize the agent's ability to evade bullets as well as to capture those features most important to understanding the best strategy given each unique situation. Lastly, we will move onto repeating these steps, with the additional knowledge gained throughout our experience, to design an effective targeting and firing system. At the end of this project, we will have novelly employed machine learning techniques to artificial intelligence agents in order to improve their ability to make decision informed by their perceptual knowledge of the environment.
 

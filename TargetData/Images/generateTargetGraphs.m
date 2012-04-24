@@ -1,4 +1,4 @@
-function generateGraphs
+function generateTargetGraphs
 
 data = [1000 2000 3000 4000];
 
@@ -6,8 +6,8 @@ allPrediction = [69.4248 71.3729 73.8027 74.6822];
 singlePrediction = [36.3449 45.0709 45.9092 48.3338];
 
 figure(1); hold on;
-plot(data, allPrediction, 'r');
-plot(data, singlePrediction, 'b');
+plot(data, singlePrediction, 'r');
+plot(data, allPrediction, 'b');
 title('Targeting Prediction: 100,000 Test Points');
 ylabel('Prediction Accuracy'); xlabel('Number of Training Data');
 legend('Train on Evasion Agent', 'Train on All Agents');

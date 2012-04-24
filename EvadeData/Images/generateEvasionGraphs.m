@@ -78,15 +78,6 @@ plot(data, 58.8744860094273*ones(length(data)), 'm');
 title('Evasion Employment Accuracy'); ylabel('Evasion Percentage'); xlabel('Number of Training Data');
 legend('Best Strategy', 'Proportional Strategy', 'Worst Strategy', 'Random');
 
-% Life Expectancy (Show Baseline of Random)
-figure(3); hold on;
-plot(data, c3po(2,:), 'r');
-plot(data, r2d2(2,:), 'b');
-plot(data, bender(2,:), 'g');
-plot(data, 438.1283*ones(length(data)), 'm');
-title('Evasion Employment Life Expectancy'); ylabel('Number of Turns Until Death'); xlabel('Number of Training Data');
-legend('Best Strategy', 'Proportional Strategy', 'Worst Strategy', 'Random');
-
 % C3PO individual evasion strategies
 figure(4); hold on;
 plot(data, rightC, 'r');
@@ -110,32 +101,6 @@ plot(data, employ(:,2), 'b');
 plot(data, employ(:,3), 'g');
 plot(data, employ(:,4), 'm');
 title('Best Evasion Strategy Employment'); ylabel('Evasion Percentage'); xlabel('Number of Training Data');
-legend('Evade Right', 'Evade Left', 'Evade Halt', 'Evade Feign');
-
-% Bender individual evasion strategies
-figure(6); hold on;
-plot(data, rightB, 'r');
-plot(data, leftB, 'b');
-plot(data, haltB, 'g');
-plot(data, feignB, 'm');
-title('Worst Evasion Strategy Accuracy'); ylabel('Evasion Percentage'); xlabel('Number of Training Data');
-legend('Evade Right', 'Evade Left', 'Evade Halt', 'Evade Feign');
-
-% Bender evasion employment
-% C3PO evasion employment
-figure(7); hold on;
-employ = ones(4,4);
-for i = 1:4
-    employ(1,i) = (employB(1,i)/(sum(employB(1,:))))*100;
-    employ(2,i) = (employB(2,i)/(sum(employB(2,:))))*100;
-    employ(3,i) = (employB(3,i)/(sum(employB(3,:))))*100;
-    employ(4,i) = (employB(4,i)/(sum(employB(4,:))))*100;
-end
-plot(data, employ(:,1), 'r');
-plot(data, employ(:,2), 'b');
-plot(data, employ(:,3), 'g');
-plot(data, employ(:,4), 'm');
-title('Worst Evasion Strategy Employment'); ylabel('Evasion Percentage'); xlabel('Number of Training Data');
 legend('Evade Right', 'Evade Left', 'Evade Halt', 'Evade Feign');
 
 end
