@@ -168,14 +168,16 @@ In one of the very few academic mentions of Robocode outside of the artificial i
 The work we present in this paper presents a novel implementation of a combination of Support Vector Machines and Reinforcement Learning methods to design an agent which is capable of competing with the top most agents in Robocode.
 
 \section{Experimental Methodology}
-Movement and Targeting were treated as two independent functions. This assumption is valid because we can decouple the actions of the gun and the movement platform. The task of evasion was implemented as a subset of strategies which the agent chooses to employ. Targeting was implement in two different approaches: the first was similar to evasion in that an agent had subset of actions to choose from, the second method explored the use of reinforcement learning.
+In this section, we describe the methods used to learn evasion and targeting strategies, and the design tradeoffs involved. We approach evasion and targeting in different ways. We learn evasion strategies by training support vector machines on four simple evasion movements that we designed -- essentially, the evasion agent learns the likelihood of being hit if it employs any of these strategies. On the other hand, we use a more general approach to targeting: the targeting agent learns the optimal firing angle based on the current state of the battlefield.
 
-\subsubsection*{General Movement}
-The default behavior of the agent is to closely mimic the behavior of the opponent while maintaining a set distance from it. The force of attraction/repulsion between the agent and its opponent is given by:
+\subsubsection*{Mirroring}
+\xxx{Shiva}
+We start by describing the default behavior of both agents, which we call mirroring. This behavior is followed by the targeting agent at all times, and by the evasion agent when it is not being fired upon. Mirroring forces the agent to closely mimic the behavior of the opponent while maintaining a set distance from it. The force of attraction/repulsion between the agent and its opponent is given by:
+
 $$\emph{Force} = k_1 * (\emph{Distance to Opponent} - d)$$
 where $k_1$ is a proportional factor while $d$ is the distance to maintain from the opponent. Thus if the agent is further away from the opponent than desired, it will experience an attractive force $+_{ve}F$ which will move it towards the opponent. Conversely, if the agent is to close to the opponent, it will experience a repulsive force $-_{ve}F$, which will guide it away. It is also evident that \emph{Force} becomes zero as \emph{Distance to Opponent}  $\rightarrow d$.\\ 
 
-\begin{figure}[h]
+\begin{figure}[t]
 	\centering
 		\includegraphics[width= 10cm]{mirror}
 		\caption{The agent (represented by the green star) will attempt to move to the zero-potential force contour around the opponent (represented by the red triangle). This is not a strict mirroring of the opponent, but rather allows the agent to move to optimal positions as opposed to just being guided by the opponent.}		
@@ -190,13 +192,16 @@ where $d_{const}$ is the minimum distance to maintain from the opponent, and $k_
 %$$d = d_{const} - k_2*(\emph{Health}_{Agent} - \emph{Health}_{Opponent})$$
 %where $d_{const}$ is the minimum distance to maintain from the opponent, and $k_2$ provides regularization on how much to depend on the health difference.
 
-\subsection*{Evasion Strategies}
-When the opponent fires at the agent, the mirroring behavior is suppressed and an evasion strategy is chosen. For training, we designed the system to choose a random strategy so that the agent has the ability to explore the entire state space and not form a biased opinion early on, thereby limiting itself. Given enough training points, we feel that the SVM is be able to find a good decision boundary with which to determine successful dodging strategies based on environmental properties. 
+\subsection*{Evasion}
+When the opponent fires at the evasion agent, the mirroring behavior is suppressed and a random evasion movement is chosen. For training, we designe the system to choose a random movement so that the agent has the ability to explore the entire state space and not form a biased opinion early on, thereby limiting itself.
 
-\subsubsection*{Dodge Left/Right}
-In this strategy, the agent moves to the left or right of the opponent when it is fired upon. This movement strategy is represented in Figure \ref{LR}, where $\Psi$ is the relative bearing to the opponent ($-180^{\circ} \leq \Psi \leq 180^{\circ}$). There are two different turning cases for $\Psi$: one when the agent is facing direction $d_1$ corresponding to bearing $\Psi_1$, and second when the agent is facing direction $d_2$ corresponding to bearing $\Psi_2$. Because we have a differential driven robot, we desire to turn a minimum distance to position our drive track perpendicular to the line of sight between us and the opponent. Achieving this angle is done in tandem with moving either forward or backward depending on whether we are dodging left or right. Dodging left / right are implemented separately, giving the agent the ability to choose each strategy.\\
+\subsubsection*{Evasion Movements}
+We designed four simple evasion movements the agent can choose from. These movements were designed based on watching many battles and detecting patterns in the way that expertly-written robots behaved.
 
-\begin{figure}[h]
+\paragraph{Dodge Left/Right}
+In this movement, the agent moves to the left or right of the opponent when it is fired upon. This movement strategy is represented in Figure \ref{LR}, where $\Psi$ is the relative bearing to the opponent ($-180^{\circ} \leq \Psi \leq 180^{\circ}$). There are two different turning cases for $\Psi$: one when the agent is facing direction $d_1$ corresponding to bearing $\Psi_1$, and second when the agent is facing direction $d_2$ corresponding to bearing $\Psi_2$. Because we have a differential driven robot, we desire to turn a minimum distance to position our drive track perpendicular to the line of sight between us and the opponent. Achieving this angle is done in tandem with moving either forward or backward depending on whether we are dodging left or right. Dodging left / right are considered two different movements, giving the agent the ability to choose each separately.\\
+
+\begin{figure}[t]
 \begin{minipage}[b]{0.5\linewidth}
 	\centering
 		\includegraphics[width=6 cm]{LR}
@@ -212,29 +217,46 @@ In this strategy, the agent moves to the left or right of the opponent when it i
 \end{minipage}
 \end{figure}
 
-\subsubsection*{Feign}
-In this strategy, upon detecting incoming fire, the agent immediately reverses its direction of motion. It can be seen in figure \ref{feign}.
+\paragraph{Feign}
+When feigning, the agent immediately reverses its direction of motion (Robocode allows for full speed both backwards and forwards). This movement is illustrated in Figure \ref{feign}.
 
-
+\paragraph{Halt}
+Halting is to simply stop moving forward and stand still. This is useful against robots that assume the opponent will continue moving forward after it has been fired upon.
 %Robocode physics will require the agent to slow down to a stand still and then accelerate in the new direction.
 %It is evident to us that this strategy will fail at closer distances and if the agent is moving directly towards or away from the opponent. Thus we expect the SVMs to discern this over time and only apply feign when it is optimal to do so.
 
 
-\subsubsection*{Random Movement}
+%\subsubsection*{Random Movement}
 %Random movement is useful against opponents that try to model their opponents.
-For this strategy, we set the turn control and forward movement control to a random value chosen from a uniform distribution. Agents that move in such a random manner are said to have flat movement profiles. They are hard to target, but certain advanced opponents are programmed to monitor such movement strategies when the agent approaches a wall or a corner, in which case the very nature of the environment will cause a spike in their movement profile.
+%For this strategy, we set the turn control and forward movement control to a random value chosen from a uniform distribution. Agents that move in such a random manner are said to have flat movement profiles. They are hard to target, but certain advanced opponents are programmed to monitor such movement strategies when the agent approaches a wall or a corner, in which case the very nature of the environment will cause a spike in their movement profile.
 
-\subsection*{Evaluation of Movement Strategies}
-With these strategies created, we needed a way to check the effectiveness of a evasion scheme. At its essence, we were testing the ability of the agent to stay alive, but we cannot rely on survival time alone as a measure of the effectiveness of a strategy. Thus, the effectiveness of the strategies are tested by the ability of the agent to dodge a particular shot fired at it. This is done through an estimate of the shot which is implemented using \emph{Bullet Tracking}.
+\subsubsection*{Learning the Evasion Strategy}
+We use four support vector machines\footnote{We also experimented with using one single SVM and considering the movement adopted as a feature, but the performance was worse.}, one for each evasion movement, to learn its efficiency at different states. We measure the efficiency
+of an evasion movement $m$ when the agent is at state $s$ as how often the agent was able to dodge a bullet using $m$ when it was fired upon at state $s$. At its essence, we are testing the ability of the agent to stay alive, but with the simplifying assumption that bullets are independent (i.e. dodging a bullet is always good, regardless of the new state the agent goes to).
 
-\subsubsection*{Bullet Tracking}
-In order to determine if the evasion strategy employed was effective in dodging the bullet that was fired at the agent, we devised a way to track the bullet. In Robocode this is not a straight forward task, as the agent cannot sense a bullet using its radar. However, in order to fire a bullet, a tank must sacrifice some of its own energy. The radar-sensor can detect a drop in energy of the opponent, and using this we can determine if the enemy has fired a bullet as well as the bullet's velocity. This is given by the formula:
-$$\emph{Bullet Velocity} = 20 - 3 * \emph{Energy Drop}$$
-Using the velocity coupled with some basic Newtonian Physics\footnote{$\emph{Distance} = \emph{Velocity} * \emph{Time}$}, we can predict all the possible positions the bullet can be at a given time step.
+Each SVM is trained to predict whether employing a movement at a given state will result in the agent dodging the bullet (+1) or being hit
+(-1). The following features are used to represent the state of the battlefield:
+
+\begin{itemize}
+	\item global position of the agent in $x$, $y$ and $\theta$ (its bearing)
+	\item global velocity of the agent in $x$, $y$ and $\theta$
+	\item the global and relative (with respect to the agent) positions of the opponent, in $x$, $y$ and $\theta$
+	\item the global and relative (with respect to the agent) velocities of the opponent, in $x$, $y$ and $\theta$
+	\item the distance between the agent and the center of the battlefield
+	\item the bearing between the agent and the center of the battlefield
+	\item the Euclidian distance between the agent and the opponent
+	\item the health of the agent and of the opponent
+\end{itemize}
+
+These features were heuristically selected. As described in the results, the F-score of every feature was computed to evaluate their contribution to the SVMs.
+
+In order to train the SVMs, we need to provide labels that express if the evasion strategy employed was effective in dodging the bullet that was fired at the agent. To do that, we track the bullet that was fired by the opponent. This is not a straightforward task in Robocode, as the agent cannot sense the position of a bullet using its radar. However, in order to fire a bullet, a tank must sacrifice some of its own energy. The radar-sensor can detect a drop in energy of the opponent, and using this we can determine if the enemy has fired a bullet as well as the bullet's velocity. This allows the agent to predict all the possible positions the bullet can be at a given time step.
 %The contours will be circular while resembling the motion of a wave. Hence, these estimates are known as \emph{waves}.
-Figure \ref{b_wave} illustrates this wave pattern taken on by bullets. Our objective is to see if we get hit by a bullet when the projected wave hits us, in which case we register a failure of the dodge strategy. Otherwise, we can conclude that we have successfully dodged the bullet.
+Figure \ref{b_wave} illustrates this wave pattern taken on by bullets. When the agent detects that the bullet wave cannot hit it anymore, we consider the evasion movement to have been successful and add a training point with label +1. If, however, the agent is hit by the bullet it is tracking, it adds a training point with label -1.
 
-\begin{figure}[h]
+One consequence of our modelling approach is that the agent is only able to learn how to evade one bullet at a time. Subsequent bullets fired while the agent is already tracking a previous bullet are ignored.
+
+\begin{figure}[t]
 \begin{minipage}[b]{0.5\linewidth}
 	\centering
 		\includegraphics[width=5 cm]{bullet_wave.png}
@@ -253,18 +275,13 @@ Figure \ref{b_wave} illustrates this wave pattern taken on by bullets. Our objec
 \subsection*{Targeting Strategies}
 The approach taken for targeting was completely different from the movement strategy. Instead of providing a set of targeting strategies based on heuristics such as linear movement targeting, circular movement targeting, etc. we chose to let our machine learning methods learn optimal targeting schemes from scratch. The objective of a targeting agent is to predict where the opponent will be in the future and shoot accordingly. The statespace for the targeting agent to act in is virtually infinite $[0^{\circ}, 360^{\circ}]$ , so in order make calculations tractable, we discretized the operating region as demonstrated in figure \ref{tget}. For both the SVM targeting scheme and the RL targeting scheme, we allowed the agent to choose one of 21 possible firing angles which were evenly distributed between $[-\frac{\theta}{2}, +\frac{\theta}{2}]$, where $\theta$ is the firing arc range and $0^{\circ}$ represents head on alignment with the opponent.
 
-
-%We are currently at a point where we can begin to collect data for evasive maneuvering. During the course of the training, we will look at the effectiveness of each strategy as the ability to dodge a particular shot while ignoring any other bullets which hit us during our evasive maneuver. We will collect data by running each evasion strategy multiple times against multiple different agents. 
-
-
-
 \subsubsection*{SVMs}
 
 \xxx{TODO}
 
 \subsubsection*{Q-learning}
-Q-learning \cite{watkins92a} learns a $Q(s, a)$ function that attributes an utility value to taking an action $a$ at state $s$. This method
-has two interesting properties. First, it doesn't require a model of the environment. This is desirable because modelling the
+Q-learning \cite{watkins92a} is a method to learn a $Q(s, a)$ function that attributes an utility value to taking an action $a$ at state $s$. This method
+has two interesting properties among other reinforcement learning algorithms. First, it doesn't require a model of the environment. This is desirable because modelling the
 interactions between our robot, its opponent and the environment would be overly complex and time consuming. Second, the $Q$ function
 takes into account future states. For instance, it might be the case that
 at a certain state $s_0$, firing at the opponent will likely miss, but will make it move to a state with much higher utility. In this scenario,
@@ -302,30 +319,32 @@ $$w_a = w_a + \alpha\left[R(s, a_i) + \gamma\max_{a'}Q(s', a') - Q(s, a_i)\right
 
 After the weights have been updated, we fire again.\\
 
-We test using a greedy policy subject that fires at the angle with the highest $Q$ value. If the highest value at a certain state is below a threshold, then
-the agent does not fire.
-
 \section{Results}
 \xxx{Short Intro?}
 
 \subsection*{Evasion Results}
-\xxx{TODO}
+\xxx{TODO - K}
+\xxx{I've added a reference to the libSVM paper: \cite{libsvm}}
 
 \subsection*{Targeting Results}
-\xxx{TODO}
+\xxx{Small intro}
 
 \subsubsection*{SVM Targeting}
-\xxx{TODO}
+\xxx{TODO - K}
 
 \subsubsection*{RL Targeting}
-\xxx{TODO}
+\xxx{TODO - S}
+% this was somewhere else
+We test using a greedy policy subject that fires at the angle with the highest $Q$ value. If the highest value at a certain state is below a threshold, then
+the agent does not fire.
+
 
 \subsection*{Integrated Performance}
-\xxx{TODO}
+\xxx{TODO - K}
 
 \section{Conclusion}
 
-\xxx{TODO}
+\xxx{TODO - P}
 
 %Thus far, we have successfully written an agent capable of implementing the previously discussed evasion techniques when fired upon by an opposing agent. This agent is also capable of continuously tracking the enemy, as well as the bullets fired from the enemy, in an effort to capture the data needed to train each evasion strategy's SVM. We are currently in the process of choosing the exact features desired from the environment upon each evasion attempt, and will then begin collecting data with which to train the SVMs on. After such training, we will then be able to evaluate the evasion system in an effort to maximize the agent's ability to evade bullets as well as to capture those features most important to understanding the best strategy given each unique situation. Lastly, we will move onto repeating these steps, with the additional knowledge gained throughout our experience, to design an effective targeting and firing system. At the end of this project, we will have novelly employed machine learning techniques to artificial intelligence agents in order to improve their ability to make decision informed by their perceptual knowledge of the environment.
 
