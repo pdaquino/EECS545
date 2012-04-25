@@ -276,7 +276,7 @@ We found that Q-learning responds best when we slowly increase the difficulty of
 We then tested our agent against this opponent. Our agent uses a greedy policy arbiter that fires at the angle with the highest $Q$ value. If that value is below a threshold, then the agent does not fire. Although the $Q$ value captures more than just the likelihood of hitting the opponent, we expected a high correlation between the $Q$ value and accuracy of the shot. However, as seen in Figure \ref{q_accu}, that is not the case. We believe this happens because the linear function learned does not capture the intricacies of the environment. This is evident in the fact that the Q-learning agent is able to win only 2\% of the rounds against this opponent, who doesn't even fire back. At the time of writing this report, we feel that if we run training for many more cycles we might see improvements, however it is reasonable to question whether a linear approximation method can possibly capture the true nature of the system and if so, whether the number of training cycles required are tractable. It is also possible that designing more complex features might help the performance.
 
 \subsection*{Integrated Performance}
-\xxx{TODO - Keegan - I will complete this tonight . . . it will be VERY VERY short!}
+Using the best SVM evasion models as well as the best SVM targeting model (according to the test accuracy), an integrated agent was created to apply both of the targeting and evasion techniques simultaneously. Using this integrated agent, 100 battles against each of the opponents were ran, for a total of 1,000 battles. Table \ref{svm_thresh} depicts the results of these battles utilizing different thresholds for targeting the enemy. As the table shows, the win percentage increases until the threshold is set above 70\%, at which point the win percentage begins to drop. Overall, we have achieved a success rate of approximately 42\% when implementing SVMs to target and evade against some of the more competitive hand-written Robocode agents. 
 
 \begin{table}[h]
 \centering
@@ -291,7 +291,7 @@ We then tested our agent against this opponent. Our agent uses a greedy policy a
         \hline
     \end{tabular}
 \label{svm_thresh}
-\caption{A comparison of overall performance and the threshold used}
+\caption{A comparison of overall performance and the threshold used for targeting.}
 \end{table}
 
 \section{Conclusion}
